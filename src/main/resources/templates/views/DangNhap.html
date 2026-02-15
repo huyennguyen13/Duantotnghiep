@@ -63,18 +63,15 @@
 
         <div class="form-container login-container">
             <form th:action="@{/views/DangNhap/submit}" method="post">
-                <h1>Đăng nhập</h1>
 
-                <input type="email" name="email" placeholder="Email" required />
+                <input type="email" name="email" required />
 
-                <input type="password" name="matKhau" placeholder="Password" required />
-
-                <div>
-                    <input type="checkbox" name="remember" /> Ghi nhớ tôi
-                </div>
+                <input type="password" name="matKhau" required />
 
                 <button type="submit">Đăng nhập</button>
+
             </form>
+
 
         </div>
 
