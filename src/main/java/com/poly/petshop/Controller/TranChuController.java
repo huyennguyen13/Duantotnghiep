@@ -17,33 +17,36 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class TranChuController {
-	
-	@Autowired
-	SanPhamDao sanphamDAO;
-    
-	@GetMapping("/customer/TrangChu")
-	public String Trangchu(@RequestParam(required = false) String error, Model model) {
-		if (error != null) {
-			model.addAttribute("error","bạn không có quyền truy cập");
-		}
-		// Lấy tất cả các sản phẩm ngẫu nhiên
+
+    @Autowired
+    SanPhamDao sanphamDAO;
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/customer/TrangChu";
+    }
+
+    @GetMapping("/customer/TrangChu")
+    public String Trangchu(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error","bạn không có quyền truy cập");
+        }
+
         List<SanPhamEntity> randomProducts = sanphamDAO.findRandomLowStockProducts();
 
-        // Giới hạn số lượng sản phẩm trả về là 8
         List<SanPhamEntity> limitedRandomProducts = randomProducts.stream()
-                .limit(8) // Chỉ lấy 8 sản phẩm đầu tiên
+                .limit(8)
                 .collect(Collectors.toList());
 
-        // Truyền danh sách sản phẩm ngẫu nhiên vào model
         model.addAttribute("lowStockProducts", limitedRandomProducts);
-		return "views/TrangChu";
-	}
-	
-	@GetMapping("/employee/TrangQuanTri")
-	public String Trangquantri(@RequestParam(required = false) String error, Model model) {
-		if (error != null) {
-			model.addAttribute("error", "Bạn không có quyền truy cập");
-		}
-		return "views/TrangQuanTri";
-	}
+        return "views/TrangChu";
+    }
+
+    @GetMapping("/employee/TrangQuanTri")
+    public String Trangquantri(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Bạn không có quyền truy cập");
+        }
+        return "views/TrangQuanTri";
+    }
 }
