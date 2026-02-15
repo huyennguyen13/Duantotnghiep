@@ -38,10 +38,10 @@ public class TaiKhoan implements Serializable{
 	    @Column(name = "TaiKhoanId")
 	    private int taiKhoanId;
 	    
-	    @Column(name = "Email", nullable = false, unique = true, length = 50)
+	    @Column(name = "Email", nullable = false, unique = true, length = 500)
 	    private String email;
 
-	    @Column(name = "MatKhau", nullable = false, length = 25)
+	    @Column(name = "MatKhau", nullable = false, columnDefinition = "varchar(500)")
 	    private String matKhau;
 
 	    @Convert(converter = QuyenConverter.class)

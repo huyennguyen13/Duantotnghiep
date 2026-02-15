@@ -3,10 +3,10 @@ package com.poly.petshop.Controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import com.poly.petshop.Classer.Quyen;
 import com.poly.petshop.Dao.TaiKhoanDao;
 import com.poly.petshop.Entity.TaiKhoan;
-
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class DangNhapController {
@@ -91,7 +89,9 @@ public class DangNhapController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (authentication == null 
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
             return "redirect:/views/DangNhap";
         }
 
@@ -120,9 +120,9 @@ public class DangNhapController {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth != null
+        if (auth != null 
                 && auth.isAuthenticated()
-                && !(auth.getPrincipal() instanceof String)) {
+                && !(auth instanceof AnonymousAuthenticationToken)) {
             return "redirect:/views/TrangChu";
         }
 
