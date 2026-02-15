@@ -62,47 +62,20 @@
         </div>
 
         <div class="form-container login-container">
-            <form class="form-lg" th:action="@{/views/DangNhap/submit}" th:object="${taiKhoan}" method="post">
-
+            <form th:action="@{/views/DangNhap/submit}" method="post">
                 <h1>Đăng nhập</h1>
-                <div class="form-control2">
-                    <input type="email" class="email-2" placeholder="Email" id="email" name="email" th:field="*{email}"
-                        required value="${email != null ? email : ''}" />
-                    <small class="email-error-2"></small>
-                    <span></span>
-                    <small class="email-error-2 text-danger" th:if="${emailError != null}"
-                        th:text="${emailError}"></small>
-                    <!-- 						 <c:if test="${not empty emailError}"> -->
-                    <!--             <small class="text-danger">[[${emailError}]]</small> -->
-                    <!--         </c:if> -->
 
-                </div>
-                <div class="form-control2">
-                    <input type="password" class="password-2" placeholder="Password" id="password" name="matKhau"
-                        th:field="*{matKhau}" required />
-                    <small class="password-error-2"></small>
-                    <span></span>
-                    <small class="password-error-2 text-danger" th:if="${passwordError != null}"
-                        th:text="${passwordError}"></small>
-                    <!-- 						  <c:if test="${not empty passwordError}"> -->
-                    <!--             <small class="text-danger">[[${passwordError}]]</small> -->
-                    <!--         </c:if> -->
+                <input type="email" name="email" placeholder="Email" required />
+
+                <input type="password" name="matKhau" placeholder="Password" required />
+
+                <div>
+                    <input type="checkbox" name="remember" /> Ghi nhớ tôi
                 </div>
 
-                <div class="content">
-                    <div class="checkbox">
-                        <input type="checkbox" name="remember" id="checkbox" /> <label>Ghi nhớ tôi</label>
-                    </div>
-                    <div class="pass-link">
-                        <a th:href="@{/views/QuenMK}">Quên mật khẩu?</a>
-                    </div>
-                </div>
-                <button type="submit" value="submit" id="loginButton">Đăng Nhập</button>
-                <span>Đăng nhập với</span>
-                <div class="social-container">
-                    <a th:href="@{/oauth2/authorization/google}" class="social"><i class="fa-brands fa-google"></i></a>
-                </div>
+                <button type="submit">Đăng nhập</button>
             </form>
+
         </div>
 
         <div class="overlay-container">
