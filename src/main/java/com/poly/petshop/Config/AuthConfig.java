@@ -62,7 +62,8 @@ public class AuthConfig {
                 .requestMatchers("/customer/**")
                     .hasRole("KHACH_HANG")
 
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
+
             )
 
             .exceptionHandling(e -> e
