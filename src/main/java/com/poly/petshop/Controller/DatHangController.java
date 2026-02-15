@@ -66,22 +66,6 @@ public class DatHangController {
 	    if (cartItems == null) {
 	        cartItems = new ArrayList<>();
 	    }
-
-	    // Tạo hóa đơn mới cho mỗi lần đặt hàng
-//	    HoaDonEntity hd = new HoaDonEntity();
-//	    String email = userDetails.getUsername();
-//	    TaiKhoan taiKhoan = userService.findByEmail(email);
-//
-//	    hd.setTaiKhoans(taiKhoan);
-//	    hd.setKhuyenMais(null);
-//	    hd.setPhuongThucThanhToan(false);
-//	    hd.setNgayTao(null);
-//	    hd.setTongTien(0.0);
-//	    hd.setDiaChi(null);
-//	    hd.setTrangThai(false); // Trạng thái ban đầu là chưa thanh toán
-//
-//	    hoadonDao.save(hd);  // Lưu hóa đơn mới vào cơ sở dữ liệu
-
 	    model.addAttribute("cartItems", cartItems);
 	    //model.addAttribute("hoaDonId", hd.getHoaDonId());  // Thêm ID của hóa đơn mới vào model
 
@@ -166,12 +150,6 @@ public class DatHangController {
 	    } else {
 	        throw new IllegalArgumentException("Phương thức thanh toán không hợp lệ.");
 	    }
-	}
-
-	
-	@GetMapping("")
-	public String home() {
-		return "index";
 	}
 
 	@PostMapping("/submitOrder")
