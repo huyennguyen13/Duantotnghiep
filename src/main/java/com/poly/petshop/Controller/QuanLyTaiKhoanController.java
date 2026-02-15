@@ -1,4 +1,6 @@
 package com.poly.petshop.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -6,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.hibernate.annotations.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/admin")
 public class QuanLyTaiKhoanController {
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	@Autowired
     private TaiKhoanDao tkDao;
 	@Autowired
@@ -123,7 +126,7 @@ public class QuanLyTaiKhoanController {
 		if (taiKhoanId == null || taiKhoanId == 0) {
 			TaiKhoan taiKhoanMoi = new TaiKhoan();
 			taiKhoanMoi.setEmail(email);
-			taiKhoanMoi.setMatKhau(matKhau);
+			taiKhoanMoi.setMatKhau(passwordEncoder.encode(matKhau));
 			taiKhoanMoi.setHoTen(hoTen);
 			taiKhoanMoi.setSoDienThoai(soDienThoai);
 			taiKhoanMoi.setQuyen(Quyen.NHAN_VIEN);
