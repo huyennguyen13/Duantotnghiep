@@ -1,163 +1,198 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+package com.poly.petshop.Controller;
 
-<head>
-	<title>Title</title>
-	<!-- Required meta tags -->
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+import java.util.Optional;
 
-	<!-- Bootstrap CSS v5.2.1 -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
-	<link rel="stylesheet" th:href="@{/css/Login.css}" />
-	<link rel="stylesheet" th:href="@{/css/style-error.css}" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
-		integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
-		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<style type="text/css">
-		.error {
-			color: red;
-			font-size: 12px;
-			margin-top: 5px;
-		}
-	</style>
-</head>
+import com.poly.petshop.Classer.Quyen;
+import com.poly.petshop.Dao.TaiKhoanDao;
+import com.poly.petshop.Entity.TaiKhoan;
+import com.poly.petshop.Service.TaiKhoanService;
 
-<body>
-	<div class="container" id="container">
-		<div class="form-container register-container">
-			<form th:action="@{/process-signup}" method="post" th:object="${taiKhoan}">
-				<h1>Đăng ký</h1>
-				<input type="hidden" th:field="taiKhoanId">
-				<div class="form-control">
-					<input type="text" id="Username" placeholder="Họ và tên" name="hoTen" th:field="*{hoTen}"
-						required />
-					<small id="username-error"></small>
-					<span></span>
+import jakarta.servlet.http.HttpSession;
 
-				</div>
-				<div class="form-control">
-					<input type="email" id="email" placeholder="Email" name="email" th:field="*{email}"
-						value="${taiKhoan.email}" required />
-					<small id="email-error"></small>
-					<span></span>
-					<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color: red;"></p>
-				</div>
-				<div class="form-control">
-					<input type="password" id="Password" placeholder="Password" name="matKhau" th:field="*{matKhau}"
-						required />
-					<small id="password-error"></small>
-					<span></span>
-				</div>
-				<button type="submit" value="submit">Đăng ký</button>
-				<span>Đăng ký với</span>
-				<div class="social-container">
-					<a th:href="@{/oauth2/authorization/google}" class="social"><i class="fa-brands fa-google"></i></a>
-					<!--        <a href="#" class="social"><i class="fa-brands fa-tiktok"></i></a> -->
-				</div>
-			</form>
-		</div>
+@Controller
+public class DangNhapController {
 
-		<div class="form-container login-container">
-			<form class="form-lg" th:action="@{/views/DangNhap/submit}" method="post">
+@Autowired
+TaiKhoanDao taikhoanDao;
 
-				<h1>Đăng nhập</h1>
+@Autowired
+TaiKhoanService taikhoanService;
 
-				<div class="form-control2">
-					<input type="email" class="email-2" placeholder="Email" name="email" required />
-				</div>
+private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-				<div class="form-control2">
-					<input type="password" class="password-2" placeholder="Password" name="matKhau" required />
-				</div>
+// ================== ĐĂNG KÝ ==================
+@PostMapping("/process-signup")
+public String processSignUp(
+@ModelAttribute("taiKhoan") TaiKhoan taikhoan,
+BindingResult result,
+Model model) {
 
-				<div class="content">
-					<div class="checkbox">
-						<input type="checkbox" name="remember-me" />
-						<label>Ghi nhớ tôi</label>
-					</div>
-					<div class="pass-link">
-						<a th:href="@{/views/QuenMK}">Quên mật khẩu?</a>
-					</div>
-				</div>
+if (taikhoanDao.findByEmail(taikhoan.getEmail()).isPresent()) {
+model.addAttribute("error", "Email đã tồn tại! Vui lòng sử dụng email khác.");
+taikhoan.setEmail(null);
+model.addAttribute("taiKhoan", taikhoan);
+return "views/DangNhap";
+}
 
-				<button type="submit">Đăng Nhập</button>
+if (result.hasErrors()) {
+model.addAttribute("taiKhoan", taikhoan);
+return "views/DangNhap";
+}
 
-				<span>Đăng nhập với</span>
-				<div class="social-container">
-					<a th:href="@{/oauth2/authorization/google}" class="social">
-						<i class="fa-brands fa-google"></i>
-					</a>
-				</div>
+String encodedPassword = passwordEncoder.encode(taikhoan.getMatKhau());
+taikhoan.setMatKhau(encodedPassword);
 
-			</form>
+taikhoanDao.save(taikhoan);
 
-		</div>
+model.addAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
+return "views/DangNhap";
+}
 
-		<div class="overlay-container">
-			<div class="overlay">
-				<div class="overlay-panel overlay-left">
-					<h1 class="title">Bạn đã đăng ký rồi đúng không!</h1>
-					<p>Thì bạn hãy đăng nhập nhé!</p>
-					<button class="ghost" id="login">
-						Đăng nhập <i class="fa-solid fa-arrow-left"></i>
-					</button>
-				</div>
+// ================== LOGIN GOOGLE ==================
+@GetMapping("/login/success")
+public String loginSuccess(@AuthenticationPrincipal OAuth2User oAuth2User, Model model) {
 
-				<div class="overlay-panel overlay-right">
-					<h1 class="title">Chào bạn!</h1>
-					<p>Nếu bạn chưa có tài khoản thì hãy đăng ký nhé!</p>
-					<button class="ghost" id="register">
-						Đăng ký <i class="fa-solid fa-arrow-right"></i>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div id="notification" th:if="${successMessage}" class="notification">
-			<div class="notification-header">
-				<i class="icon">ℹ️</i> <span class="notification-title">Thông
-					báo</span>
-				<button class="close-btn" onclick="closeNotification()">✖</button>
-			</div>
-			<div class="notification-body">
-				<p th:text="${successMessage}"></p>
-			</div>
-		</div>
-		<div id="notification" th:if="${error}" class="notification">
-			<div class="notification-header">
-				<i class="icon">ℹ️</i> <span class="notification-title">Thông
-					báo</span>
-				<button class="close-btn" onclick="closeNotification()">✖</button>
-			</div>
-			<div class="notification-body">
-				<p th:text="${error}"></p>
-			</div>
-		</div>
-	</div>
-	<script>
-		function closeNotification() {
-			const notification = document.getElementById("notification");
-			notification.style.display = "none";
-		}
-		// Tự động ẩn thông báo sau 5 giây
-		setTimeout(() => {
-			const notification = document.getElementById("notification");
-			if (notification) {
-				notification.style.display = "none";
-			}
-		}, 3000);
-	</script>
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-		crossorigin="anonymous"></script>
+if (oAuth2User == null || oAuth2User.getAttributes() == null) {
+model.addAttribute("error", "Không lấy thông tin từ Google OAuth2");
+return "views/TrangChu";
+}
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-		crossorigin="anonymous"></script>
-	<script src="../../../js/Login.js"></script>
-</body>
+String email = oAuth2User.getAttribute("email");
+String fullName = oAuth2User.getAttribute("name");
 
-</html>
+if (email == null || fullName == null) {
+model.addAttribute("error", "Thông tin Google không hợp lệ");
+return "views/TrangChu";
+}
+
+model.addAttribute("email", email);
+model.addAttribute("name", fullName);
+
+Optional<TaiKhoan> existingUser = taikhoanDao.findByEmail(email);
+
+	if (existingUser.isEmpty()) {
+	TaiKhoan newUser = new TaiKhoan();
+	newUser.setEmail(email);
+	newUser.setHoTen(fullName);
+	newUser.setMatKhau("defaultPassword");
+	newUser.setProvider("google");
+	newUser.setQuyen(Quyen.KHACH_HANG);
+
+	try {
+	taikhoanDao.save(newUser);
+	} catch (Exception e) {
+	model.addAttribute("error", "Lỗi khi lưu thông tin người dùng.");
+	return "views/TrangChu";
+	}
+	}
+
+	return "views/TrangChu";
+	}
+
+	// ================== SUCCESS ROLE REDIRECT ==================
+	@GetMapping("/views/DangNhap/success")
+	public String success(HttpSession session, Model model) {
+
+	Object principal = SecurityContextHolder.getContext()
+	.getAuthentication()
+	.getPrincipal();
+
+	String emailId;
+
+	if (principal instanceof UserDetails) {
+	emailId = ((UserDetails) principal).getUsername();
+	} else {
+	emailId = principal.toString();
+	}
+
+	if (emailId.isEmpty()) {
+	model.addAttribute("error", "Không lấy được thông tin người dùng");
+	}
+
+	session.setAttribute("loggedInUser", emailId);
+
+	var authorities = SecurityContextHolder.getContext()
+	.getAuthentication()
+	.getAuthorities();
+
+	if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_QUAN_LY"))) {
+	return "redirect:/employee/TrangQuanTri";
+	}
+	else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_NHAN_VIEN"))) {
+	return "redirect:/employee/TrangQuanTri";
+	}
+	else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_KHACH_HANG"))) {
+	return "redirect:/customer/TrangChu";
+	}
+	else {
+	model.addAttribute("error", "Người dùng không có vai trò hợp lệ!");
+	return "views/TrangChu";
+	}
+	}
+
+	// ================== HIỂN THỊ FORM LOGIN ==================
+	@GetMapping("/views/DangNhap")
+	public String showLoginForm(
+	@RequestParam(value = "error", required = false) String error,
+	Model model,
+	HttpSession session) {
+
+	if (session.getAttribute("taiKhoan") != null) {
+	return "redirect:/views/TrangChu";
+	}
+
+	if (error != null) {
+	model.addAttribute("error", "Email hoặc mật khẩu không chính xác!");
+	}
+
+	model.addAttribute("taikhoan", new TaiKhoan());
+	return "views/DangNhap";
+	}
+
+	// ================== LOGIN THƯỜNG ==================
+	@PostMapping("/views/DangNhap/submit")
+	public String loginSubmit(
+	@RequestParam(value = "email", required = false) String email,
+	@RequestParam(value = "Password", required = false) String matKhau,
+	Model model,
+	HttpSession session) {
+
+	TaiKhoan taiKhoan = taikhoanDao.findByEmail(email).orElse(null);
+
+	if (taiKhoan == null ||
+	!passwordEncoder.matches(matKhau, taiKhoan.getMatKhau())) {
+
+	model.addAttribute("error", "Email hoặc mật khẩu không chính xác!");
+	return "views/DangNhap";
+	}
+
+	if (taiKhoan.getTrangThai() == null || !taiKhoan.getTrangThai()) {
+	model.addAttribute("error", "Tài khoản đã bị ngừng hoạt động.");
+	return "views/DangNhap";
+	}
+
+	session.setAttribute("taiKhoan", taiKhoan);
+	return "redirect:/views/TrangChu";
+	}
+
+	// ================== LOGOUT ==================
+	@GetMapping("/views/logoff/success")
+	public String logoff(HttpSession session, Model model) {
+
+	session.invalidate();
+	model.addAttribute("successMessage", "Bạn đã đăng xuất thành công!");
+
+	return "redirect:/views/DangNhap";
+	}
+	}
