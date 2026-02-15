@@ -31,7 +31,7 @@
 		<div class="form-container register-container">
 			<form th:action="@{/process-signup}" method="post" th:object="${taiKhoan}">
 				<h1>Đăng ký</h1>
-				<input type="hidden" th:fiels="taiKhoanId">
+				<input type="hidden" th:field="taiKhoanId">
 				<div class="form-control">
 					<input type="text" id="Username" placeholder="Họ và tên" name="hoTen" th:field="*{hoTen}"
 						required />
