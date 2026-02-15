@@ -3,6 +3,7 @@ package com.poly.petshop.Controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,183 +17,126 @@ import org.springframework.web.bind.annotation.*;
 import com.poly.petshop.Classer.Quyen;
 import com.poly.petshop.Dao.TaiKhoanDao;
 import com.poly.petshop.Entity.TaiKhoan;
-import com.poly.petshop.Service.TaiKhoanService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class DangNhapController {
 
-@Autowired
-TaiKhoanDao taikhoanDao;
+    @Autowired
+    private TaiKhoanDao taiKhoanDao;
 
-@Autowired
-TaiKhoanService taikhoanService;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
-private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    // ================== ĐĂNG KÝ ==================
+    @PostMapping("/process-signup")
+    public String processSignUp(
+            @ModelAttribute("taiKhoan") TaiKhoan taiKhoan,
+            BindingResult result,
+            Model model) {
 
-// ================== ĐĂNG KÝ ==================
-@PostMapping("/process-signup")
-public String processSignUp(
-@ModelAttribute("taiKhoan") TaiKhoan taikhoan,
-BindingResult result,
-Model model) {
+        if (taiKhoanDao.findByEmail(taiKhoan.getEmail()).isPresent()) {
+            model.addAttribute("error", "Email đã tồn tại!");
+            return "views/DangNhap";
+        }
 
-if (taikhoanDao.findByEmail(taikhoan.getEmail()).isPresent()) {
-model.addAttribute("error", "Email đã tồn tại! Vui lòng sử dụng email khác.");
-taikhoan.setEmail(null);
-model.addAttribute("taiKhoan", taikhoan);
-return "views/DangNhap";
+        if (result.hasErrors()) {
+            return "views/DangNhap";
+        }
+
+        taiKhoan.setMatKhau(passwordEncoder.encode(taiKhoan.getMatKhau()));
+        taiKhoan.setQuyen(Quyen.KHACH_HANG);
+
+        taiKhoanDao.save(taiKhoan);
+
+        model.addAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
+        return "views/DangNhap";
+    }
+
+    // ================== LOGIN GOOGLE ==================
+    @GetMapping("/login/success")
+    public String loginSuccess(@AuthenticationPrincipal OAuth2User oAuth2User) {
+
+        if (oAuth2User == null) {
+            return "redirect:/views/DangNhap?error=true";
+        }
+
+        String email = oAuth2User.getAttribute("email");
+        String fullName = oAuth2User.getAttribute("name");
+
+        if (email == null) {
+            return "redirect:/views/DangNhap?error=true";
+        }
+
+        Optional<TaiKhoan> existingUser = taiKhoanDao.findByEmail(email);
+
+        if (existingUser.isEmpty()) {
+            TaiKhoan newUser = new TaiKhoan();
+            newUser.setEmail(email);
+            newUser.setHoTen(fullName);
+            newUser.setMatKhau(passwordEncoder.encode("google_login"));
+            newUser.setProvider("google");
+            newUser.setQuyen(Quyen.KHACH_HANG);
+
+            taiKhoanDao.save(newUser);
+        }
+
+        return "redirect:/customer/TrangChu";
+    }
+
+    // ================== SUCCESS ROLE REDIRECT ==================
+    @GetMapping("/views/DangNhap/success")
+    public String success() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return "redirect:/views/DangNhap";
+        }
+
+        var authorities = authentication.getAuthorities();
+
+        if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_QUAN_LY"))) {
+            return "redirect:/employee/TrangQuanTri";
+        }
+
+        if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_NHAN_VIEN"))) {
+            return "redirect:/employee/TrangQuanTri";
+        }
+
+        if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_KHACH_HANG"))) {
+            return "redirect:/customer/TrangChu";
+        }
+
+        return "redirect:/views/DangNhap?error=true";
+    }
+
+    // ================== HIỂN THỊ FORM LOGIN ==================
+    @GetMapping("/views/DangNhap")
+    public String showLoginForm(
+            @RequestParam(value = "error", required = false) String error,
+            Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth != null
+                && auth.isAuthenticated()
+                && !(auth.getPrincipal() instanceof String)) {
+            return "redirect:/views/TrangChu";
+        }
+
+        if (error != null) {
+            model.addAttribute("error", "Email hoặc mật khẩu không chính xác!");
+        }
+
+        model.addAttribute("taiKhoan", new TaiKhoan());
+        return "views/DangNhap";
+    }
+
+    // ================== LOGOUT SUCCESS ==================
+    @GetMapping("/views/logoff/success")
+    public String logoff() {
+        return "redirect:/views/DangNhap?logout=true";
+    }
 }
-
-if (result.hasErrors()) {
-model.addAttribute("taiKhoan", taikhoan);
-return "views/DangNhap";
-}
-
-String encodedPassword = passwordEncoder.encode(taikhoan.getMatKhau());
-taikhoan.setMatKhau(encodedPassword);
-
-taikhoanDao.save(taikhoan);
-
-model.addAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
-return "views/DangNhap";
-}
-
-// ================== LOGIN GOOGLE ==================
-@GetMapping("/login/success")
-public String loginSuccess(@AuthenticationPrincipal OAuth2User oAuth2User, Model model) {
-
-if (oAuth2User == null || oAuth2User.getAttributes() == null) {
-model.addAttribute("error", "Không lấy thông tin từ Google OAuth2");
-return "views/TrangChu";
-}
-
-String email = oAuth2User.getAttribute("email");
-String fullName = oAuth2User.getAttribute("name");
-
-if (email == null || fullName == null) {
-model.addAttribute("error", "Thông tin Google không hợp lệ");
-return "views/TrangChu";
-}
-
-model.addAttribute("email", email);
-model.addAttribute("name", fullName);
-
-Optional<TaiKhoan> existingUser = taikhoanDao.findByEmail(email);
-
-	if (existingUser.isEmpty()) {
-	TaiKhoan newUser = new TaiKhoan();
-	newUser.setEmail(email);
-	newUser.setHoTen(fullName);
-	newUser.setMatKhau("defaultPassword");
-	newUser.setProvider("google");
-	newUser.setQuyen(Quyen.KHACH_HANG);
-
-	try {
-	taikhoanDao.save(newUser);
-	} catch (Exception e) {
-	model.addAttribute("error", "Lỗi khi lưu thông tin người dùng.");
-	return "views/TrangChu";
-	}
-	}
-
-	return "views/TrangChu";
-	}
-
-	// ================== SUCCESS ROLE REDIRECT ==================
-	@GetMapping("/views/DangNhap/success")
-	public String success(HttpSession session, Model model) {
-
-	Object principal = SecurityContextHolder.getContext()
-	.getAuthentication()
-	.getPrincipal();
-
-	String emailId;
-
-	if (principal instanceof UserDetails) {
-	emailId = ((UserDetails) principal).getUsername();
-	} else {
-	emailId = principal.toString();
-	}
-
-	if (emailId.isEmpty()) {
-	model.addAttribute("error", "Không lấy được thông tin người dùng");
-	}
-
-	session.setAttribute("loggedInUser", emailId);
-
-	var authorities = SecurityContextHolder.getContext()
-	.getAuthentication()
-	.getAuthorities();
-
-	if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_QUAN_LY"))) {
-	return "redirect:/employee/TrangQuanTri";
-	}
-	else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_NHAN_VIEN"))) {
-	return "redirect:/employee/TrangQuanTri";
-	}
-	else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_KHACH_HANG"))) {
-	return "redirect:/customer/TrangChu";
-	}
-	else {
-	model.addAttribute("error", "Người dùng không có vai trò hợp lệ!");
-	return "views/TrangChu";
-	}
-	}
-
-	// ================== HIỂN THỊ FORM LOGIN ==================
-	@GetMapping("/views/DangNhap")
-	public String showLoginForm(
-	@RequestParam(value = "error", required = false) String error,
-	Model model,
-	HttpSession session) {
-
-	if (session.getAttribute("taiKhoan") != null) {
-	return "redirect:/views/TrangChu";
-	}
-
-	if (error != null) {
-	model.addAttribute("error", "Email hoặc mật khẩu không chính xác!");
-	}
-
-	model.addAttribute("taikhoan", new TaiKhoan());
-	return "views/DangNhap";
-	}
-
-	// ================== LOGIN THƯỜNG ==================
-	@PostMapping("/views/DangNhap/submit")
-	public String loginSubmit(
-	@RequestParam(value = "email", required = false) String email,
-	@RequestParam(value = "Password", required = false) String matKhau,
-	Model model,
-	HttpSession session) {
-
-	TaiKhoan taiKhoan = taikhoanDao.findByEmail(email).orElse(null);
-
-	if (taiKhoan == null ||
-	!passwordEncoder.matches(matKhau, taiKhoan.getMatKhau())) {
-
-	model.addAttribute("error", "Email hoặc mật khẩu không chính xác!");
-	return "views/DangNhap";
-	}
-
-	if (taiKhoan.getTrangThai() == null || !taiKhoan.getTrangThai()) {
-	model.addAttribute("error", "Tài khoản đã bị ngừng hoạt động.");
-	return "views/DangNhap";
-	}
-
-	session.setAttribute("taiKhoan", taiKhoan);
-	return "redirect:/views/TrangChu";
-	}
-
-	// ================== LOGOUT ==================
-	@GetMapping("/views/logoff/success")
-	public String logoff(HttpSession session, Model model) {
-
-	session.invalidate();
-	model.addAttribute("successMessage", "Bạn đã đăng xuất thành công!");
-
-	return "redirect:/views/DangNhap";
-	}
-	}

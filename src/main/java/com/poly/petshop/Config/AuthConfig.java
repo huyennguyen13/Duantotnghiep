@@ -21,11 +21,11 @@ import com.poly.petshop.Entity.TaiKhoan;
 public class AuthConfig {
 
     @Autowired
-    TaiKhoanDao taikhoandao;
+    private TaiKhoanDao taiKhoanDao;
 
     // ================= PASSWORD ENCODER =================
     @Bean
-    BCryptPasswordEncoder passwordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -33,102 +33,75 @@ public class AuthConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
+            TaiKhoan taiKhoan = taiKhoanDao.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
 
-            TaiKhoan taikhoan = taikhoandao.findByEmail(email)
-                    .orElseThrow(() ->
-                            new UsernameNotFoundException(email + " not found!")
-                    );
-
-            String matkhau = taikhoan.getMatKhau();
-
-            // Lấy quyền từ enum (VD: QUAN_LY, NHAN_VIEN, KHACH_HANG)
-            String role = taikhoan.getQuyen().name();
-
-            return User.withUsername(email)
-                    .password(matkhau)
-                    .roles(role)
+            return User.withUsername(taiKhoan.getEmail())
+                    .password(taiKhoan.getMatKhau())
+                    .roles(taiKhoan.getQuyen().name())
                     .build();
         };
     }
 
-    // ================= SECURITY FILTER CHAIN =================
+    // ================= SECURITY FILTER =================
     @Bean
-    public SecurityFilterChain filterChain(
-            HttpSecurity http,
-            CustomAccessDeniedHandler accessDeniedHandler
-    ) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http
+        http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
 
-                // ===== CSRF & CORS =====
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/views/DangNhap", "/process-signup", "/login/**").permitAll()
 
-                // ===== PHÂN QUYỀN =====
-                .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/admin/**").hasRole("QUAN_LY")
 
-                        // "Quản lý" và "Nhân viên" không được vào TrangChu
-                        .requestMatchers("/TrangChu")
-                        .not()
-                        .hasAnyRole("QUAN_LY", "NHAN_VIEN")
+                .requestMatchers("/employee/**")
+                    .hasAnyRole("QUAN_LY", "NHAN_VIEN")
 
-                        // Chỉ QUAN_LY truy cập /admin/**
-                        .requestMatchers("/admin/**")
-                        .hasRole("QUAN_LY")
+                .requestMatchers("/customer/**")
+                    .hasRole("KHACH_HANG")
 
-                        // QUAN_LY và NHAN_VIEN truy cập /employee/**
-                        .requestMatchers("/employee/**")
-                        .hasAnyRole("QUAN_LY", "NHAN_VIEN")
+                .anyRequest().permitAll()
+            )
 
-                        // Chỉ KHACH_HANG truy cập /customer/**
-                        .requestMatchers("/customer/**")
-                        .hasRole("KHACH_HANG")
+            .exceptionHandling(e -> e
+                .accessDeniedPage("/views/TrangChu")
+            )
 
-                        // Các request khác cho phép truy cập
-                        .anyRequest().permitAll()
-                )
+            // ===== FORM LOGIN =====
+            .formLogin(f -> f
+                .loginPage("/views/DangNhap")
+                .loginProcessingUrl("/views/DangNhap/submit")
+                .defaultSuccessUrl("/views/DangNhap/success", false)
+                .failureUrl("/views/DangNhap?error=true")
+                .usernameParameter("email")
+                .passwordParameter("matKhau")
+                .permitAll()
+            )
 
-                // ===== XỬ LÝ ACCESS DENIED =====
-                .exceptionHandling(e -> e
-                        .accessDeniedHandler(accessDeniedHandler)
-                )
+            // ===== REMEMBER ME =====
+            .rememberMe(r -> r
+                .rememberMeParameter("remember")
+                .key("uniqueAndSecretKey123")
+                .tokenValiditySeconds(86400)
+            )
 
-                // ===== FORM LOGIN =====
-                .formLogin(f -> f
-                        .loginPage("/views/DangNhap")
-                        .loginProcessingUrl("/views/DangNhap/submit")
-                        .defaultSuccessUrl("/views/DangNhap/success", false)
-                        .failureUrl("/views/DangNhap?error=true")
-                        .usernameParameter("email")
-                        .passwordParameter("matKhau")
-                )
+            // ===== GOOGLE LOGIN =====
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/views/DangNhap")
+                .defaultSuccessUrl("/login/success", true)
+            )
 
-                // ===== REMEMBER ME =====
-                .rememberMe(r -> r
-                        .rememberMeParameter("remember")
-                        .key("uniqueAndSecret")
-                        .tokenValiditySeconds(86400) // 1 ngày
-                )
+            // ===== LOGOUT =====
+            .logout(l -> l
+                .logoutUrl("/views/logoff")
+                .logoutSuccessUrl("/views/DangNhap?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            );
 
-                // ===== GOOGLE LOGIN =====
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/views/DangNhap")
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/login/success");
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            response.sendRedirect("/login?error");
-                        })
-                )
-
-                // ===== LOGOUT =====
-                .logout(l -> l
-                        .logoutUrl("/views/logoff")
-                        .logoutSuccessUrl("/views/logoff/success")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                )
-
-                .build();
+        return http.build();
     }
 }
