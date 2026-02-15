@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách hóa đơn</title>
+<!-- Boxicons CSS -->
+<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+	rel="stylesheet">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+	rel="stylesheet">
+<!-- Custom CSS -->
+<link th:href="@{/css/style-km.css}" rel="stylesheet" />
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- Font Awesome -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- Thư viện jsdelivr -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<style>
+/* Style cho container của các thông báo toast */
+.toast {
+	position: absolute;
+	top: -100px;
+	right: 10px;
+	border-radius: 12px;
+	background: #fff;
+	padding: 20px 35px 20px 25px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+	border-left: 6px solid #45B670;
+	overflow: hidden;
+	transform: translateY(-6%);
+	transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+	z-index: 999;
+}
+
+.toast.active {
+	transform: translateY(calc(100%));
+}
+
+.toast .toast-content {
+	display: flex;
+	align-items: center;
+}
+
+.toast-content .check {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 35px;
+	width: 35px;
+	background-color: #83CE9F;
+	color: #fff;
+	font-size: 20px;
+	border-radius: 50%;
+}
+
+.toast-content .message {
+	display: flex;
+	flex-direction: column;
+	margin: 0 20px;
+}
+
+.message .text {
+	font-size: 20px;
+	font-weight: 400;;
+	color: #666666;
+}
+
+.message .text.text-1 {
+	font-weight: 600;
+	color: #333;
+}
+
+.toast .close {
+	position: fixed;
+	z-index: 999;
+	top: -190px;
+	right: 20px;
+	padding: 5px;
+	cursor: pointer;
+	opacity: 0.7;
+	right: 30px;
+}
+
+.toast .close:hover {
+	opacity: 1;
+}
+
+.toast .progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 3px;
+	width: 100%;
+	background: #ddd;
+}
+
+.toast .progress:before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #83CE9F;
+}
+
+.progress.active:before {
+	animation: progress 5s linear forwards;
+}
+
+@keyframes progress { 100% {
+	right: 100%;
+}
+
+}
+.button {
+	padding: 12px 20px;
+	font-size: 20px;
+	outline: none;
+	border: none;
+	background-color: #45B670;
+	color: #fff;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.button:hover {
+	background-color: #36a05f;
+}
+
+.toast.active ~button {
+	pointer-events: none;
+}
+
+/* Nút error */
+.toast-error {
+	position: absolute;
+	top: -100px;
+	right: 10px;
+	border-radius: 12px;
+	background: #fff;
+	padding: 20px 35px 20px 25px;
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+	border-left: 6px solid #D77F8F;
+	overflow: hidden;
+	transform: translateY(-6%);
+	transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+	z-index: 999;
+}
+
+.toast-error.active {
+	transform: translateY(calc(100%));
+}
+
+.toast-error .toast-content {
+	display: flex;
+	align-items: center;
+}
+
+.toast-content .check {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 35px;
+	width: 35px;
+	background-color: #D77F8F;
+	color: #fff;
+	font-size: 20px;
+	border-radius: 50%;
+}
+
+.toast-content .message {
+	display: flex;
+	flex-direction: column;
+	margin: 0 20px;
+}
+
+.message .text {
+	font-size: 20px;
+	font-weight: 400;;
+	color: #666666;
+}
+
+.message .text.text-1 {
+	font-weight: 600;
+	color: #333;
+}
+
+.toast-error .close {
+	position: fixed;
+	z-index: 999;
+	top: -190px;
+	right: 20px;
+	padding: 5px;
+	cursor: pointer;
+	opacity: 0.7;
+	right: 30px;
+}
+
+.toast-error .close:hover {
+	opacity: 1;
+}
+
+.toast-error .progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 3px;
+	width: 100%;
+	background: #ddd;
+}
+
+.toast-error .progress:before {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #D77F8F;
+}
+
+.progress.active:before {
+	animation: progress 5s linear forwards;
+}
+
+@keyframes progress { 100% {
+	right: 100%;
+}
+
+}
+.buttonerror {
+	padding: 12px 20px;
+	font-size: 20px;
+	outline: none;
+	border: none;
+	background-color: #C0334D;
+	color: #fff;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.buttonerror:hover {
+	background-color: #C0334D;
+}
+
+.toast-error.active ~buttonerror {
+	pointer-events: none;
+}
+
+.luunut {
+	background-color: var(--portland-orange);
+	color: white;
+	border: 1px solid var(--portland-orange);
+}
+
+.luunut:hover {
+	background-color: var(--amber);
+	color: white;
+	border: 1px solid var(--amber);
+}
+
+.luunut:active {
+	background-color: var(--amber);
+	color: white;
+	border: 1px solid var(--amber);
+}
+</style>
+<body>
+
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<div class="box-work pb-5">
+
+		<div class="title">
+			<h1>
+				<b>Danh Sách</b> <span class="edit_text-title">Hóa Đơn</span>
+			</h1>
+		</div>
+		<div class="d-flex justify-content-around" style="padding-left: 100px;">
+			<div class="card col-sm-4 my-4">
+				<form th:action="@{/employee/quanli/quanlikhuyenmai/luu}"
+					th:object="${km}" method="post" class="p-3">
+					<h3 class="text-center mb-4 mt-2 fw-bold"
+						style="color: var(--portland-orange);">Thông tin</h3>
+					<input type="hidden" th:field="*{khuyenMaiId}" />
+
+					<div class="form-group">
+						<label for="tenKhuyenMai" class="fw-bold">Tên Khuyến Mãi</label> <input
+							type="text" th:field="*{tenKhuyenMai}" class="form-control"
+							id="tenKhuyenMai" /> <span
+							th:if="${#fields.hasErrors('tenKhuyenMai')}"
+							th:errors="*{tenKhuyenMai}" class="text-danger"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="phanTram" class="fw-bold">Phần Trăm</label> <input
+							type="number" th:field="*{phanTram}" class="form-control"
+							id="phanTram" required /> <span
+							th:if="${#fields.hasErrors('phanTram')}" th:errors="*{phanTram}"
+							class="text-danger"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="ngayBatDau" class="fw-bold">Ngày Bắt Đầu</label> <input
+							type="date" th:field="*{ngayBatDau}" class="form-control"
+							id="ngayBatDau" /> <span
+							th:if="${#fields.hasErrors('ngayBatDau')}"
+							th:errors="*{ngayBatDau}" class="text-danger"></span>
+					</div>
+
+					<div class="form-group">
+						<label for="ngayKetThuc" class="fw-bold">Ngày Kết Thúc</label> <input
+							type="date" th:field="*{ngayKetThuc}" class="form-control"
+							id="ngayKetThuc" /> <span
+							th:if="${#fields.hasErrors('ngayKetThuc')}"
+							th:errors="*{ngayKetThuc}" class="text-danger"></span>
+					</div>
+
+					<button type="submit" class="btn btn-primary"
+						th:if="${km.khuyenMaiId == null}">Thêm</button>
+					<!-- Nút Lưu -->
+					<button type="submit"
+						class="btn btn-outline-primary mt-3 luunut float-end w-25 button"
+						th:if="${km.khuyenMaiId != null}"
+						th:action="@{/employee/quanli/quanlikhuyenmai/capnhat}">Lưu</button>
+
+				</form>
+
+			</div>
+
+			<div class="container my-4 col-sm-7 m-0 ">
+				<!-- Form for adding or editing a bill -->
+				<div class="container my-4">
+					<!-- Search and Settings -->
+					<div class="search-input-container mb-3">
+						<input type="text" class="form-control" id="search-input"
+							placeholder="Search by name" />
+						<div class="d-flex align-items-center">
+
+							<div class="dropdown">
+								<button class="btn btn-outline-secondary mx-1 dropdown-toggle"
+									data-bs-toggle="dropdown">
+									<i class="fas fa-bars"></i>
+								</button>
+								<ul class="dropdown-menu">
+									<li class="dropdown-item"><input type="checkbox"
+										value="id" id="filter-id" class="filter-column" checked>
+										<label for="filter-id">ID</label></li>
+									<li class="dropdown-item"><input type="checkbox"
+										value="ten" id="filter-ten" class="filter-column" checked>
+										<label for="filter-ten">Khuyến Mãi</label></li>
+									<li class="dropdown-item"><input type="checkbox"
+										value="tile" id="filter-tile" class="filter-column" checked>
+										<label for="filter-tile">Tỉ lệ</label></li>
+									<li class="dropdown-item"><input type="checkbox"
+										value="thoihan" id="filter-thoihan" class="filter-column"
+										checked> <label for="filter-thoihan">Thời hạn</label>
+									</li>
+									<li class="dropdown-item"><input type="checkbox"
+										value="hethan" id="filter-hethan" class="filter-column"
+										checked> <label for="filter-hethan">Hết hạn</label></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!-- Toast Notifications -->
+					<!-- Phần Toast -->
+					<div class="toast">
+						<div class="toast-content">
+							<i class="fas fa-solid fa-check check"></i> <i
+								class="fa-solid fa-xmark close"></i>
+							<div class="message">
+								<span class="text text-1">Thành công</span> <span
+									class="text text-2">Thêm thành công!</span>
+							</div>
+						</div>
+						<i class="fa-solid fa-xmark close"></i>
+
+						<div class="progress"></div>
+					</div>
+
+
+					<div class="toast-error">
+						<div class="toast-content">
+							<i class="fa-solid fa-xmark check"></i>
+
+							<div class="message">
+								<span class="text text-1">Thất bại</span> <span
+									class="text text-2">Thêm thất bại!</span>
+							</div>
+						</div>
+						<i class="fa-solid fa-xmark close"></i>
+
+						<div class="progress"></div>
+					</div>
+
+					<!-- Table -->
+					<div class="card p-2">
+						<div class="table-wrapper card border-0" style="height: 280px;">
+							<table class="table table-borderless">
+								<thead>
+									<tr>
+										<th class="id-column">#</th>
+										<th class="ten-column" style="width: 45%;">Khuyến Mãi</th>
+										<th class="tile-column">Tỉ lệ</th>
+										<th class="thoihan-column">Thời hạn</th>
+										<th class="hethan-column">Hết hạn</th>
+										<th>Hành động</th>
+									</tr>
+								</thead>
+								<tbody id="table-body" class="border-bottom">
+									<tr th:each="km : ${kms}">
+										<td th:text="${km.khuyenMaiId}" class="id-column"></td>
+										<td th:text="${km.tenKhuyenMai}" class="ten-column"></td>
+										<td th:text="${km.phanTram + '%'}" class="tile-column"></td>
+										<td th:text="${km.ngayBatDau}" class="thoihan-column"></td>
+										<td th:text="${km.ngayKetThuc}" class="hethan-column"></td>
+										<td>
+											<!-- Sửa --> <a
+											th:href="@{/employee/quanli/quanlikhuyenmai/sua/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
+											class="btn btn-dark">Sửa</a> <!-- Xóa --> <a
+											th:href="@{/employee/quanli/quanlikhuyenmai/xoa/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
+											class="btn btn-danger"
+											onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- Pagination -->
+
+						</div>
+						<ul id="pagination" class="pagination justify-content-center"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script th:src="@{/js/reload.js}"></script>
+	<script th:src="@{/js/chart.js}"></script>
+	<script th:src="@{/js/page.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/script-admin.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<!-- Add the pagination and search logic scripts -->
+	<script>
+    const tableRows = document.querySelectorAll("#table-body tr");
+
+    function paginateTable() {
+        // Tính số lượng hàng cần hiển thị theo trang hiện tại
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        tableRows.forEach((row, index) => {
+            if (index >= start && index < end) {
+                row.style.display = "";  // Hiển thị hàng trong phạm vi của trang hiện tại
+            } else {
+                row.style.display = "none";  // Ẩn hàng ngoài phạm vi của trang hiện tại
+            }
+        });
+    }
+
+ // Search functionality
+document.getElementById("search-input").addEventListener("input", function () {
+    const searchValue = this.value.toLowerCase();
+    tableRows.forEach(row => {
+        const name = row.querySelector("td:nth-child(2)").textContent.toLowerCase();
+        row.style.display = name.includes(searchValue) ? "" : "none";
+    });
+    if (searchValue === "" || filteredRows > 0) {
+        paginateTable(); // Gọi lại hàm phân trang sau khi tìm kiếm
+    } else {
+        // Nếu không có kết quả, ẩn tất cả các hàng (hoặc thông báso không tìm thấy)
+        document.querySelector("table tbody").innerHTML = '<tr><td colspan="5">Không tìm thấy kết quả</td></tr>';
+    }
+});
+ 
+
+    // Pagination logic
+    const itemsPerPage = 4;
+    let currentPage = 1;
+
+    function displayItems() {
+        const rows = document.querySelectorAll('#table-body tr');
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? '' : 'none';
+        });
+    }
+
+    function createPagination() {
+        const rows = document.querySelectorAll('#table-body tr');
+        const totalPages = Math.ceil(rows.length / itemsPerPage);
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = ''; // Clear current pagination
+
+        // Nút Previous
+        const prevItem = document.createElement('li');
+        prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+        prevItem.innerHTML = `<a class="page-link" href="#" onclick="changePage('prev')"><<</a>`;
+        paginationContainer.appendChild(prevItem);
+
+        // Các nút trang
+        for (let i = 1; i <= totalPages; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+            paginationContainer.appendChild(pageItem);
+        }
+
+        // Nút Next
+        const nextItem = document.createElement('li');
+        nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+        nextItem.innerHTML = `<a class="page-link" href="#" onclick="changePage('next')">>></a>`;
+        paginationContainer.appendChild(nextItem);
+    }
+
+    function changePage(page) {
+        const rows = document.querySelectorAll('#table-body tr');
+        const totalPages = Math.ceil(rows.length / itemsPerPage);
+
+        if (page === 'prev' && currentPage > 1) {
+            currentPage--;
+        } else if (page === 'next' && currentPage < totalPages) {
+            currentPage++;
+        } else if (typeof page === 'number') {
+            currentPage = page;
+        }
+
+        displayItems();
+        createPagination();
+    }
+
+    // Khởi tạo khi tải trang
+    document.addEventListener('DOMContentLoaded', () => {
+        displayItems();
+        createPagination();
+    });
+    //định dạng ngày
+
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr("#ngayBatDau, #ngayKetThuc", {
+            dateFormat: "Y-m-d"
+        });
+    });
+
+    
+    document.querySelectorAll(".filter-column").forEach(checkbox => {
+        checkbox.addEventListener("change", function () {
+            const columnClass = this.value + "-column";
+            const isChecked = this.checked;
+            document.querySelectorAll("." + columnClass).forEach(cell => {
+                cell.style.display = isChecked ? "" : "none";
+            });
+        });
+    });
+    
+    
+    
+
+</script>
+
+	<!-- Scripts -->
+	<script th:src="@{/js/reload.js}"></script>
+	<script th:src="@{/js/chart.js}"></script>
+	<script th:src="@{/js/page.js}"></script>
+	<script th:src="@{/js/script-admin.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hP9GllH/1XHVPpD"
+		crossorigin="anonymous">
+    </script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-VAdfpmC1qDq7xPHmD8XnmB1CSJ74Mmd/BsmgyWJfI/tCuXvbCJAy8dHah/zrrGyP"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

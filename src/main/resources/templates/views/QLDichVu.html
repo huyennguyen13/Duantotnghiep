@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quản lý dịch vụ</title>
+<!-- ===== Boxicons CSS ===== -->
+<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+	rel="stylesheet" />
+<!-- Linking Google Font Link For Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+	rel="stylesheet" />
+<!-- link css -->
+<link rel="stylesheet" th:href="@{/css/style-thongke.css}" />
+<link rel="stylesheet" th:href="@{/css/style-admin.css}" />
+<link rel="stylesheet" th:href="@{/css/style-error.css}" />
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- (Optional) Use CSS or JS implementation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+
+<body ng-app="myApp" id="content">
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<article>
+		<div id="notification" th:if="${message}" class="notification">
+			<div class="notification-header">
+				<i class="icon">ℹ️</i> <span class="notification-title">Thông
+					báo</span>
+				<button class="close-btn" onclick="closeNotification()">✖</button>
+			</div>
+			<div class="notification-body">
+				<p th:text="${message}"></p>
+			</div>
+		</div>
+		<div style="height: auto; margin-top: 100px">
+			<h2 class="text-center fs-3 fw-bolder text-uppercase"
+				style="color: #ed6336">QUẢN LÝ DỊCH VỤ</h2>
+			<div
+				class="container shadow-lg p-3 mb-5 bg-body rounded-4 border border-secondary p-2 mb-2 border-opacity-25"
+				style="height: auto;">
+				<div class="row">
+					<div class="col-md-6 mt-4">
+						<div class="table text-center card p-2">
+							<table class="table table-hover" id="myTable">
+								<thead>
+									<tr>
+										<th scope="col">Mã</th>
+										<th scope="col">Tên</th>
+										<th scope="col">Giá</th>
+										<th scope="col">Hình</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="dichVu : ${dichvuList}">
+										<td scope="row" th:text="${dichVu.dichVuId}"></td>
+										<td th:text="${dichVu.tenDichVu}"></td>
+										<td th:text="${dichVu.giaDichVu}"></td>
+										<td th:text="${dichVu.hinh}"></td>
+										<td><a th:href="@{/Update(id=${dichVu.dichVuId})}">
+												<button class="btn btn-outline-success">Chỉnh sửa</button>
+										</a></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="col-md-6 mt-4">
+						<div class="w-100 shadow p-3 mb-5 bg-body rounded border border-2"
+							style="height: auto">
+							<form th:action="@{/Save}" th:object="${dichVu}" method="post"
+								enctype="multipart/form-data">
+								<input type="hidden" th:field="*{dichVuId}" />
+								<div class="mb-3">
+									<label class="form-label fs-4">Tên dịch vụ</label> <input
+										class="form-control border border-2" type="text"
+										placeholder="Nhập tên dịch vụ" name="tenDichVu" id="tenDichVu"
+										th:field="*{tenDichVu}" />
+										<div class="error-message text-danger" id="tenDichVuError"></div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label fs-4">Giá</label> <input
+										class="form-control border border-2" type="text"
+										placeholder="Nhập giá dịch vụ" name="giaDichVu" id="giaDichVu"
+										th:field="*{giaDichVu}" />
+										<div class="error-message text-danger" id="giaDichVuError"></div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label fs-4">Hình</label>
+									<div class="d-flex align-items-center">
+										<input class="form-control border border-2" type="text"
+											placeholder="" name="hinh" id="hinh" th:field="*{hinh}"
+											style="flex: 1;" />
+										<button type="button" class="btn btn-secondary ms-2"
+											onclick="document.getElementById('fileInput1').click()">Chọn
+											ảnh</button>
+										<input type="file" id="fileInput1" style="display: none;"
+											accept="image/*"
+											onchange="updateFileName('fileInput1', 'hinh')" />
+									</div>
+								</div>
+								<div class="mb-3">
+									<label class="form-label fs-4">Mô tả</label>
+									<textarea class="form-control border border-2" name="moTa"
+										id="moTa" style="height: 120px" placeholder="Nhập mô tả"
+										th:field="*{moTa}"></textarea>
+								</div>
+								<div class="d-flex justify-content-evenly">
+									<!-- Nút Lưu, chỉ hiển thị khi có thông tin -->
+									<button id="btnsave" type="submit" class="me-2 button fs-5"
+										th:if="${dichVu.dichVuId != 0}">Lưu</button>
+
+									<!-- Nút Xóa, chỉ hiển thị khi có thông tin -->
+									<a th:href="@{/Remove(id=${dichVu.dichVuId})}"
+										onclick="return confirm('Bạn có chắc chắn muốn xóa mục này không?');"
+										th:if="${dichVu.dichVuId != 0}">
+										<button type="button" class="me-2 button fs-5">Xóa</button>
+									</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			const form = document.querySelector("form");
+			const tenDichVuInput = document.getElementById("tenDichVu");
+			const giaDichVuInput = document.getElementById("giaDichVu");
+
+			function showError(input, message) {
+				const errorElement = document
+						.getElementById(input.id + "Error");
+				errorElement.textContent = message;
+			}
+
+			function clearError(input) {
+				const errorElement = document
+						.getElementById(input.id + "Error");
+				errorElement.textContent = "";
+			}
+
+			form.addEventListener("submit", function(e) {
+				e.preventDefault(); // Ngăn gửi form khi có lỗi
+				let hasError = false;
+
+				const tenDichVuValue = tenDichVuInput.value.trim();
+				if (!tenDichVuValue.match(/^[\p{L}\s]+$/gu)) {
+					showError(tenDichVuInput, "Tên dịch vụ phải là chữ.");
+					hasError = true;
+				} else {
+					clearError(tenDichVuInput);
+				}
+
+				const giaDichVuValue = parseFloat(giaDichVuInput.value.trim());
+				if (isNaN(giaDichVuValue) || giaDichVuValue <= 0) {
+					showError(giaDichVuInput, "Giá phải là số lớn hơn 0.");
+					hasError = true;
+				} else {
+					clearError(giaDichVuInput);
+				}
+
+				if (!hasError) {
+					form.submit();
+				}
+			});
+		});
+		// Ẩn nút khi chưa chọn thông tin  v 
+		document.addEventListener("DOMContentLoaded", function() {
+			const dichVuIdInput = document.getElementById("dichVuId");
+			const saveButton = document.getElementById("btnsave");
+			const deleteButton = document.querySelector('a[href*="/Remove"]');
+
+			// Ẩn nút khi trang tải
+			function toggleButtons() {
+				if (!dichVuIdInput.value || dichVuIdInput.value == "0") {
+					saveButton.style.display = "none";
+					deleteButton.style.display = "none";
+				} else {
+					saveButton.style.display = "inline-block";
+					deleteButton.style.display = "inline-block";
+				}
+			}
+
+			toggleButtons();
+
+			// Kiểm tra lại khi có sự thay đổi
+			dichVuIdInput.addEventListener("input", toggleButtons);
+		});
+	</script>
+	<!--JavaScript Libraries -->
+	<script src="../../../js/reload.js"></script>
+	<script src="../../../js/chart.js"></script>
+	<script src="../../../js/page.js"></script>
+	<script src="../../../js/app.js"></script>
+	<script src="../../../js/script-admin.js"></script>
+	<script src="../../../js/ShowError.js" defer></script>
+	<!-- =================================== -->
+
+	<script>
+		function updateFileName(fileInputId, fileNameId) {
+			var fileInput = document.getElementById(fileInputId);
+			var fileName = fileInput.files[0] ? fileInput.files[0].name
+					: 'Chưa chọn file';
+			document.getElementById(fileNameId).value = fileName;
+		}
+	</script>
+	<!-- <script src="script.js"></script> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+</html>

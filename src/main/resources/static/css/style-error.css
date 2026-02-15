@@ -1,0 +1,55 @@
+/* Kiểu chung cho thông báo */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+    z-index: 1000;
+    animation: slide-in 0.3s ease-out;
+  }
+  
+  /* Tiêu đề và nút đóng */
+  .notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  
+  .notification-header .icon {
+    color: #007bff;
+    margin-right: 8px;
+  }
+  
+  .notification-header .close-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .notification-body {
+    padding: 10px;
+    color: #555;
+  }
+  
+  /* Hiệu ứng xuất hiện */
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  

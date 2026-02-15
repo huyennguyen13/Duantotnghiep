@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Pet shop - High Quality Pet Food</title>
+<meta name="title" content="Kitter - High Quality Pet Food" />
+<meta name="description"
+	content="This is an eCommerce html template made by codewithsadee" />
+
+<link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Nunito+Sans:wght@400;700&display=swap"
+	rel="stylesheet" />
+<link rel="preload" as="image" th:href="@{/img/hero-banner.jpg}" />
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+<style type="text/css">
+.header.active{
+	color: #000!important;
+	background: #fff!important;
+}
+.navbar-link{
+	color: #000!important;
+}
+.header .action-btn{
+	color: #000!important;
+}
+.text-logo{
+	color: #000!important;
+}
+.btn {
+	background-color: transparent !important;
+	color: #EC6335 !important;
+	width: 200px !important;
+	padding: 8px 25px !important;
+	border-radius: 0px !important;
+	padding: 8px 25px !important;
+}
+
+.btn:hover {
+	color: #fff !important;
+	background-color: #EC6335 !important;
+	border-color: #EC6335 !important;
+}
+
+.btn-outline-secondary {
+	border-color: #EC6335 !important;
+}
+
+.button {
+	background-color: transparent !important;
+	color: #EC6335 !important;
+	border: 1px #EC6335 solid !important;
+}
+
+.button:hover {
+	background-color: #EC6335 !important;
+	color: #fff !important;
+}
+
+.dropdown-item {
+	border: none !important;
+}
+
+.dropdown-item:hover {
+	background-color: #EC6335 !important;
+	color: #fff !important;
+}
+
+.btn-primary {
+	border-color: #EC6335 !important;
+}
+
+/* Custom pagination styles */
+.custom-pagination .page-item {
+    border: none; /* Bỏ viền */
+    border-radius: 100px;
+}
+
+.custom-pagination .page-link {
+    background-color: transparent; /* Làm trong suốt background */
+    color: #ED6335!important; /* Đổi ký tự thành màu #ED6335 */
+    border: none; /* Bỏ viền */
+    border-radius: 100px;
+}
+
+.custom-pagination .page-link:hover {
+    text-decoration: underline !important; /* Gạch chân khi hover */
+}
+
+.custom-pagination .page-item.active .page-link {
+    font-weight: bold; /* Làm đậm ký tự của trang đang active */
+    color: #ED6335; /* Màu của trang active */
+    background-color: transparent; /* Trong suốt */
+    border: none; /* Bỏ viền */
+}
+
+.custom-pagination .page-item.disabled .page-link {
+    color: #cccccc; /* Màu xám nhạt cho nút bị vô hiệu hóa */
+    pointer-events: none; /* Không cho phép click */
+}
+
+</style>
+</head>
+<body id="top">
+	<!-- HEADER -->
+	<header th:replace="~{views/layout/header-customer.html :: header}"></header>
+	<main>
+		<article>
+			<!-- HERO -->
+			<div
+				style="background-color: #fff; height: 100px; width: 100%; box-shadow: 4px 8px 10px rgba(0, 0, 0, 0.1);"></div>
+			<section class="section product" id="shop" aria-label="product">
+				<div class="container">
+					<h2 class="h2 section-title">
+						<span class="span">Các sản phẩm</span> tại cửa hàng
+					</h2>
+					<div class="container mt-4">
+						<div class="p-2 mb-3">
+							<div class="d-flex align-items-center w-100">
+								<div class="btn-group" role="group"
+									aria-label="Filter by loaiThuCung">
+									<a
+										th:href="@{/customer/sanpham/filter?loaiThuCung=1&page=1&size=8}"
+										class="btn btn-outline-secondary" style="font-size: 16px;"
+										th:classappend="${loaiThuCung == 1} ? 'active' : ''">Tất
+										cả</a> <br> <a
+										th:href="@{/customer/sanpham/filter?loaiThuCung=2&page=1&size=8&sortOrder='ASC'}"
+										class="btn btn-outline-secondary" style="font-size: 16px;"
+										th:classappend="${loaiThuCung == 2} ? 'active' : ''">Chó</a><br>
+									<a
+										th:href="@{/customer/sanpham/filter?loaiThuCung=3&page=1&size=8&sortOrder='ASC'}"
+										class="btn btn-outline-secondary" style="font-size: 16px;"
+										th:classappend="${loaiThuCung == 3} ? 'active' : ''">Mèo</a>
+								</div>
+
+
+								<div class="dropdown ms-auto">
+									<button class="button light dropdown-toggle border"
+										type="button"
+										style="width: 200px; height: 40px; font-size: 16px;"
+										id="dropdownMenuButton" data-bs-toggle="dropdown"
+										aria-expanded="false">Thứ tự giá mặc định</button>
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton"
+										style="font-size: 16px;">
+										<li style="width: 200px; height: auto; text-align: center;"><a
+											class="dropdown-item"
+											th:href="@{/customer/sanpham/filter(loaiSanPham=${loaiSanPham}, loaiThuCung=${loaiThuCung}, sortOrder='ASC')}">Thấp
+												đến cao</a></li>
+										<li style="width: 200px; height: auto; text-align: center;"><a
+											class="dropdown-item"
+											th:href="@{/customer/sanpham/filter(loaiSanPham=${loaiSanPham}, loaiThuCung=${loaiThuCung}, sortOrder='DESC')}">Cao
+												đến thấp</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<ul class="grid-list">
+						<li th:each="sanpham : ${sanPhamList}">
+							<div class="product-card">
+								<div class="card-banner img-holder"
+									style="--width: 360px; --height: 360px">
+									<a
+										th:href="@{/customer/sanpham/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}">
+										<img th:src="@{/img/{imageName}(imageName=${sanpham.hinh})}"
+										width="360" height="360" loading="lazy"
+										th:alt="${sanpham.tenSanPham}" class="img-cover default" /> <img
+										th:src="@{/img/{hoverImageName}(hoverImageName=${sanpham.hinhHover})}"
+										width="360" height="360" loading="lazy"
+										alt="Product hover image" class="img-cover hover" />
+									</a>
+								</div>
+
+								<!-- Add to Cart Button (via form POST request) -->
+								<form
+									th:action="@{/cart/add/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}"
+									method="post" id="add-to-cart-form-[[${sanpham.sanPhamId}]]">
+									<input type="hidden" name="soLuong" value="1">
+									<div
+										style="display: flex; justify-content: center; align-items: center;">
+										<button type="button" class="btn btn-primary d-flex"
+											style="height: 37px;"
+											th:attr="onclick='addToCart(' + ${sanpham.sanPhamId} + ')'">
+											<ion-icon name="bag-add-outline"
+												style="font-size: 15px; font-weight: bold;"></ion-icon>
+											<p style="font-size: 12px;">Thêm vào giỏ hàng</p>
+										</button>
+									</div>
+								</form>
+								<!-- Toast Notification Container -->
+								<div id="toast-container" class="position-fixed top-0 end-0 p-3"
+									style="z-index: 9999;"></div>
+								<div class="card-content">
+									<div class="wrapper">
+										<div class="rating-wrapper">
+											<ion-icon name="star" aria-hidden="true"></ion-icon>
+											<ion-icon name="star" aria-hidden="true"></ion-icon>
+											<ion-icon name="star" aria-hidden="true"></ion-icon>
+											<ion-icon name="star" aria-hidden="true"></ion-icon>
+											<ion-icon name="star" aria-hidden="true"></ion-icon>
+										</div>
+										<span class="span">(1)</span>
+									</div>
+
+									<h3 class="h3">
+										<a
+											th:href="@{/sanpham/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}"
+											class="card-title" th:text="${sanpham.tenSanPham}">Product
+											Name</a>
+									</h3>
+
+									<data class="card-price"
+										th:text="${#numbers.formatCurrency(sanpham.giaBan)}">$15.000</data>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<ul class="pagination justify-content-center custom-pagination  pt-5">
+					<!-- Previous Button -->
+					<li class="page-item"
+						th:classappend="${page.hasPrevious() ? '' : 'disabled'}"><a
+						class="page-link fs-2"
+						th:href="@{/customer/sanpham(page=${currentPage - 1}, size=${page.size}, sortOrder=${sortOrder})}">
+							<< </a></li>
+
+					<!-- Page Numbers -->
+					<li class="page-item"
+						th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+						th:classappend="${i == currentPage ? 'active' : ''}"><a
+						class="page-link fs-2"
+						th:href="@{/customer/sanpham(page=${i}, size=${page.size}, sortOrder=${sortOrder})}"
+						th:text="${i}"> 1 </a></li>
+
+					<!-- Next Button -->
+					<li class="page-item"
+						th:classappend="${page.hasNext() ? '' : 'disabled'}"><a
+						class="page-link fs-2"
+						th:href="@{/customer/sanpham(page=${currentPage + 1}, size=${page.size}, sortOrder=${sortOrder})}">
+							>> </a></li>
+				</ul>
+
+			</section>
+		</article>
+	</main>
+	<br>
+	<!-- FOOTER -->
+	<footer th:replace="~{views/layout/footer :: footer}"></footer>
+
+	<!-- BACK TO TOP -->
+	<a href="#top" class="back-top-btn" aria-label="back to top"
+		data-back-top-btn> <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+	</a>
+	<script>
+		function addToCart(sanPhamId) {
+			fetch('/cart/add/' + sanPhamId, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded',
+				},
+				body: 'soLuong=1',
+			})
+					.then(response => response.json())
+					.then(data => {
+						if (data && data.count !== undefined) {
+							// Lưu giá trị số lượng vào localStorage
+							localStorage.setItem('cartCount', data.count);
+
+							// Cập nhật giao diện
+							document.getElementById('cart-count').textContent = data.count;
+						}
+						showToast('Đã thêm vào giỏ hàng!');
+					})
+					.catch(error => {
+						console.error('Có lỗi xảy ra:', error);
+						showToast('Thêm vào giỏ hàng thất bại!', true);
+					});
+		}
+
+
+		// Hàm để hiển thị thông báo toast
+		function showToast(message, isError = false) {
+			const toastContainer = document.getElementById('toast-container');
+			const toastMessage = document.createElement('div');
+			toastMessage.classList.add('toast', 'fade', 'show');
+			toastMessage.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+			toastMessage.innerHTML = `<div class="toast-body">${message}</div>`;
+			toastContainer.appendChild(toastMessage);
+
+			setTimeout(() => {
+				toastMessage.classList.remove('show');
+				toastMessage.classList.add('fade');
+				setTimeout(() => toastMessage.remove(), 1000);
+			}, 2000);
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+			// Gọi hàm cập nhật số lượng giỏ hàng khi trang đã tải xong
+			updateCartCount();
+		});
+
+		function updateCartCount() {
+			fetch('/cart/count')  // API trả về số lượng sản phẩm trong giỏ
+					.then(response => response.json())
+					.then(data => {
+						document.getElementById('cart-count').textContent = data.count;  // Cập nhật số lượng sản phẩm trong giỏ hàng
+					})
+					.catch(error => {
+						console.error('Lỗi khi lấy số lượng giỏ hàng:', error);
+					});
+		}
+
+		document.addEventListener('DOMContentLoaded', function () {
+			const storedCount = localStorage.getItem('cartCount');
+			if (storedCount) {
+				document.getElementById('cart-count').textContent = storedCount; // Hiển thị số lượng từ localStorage
+			} else {
+				updateCartCount(); // Lấy số lượng từ backend nếu localStorage không có
+			}
+		});
+
+	</script>
+	<!-- <script src="../static/js/script.js" defer></script> -->
+	<!-- 
+    - custom js link
+  -->
+	<script src="../../js/script.js" defer></script>
+	<script src="../../../js/ShowError.js" defer></script>
+	<script type="module"
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		crossorigin="anonymous"></script>
+</body>
+</html>

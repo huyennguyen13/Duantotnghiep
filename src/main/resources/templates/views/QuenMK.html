@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title></title>
+<!-- Required meta tags -->
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<link rel="stylesheet" th:href="@{/css/Forgot.css}" />
+<link rel="stylesheet" th:href="@{/css/style-error.css}" />
+</head>
+<body>
+	<div class="cont">
+	<div id="notification" th:if="${successMessage}" class="notification">
+			<div class="notification-header">
+				<i class="icon">ℹ️</i> <span class="notification-title">Thông
+					báo</span>
+				<button class="close-btn" onclick="closeNotification()">✖</button>
+			</div>
+			<div class="notification-body">
+				<p th:text="${successMessage}"></p>
+			</div>
+		</div>
+		<form method="post" th:action="@{/views/QuenMK}">
+			<div class="d-flex mt-5">
+				<div class="w-50">
+					<img src="../../../img/logo_preview_rev_2.png" alt="" />
+				</div>
+				<div class="w-50 mt-5">
+					<h2>Quên mật khẩu</h2>
+					<div th:if="${error != null}">
+						<p class="text-danger">[[${error}]]</p>
+					</div>
+					<div th:if="${message != null}">
+						<p class="text-danger">[[${message}]]</p>
+					</div>
+					<label>
+					 <span>Email</span> 
+					 <input type="email" name="email" placeholder="Nhập email đã đăng ký"/>
+					</label>
+					<div class="d-flex justify-content-center mt-4">
+						<button class="btn btn-outline-success">Gửi</button>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<script type="text/javascript">
+	 function closeNotification() {
+         const notification = document.getElementById("notification");
+         notification.style.display = "none";
+     }
+     // Tự động ẩn thông báo sau 5 giây
+     setTimeout(() => {
+         const notification = document.getElementById("notification");
+         if (notification) {
+             notification.style.display = "none";
+         }
+     }, 3000);
+	</script>
+	<!-- Bootstrap JavaScript Libraries -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+</html>

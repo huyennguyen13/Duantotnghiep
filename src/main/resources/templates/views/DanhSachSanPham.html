@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách sản phẩm</title>
+<!-- ===== Boxicons CSS ===== -->
+<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css'
+	rel='stylesheet'>
+<!-- Linking Google Font Link For Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+	rel="stylesheet">
+<link th:href="@{/css/style-admin.css}" rel="stylesheet" />
+<link th:href="@{/css/style-km.css}" rel="stylesheet" />
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- (Optional) Use CSS or JS implementation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- Thư viện excel -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style type="text/css">
+.table {
+	font-size: 14px; /* Giảm kích thước chữ trong bảng */
+}
+
+.card {
+	padding: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.table .btn {
+	display: inline-block; /* Đảm bảo các nút đều nằm trên cùng một dòng */
+	margin-right: 5px; /* Tạo khoảng cách nhỏ giữa các nút */
+}
+
+.product-name {
+	font-size: 13px; /* Giảm kích thước chữ tên sản phẩm */
+}
+
+.card table th, .card table td {
+	padding: 10px;
+}
+
+img {
+	border-radius: 5px;
+	margin-right: 5px;
+}
+</style>
+</head>
+
+<body>
+
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<article class="container"
+		style="padding-top: 6%; padding-bottom: 5%;">
+		<!-- NOI DUNG O DAY -->
+		<div class="box-work">
+			<div class="title">
+				<h1>
+					<b>Danh Sách</b> <span class="edit_text-title">Sản Phẩm</span>
+				</h1>
+				<h2
+					style="display: flex; justify-content: flex-end; margin-top: -45px;">
+					<a style="color: #f1642c;" th:href="@{/admin/quanlytaikhoan}">
+						<i title="Thêm nhân viên" class="fa-solid fa-circle-plus"></i>
+					</a>
+				</h2>
+				<div class="row mb-3">
+					<div class="col-sm-3">
+						<input type="text" id="searchInput" onkeyup="filterTable2()"
+							class="form-control" placeholder="Tìm kiếm Tên sản phẩm...">
+					</div>
+					<div class="col-sm-1">
+						<button id="voiceSearchBtn" class="btn btn-dark">
+							<i class="fa-solid fa-microphone"></i>
+						</button>
+					</div>
+					<div class="col-sm-4">
+						<select id="roleFilter" onchange="filterByCriteriaSP()"
+							class="form-select">
+							<option value="Tất cả">Loại sản phẩm</option>
+							<option value="Thức ăn">Thức ăn</option>
+							<option value="Phụ kiện">Phụ kiện</option>
+							<option value="Vật dụng">Vật dụng</option>
+							<option value="Thuốc">Thuốc</option>
+						</select>
+					</div>
+					<div class="col-sm-4">
+						<select id="statusFilter" onchange="filterByCriteriaSP()"
+							class="form-select">
+							<option value="Tất cả">Dành cho</option>
+							<option value="Cún">Cún</option>
+							<option value="Mèo">Mèo</option>
+
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="table text-center card">
+			<table class="table table-hover" id="myTable">
+				<thead>
+					<tr>
+						<th scope="col">Mã sản phẩm</th>
+						<!-- <th scope="col">Hình ảnh</th> -->
+						<th scope="col">Tên sản phẩm</th>
+						<th scope="col">Giá bán</th>
+						<th scope="col">Khối lượng</th>
+						<th scope="col">Đơn vị</th>
+						<th scope="col">Loại sản phẩm</th>
+						<th scope="col">Dành cho</th>
+						<th scope="col">Số lượng kho</th>
+						<th scope="col">Hành động</th>
+					</tr>
+				</thead>
+				<tbody id="table-body">
+					<tr th:each="sp : ${sps}">
+						<td scope="row" th:text="${sp.sanPhamId}"></td>
+						<!-- <td><img th:src="@{'/img/' + ${sp.hinh}}"
+							alt="Hình ảnh sản phẩm"
+							style="width: 100px; height: 80px; object-fit: cover;"></td> -->
+						<td><span class="product-name" th:title="${sp.tenSanPham}"
+							th:text="${sp.tenSanPham.length() > 40 ? sp.tenSanPham.substring(0, 30) + '...' : sp.tenSanPham}"></span>
+						</td>
+						<td th:text="${#numbers.formatCurrency(sp.giaBan)}"></td>
+						<td th:text="${sp.khoiLuong}"></td>
+						<td th:switch="${sp.donVi}"><span th:case="0">Không</span> <span
+							th:case="1">Gam</span> <span th:case="2">Kg</span> <span
+							th:case="3">Ml</span> <span th:case="4">Cm</span></td>
+						<td th:switch="${sp.loaiSanPham}"><span th:case="0">Không</span>
+							<span th:case="1">Thức ăn</span> <span th:case="2">Phụ kiện</span> <span th:case="3">Vật dụng</span> <span th:case="4">Thuốc</span>
+						</td>
+						<td th:switch="${sp.loaiThuCung}"><span th:case="0">Khác</span>
+							<span th:case="1">Cún</span> <span th:case="2">Mèo</span> <span
+							th:case="3">Tất cả</span></td>
+						<td th:text="${sp.soLuongKho}"></td>
+						<td><a
+							th:href="@{/employee/quanlysanpham/sua/{sanPhamId}(sanPhamId=${sp.sanPhamId})}"
+							class="btn btn-warning btn-sm">Sửa</a> 
+							<a
+							th:href="@{/employee/quanlysanpham/xoa/{sanPhamId}(sanPhamId=${sp.sanPhamId})}"
+							class="btn btn-danger btn-sm"
+							onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a></td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<ul id="pagination" class="pagination justify-content-center"></ul>
+		</div>
+
+		<!-- Nút xuất Excel -->
+		<button onclick="confirmExport('myTable', 'Danh sách sản phẩm')"
+			class="float-end btn btn-outline-success tex fw-bold">
+			<img class="pe-2" th:src="@{/img/admin/excel.png}" alt="Xuất Excel" />Xuất
+			Excel
+		</button>
+	</article>
+	<!-- Modal for Error -->
+<div th:if="${error}" class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p th:text="${error}"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Success -->
+<div th:if="${message}" class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="successModalLabel">Success</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p th:text="${message}"></p>
+      </div>
+    </div>
+  </div>
+</div>
+	
+	<!-- Modal Confirm Delete -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn xóa sản phẩm này không?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Xóa</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+	
+	
+	
+
+
+	<!-- TÌM KIẾM BẰNG GIỌNG NÓI -->
+
+	<script>
+	// Kiểm tra trình duyệt hỗ trợ SpeechRecognition
+	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+	if (!SpeechRecognition) {
+	    alert("Trình duyệt của bạn không hỗ trợ chức năng nhận diện giọng nói!");
+	} else {
+	    const recognition = new SpeechRecognition();
+
+	    // Cài đặt ngôn ngữ nhận diện giọng nói (tiếng Việt)
+	    recognition.lang = 'vi-VN';
+
+	    // Bắt đầu nhận diện khi bấm nút
+	    document.getElementById('voiceSearchBtn').addEventListener('click', function() {
+	        recognition.start();
+	    });
+
+	    recognition.onstart = function() {
+	        console.log("Đang nhận diện giọng nói...");
+	    };
+
+	    recognition.onresult = function(event) {
+	        // Lấy kết quả từ giọng nói
+	        const voiceInput = event.results[0][0].transcript;
+	        console.log("Giọng nói đã được nhận diện:", voiceInput); // In ra kết quả nhận diện
+	        document.getElementById('searchInput').value = voiceInput; // Hiển thị văn bản trong ô tìm kiếm
+	        filterTable2(); // Gọi hàm lọc bảng
+	    };
+
+	    recognition.onerror = function(event) {
+	        console.error('Lỗi nhận diện giọng nói:', event.error);
+	        alert("Đã xảy ra lỗi khi nhận diện giọng nói.");
+	    };
+
+	    recognition.onend = function() {
+	        console.log("Quá trình nhận diện giọng nói đã kết thúc.");
+	    };
+	}
+
+</script>
+
+
+	<!-- Phân trang -->
+	<script type="text/javascript">
+//Pagination logic
+const itemsPerPage = 4;
+let currentPage = 1;
+
+function displayItems() {
+    const rows = document.querySelectorAll('#table-body tr');
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+
+    rows.forEach((row, index) => {
+        row.style.display = (index >= start && index < end) ? '' : 'none';
+    });
+}
+
+function createPagination() {
+    const rows = document.querySelectorAll('#table-body tr');
+    const totalPages = Math.ceil(rows.length / itemsPerPage);
+    const paginationContainer = document.getElementById('pagination');
+    paginationContainer.innerHTML = ''; // Clear current pagination
+
+    // Nút Previous
+    const prevItem = document.createElement('li');
+    prevItem.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevItem.innerHTML = `<a class="page-link" href="#" onclick="changePage('prev')"><<</a>`;
+    paginationContainer.appendChild(prevItem);
+
+    // Các nút trang
+    for (let i = 1; i <= totalPages; i++) {
+        const pageItem = document.createElement('li');
+        pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        pageItem.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+        paginationContainer.appendChild(pageItem);
+    }
+
+    // Nút Next
+    const nextItem = document.createElement('li');
+    nextItem.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextItem.innerHTML = `<a class="page-link" href="#" onclick="changePage('next')">>></a>`;
+    paginationContainer.appendChild(nextItem);
+}
+
+function changePage(page) {
+    const rows = document.querySelectorAll('#table-body tr');
+    const totalPages = Math.ceil(rows.length / itemsPerPage);
+
+    if (page === 'prev' && currentPage > 1) {
+        currentPage--;
+    } else if (page === 'next' && currentPage < totalPages) {
+        currentPage++;
+    } else if (typeof page === 'number') {
+        currentPage = page;
+    }
+
+    displayItems();
+    createPagination();
+}
+
+// Khởi tạo khi tải trang
+document.addEventListener('DOMContentLoaded', () => {
+    displayItems();
+    createPagination();
+});
+</script>
+
+<!-- modal thông báo xóa thành công, thất bại -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('errorModal')) {
+      var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+      errorModal.show();
+    }
+    if (document.getElementById('successModal')) {
+      var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+      successModal.show();
+    }
+  });
+</script>
+
+<!-- modal xác nhận xóa -->
+<script type="text/javascript">
+function showDeleteModal(deleteUrl) {
+	  const deleteBtn = document.getElementById('confirmDeleteBtn');
+	  deleteBtn.href = deleteUrl;
+	  const deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+	  deleteModal.show();
+	}
+
+</script>
+
+	<!--JavaScript Libraries -->
+	<script th:src="@{/js/reload.js}"></script>
+	<script th:src="@{/js/chart.js}"></script>
+	<script th:src="@{/js/page.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/script-admin.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<!-- =================================== -->
+
+	<!-- <script src="script.js"></script> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

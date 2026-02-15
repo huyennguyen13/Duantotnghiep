@@ -1,0 +1,65 @@
+<header class="header" data-header>
+	<div class="container">
+		<button class="nav-toggle-btn" aria-label="toggle menu"
+			data-nav-toggler>
+			<ion-icon name="menu-outline" aria-hidden="true" class="menu-icon"></ion-icon>
+			<ion-icon name="close-outline" aria-hidden="true" class="close-icon"></ion-icon>
+		</button>
+		<div class="logo" style="display: flex">
+			<img th:src="@{/img/logo_preview_rev_1.png}" style="width: 6rem"
+				alt="Logo" />
+			<div class="text-logo">
+				<a href="#">PetShop</a>
+			</div>
+		</div>
+		<nav class="navbar" data-navbar>
+			<ul class="navbar-list">
+				<li class="navbar-item"><a th:href="@{/customer/TrangChu}" class="navbar-link"
+					data-nav-link>Trang chủ</a></li>
+				<li class="navbar-item"><a href="#shop" class="navbar-link"
+					data-nav-link>Cửa hàng</a></li>
+				<li class="navbar-item"><a th:href="@{/customer/sanpham}" class="navbar-link"
+					data-nav-link>Sản phẩm</a></li>
+				<li class="navbar-item"><a th:href="@{/customer/DatDichVu}" class="navbar-link"
+					data-nav-link>Dịch vụ</a></li>
+				<li class="navbar-item"><a href="#" class="navbar-link"
+					data-nav-link>Liên hệ</a></li>
+			</ul>
+			<a href="#" class="navbar-action-btn">Log In</a>
+		</nav>
+		<div class="header-actions">
+			<!--<form action="/customer/sanpham/search" method="get">
+				<input type="text" name="query" placeholder="Nhập tên sản phẩm..." />
+				<button type="submit">Tìm kiếm</button>
+			</form>-->
+			<form action="/customer/sanpham/search" method="get"
+				class="searchs-form action-btn">
+				<input type="text" name="query" placeholder="Nhập tên sản phẩm..."
+					class="searchs-input text-dark" />
+				<button type="submit" class="search-btn">
+					<i class="fa fa-search"></i>
+					<!-- Icon tìm kiếm -->
+				</button>
+			</form>
+
+			<div class="dropdowns action-btn">
+				<button class="action-btn user" aria-label="User">
+					<ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+				</button>
+				<div class="options">
+					<a class="text-dark a" th:href="@{/Profile}">Thông tin cá nhân</a>
+					<a class="text-dark a">Quản lí thông tin</a>
+					<a class="text-dark a" th:href="@{/views/logoff}" data-nav-link>Đăng xuất</a>
+				</div>
+			</div>
+
+			<a href="/cart" class="action-btn" aria-label="cart">
+				<button class="action-btn user" aria-label="User">
+					<ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+					<span class="btn-badge" id="cart-count">0</span>
+				</button>
+			</a>
+
+		</div>
+	</div>
+</header>

@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<!-- 
+    - primary meta tag
+  -->
+<title>Pet shop - Hight Quality Pet Food</title>
+<meta name="title" content="Kitter - Hight Quality Pet Food" />
+<meta name="description"
+	content="This is an eCommerce html template made by codewithsadee" />
+
+<!-- 
+    - favicon
+  -->
+<link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+<!-- 
+    - custom css link
+  -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+<link rel="stylesheet" th:href="@{/css/style-error.css}" />
+
+<!-- 
+    - google font link
+  -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Nunito+Sans:wght@400;700&display=swap"
+	rel="stylesheet" />
+
+<!-- 
+    - preload images
+  -->
+<link rel="preload" as="image" th:href="@{/images/hero-banner.jpg}" />
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+</head>
+<style>
+.seen:hover {
+	background-color: #ED6335;
+	color: #fff;
+}
+</style>
+<body id="top">
+	<!-- 
+    - #HEADER
+  -->
+
+	<header th:replace="~{views/layout/header-customer.html :: header}"></header>
+
+	<main>
+		<article>
+			<!-- 
+        - #HERO
+      -->
+			<header th:replace="~{views/layout/HERO.html :: section}"></header>
+			<!-- 
+        - #CATEGORY
+      -->
+			<section class="section category" aria-label="category">
+				<div class="container">
+					<h2 class="h2 section-title">
+						<span class="span">Các danh mục</span> hàng đầu
+					</h2>
+
+					<ul class="has-scrollbar">
+						<li class="scrollbar-item">
+							<div class="category-card">
+								<figure class="card-banner img-holder"
+									style="--width: 330; --height: 300">
+									<img src="../../../img/category-1.jpg" width="330" height="300"
+										loading="lazy" alt="Cat Food" class="img-cover" />
+								</figure>
+
+								<h3 class="h3">
+									<a href="#" class="card-title">Thức ăn cho mèo</a>
+								</h3>
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="category-card">
+								<figure class="card-banner img-holder"
+									style="--width: 330; --height: 300">
+									<img src="../../../img/category-2.jpg" width="330" height="300"
+										loading="lazy" alt="Cat Toys" class="img-cover" />
+								</figure>
+
+								<h3 class="h3">
+									<a href="#" class="card-title">Đồ chơi cho mèo</a>
+								</h3>
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="category-card">
+								<figure class="card-banner img-holder"
+									style="--width: 330; --height: 300">
+									<img src="../../../img/category-3.jpg" width="330" height="300"
+										loading="lazy" alt="Dog Food" class="img-cover" />
+								</figure>
+
+								<h3 class="h3">
+									<a href="#" class="card-title">Thức ăn cho cún</a>
+								</h3>
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="category-card">
+								<figure class="card-banner img-holder"
+									style="--width: 330; --height: 300">
+									<img src="../../../img/category-4.jpg" width="330" height="300"
+										loading="lazy" alt="Dog Toys" class="img-cover" />
+								</figure>
+
+								<h3 class="h3">
+									<a href="#" class="card-title">Đồ chơi cho cún</a>
+								</h3>
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="category-card">
+								<figure class="card-banner img-holder"
+									style="--width: 330; --height: 300">
+									<img src="../../../img/category-5.jpg" width="330" height="300"
+										loading="lazy" alt="Dog Sumpplements" class="img-cover" />
+								</figure>
+
+								<h3 class="h3">
+									<a href="#" class="card-title">Phụ kiện thú cưng</a>
+								</h3>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- 
+        - #OFFERS
+      -->
+
+			<section class="section offer" aria-label="offer">
+				<div class="container">
+					<h2 class="h2 section-title">
+						<span class="span">Dịch vụ</span> nổi bật
+					</h2>
+					<ul class="grid-list">
+						<li>
+							<div class="offer-card has-bg-image img-holder"
+								style="background-image: url('/img/offer-banner-1.jpg'); --width: 540; --height: 374;">
+								<p class="card-subtitle">Dịch vụ dành cho cún cưng.</p>
+
+								<h3 class="h3 card-title">
+									Mùa hè nóng <span class="span">giảm giá cao</span>
+								</h3>
+
+								<a th:href="@{/customer/DatDichVu}" class="btn">Xem thêm</a>
+							</div>
+						</li>
+
+						<li>
+							<div class="offer-card has-bg-image img-holder"
+								style="background-image: url('/img/offer-banner-2.jpg'); --width: 540; --height: 374;">
+								<p class="card-subtitle">Dịch dụ dành cho mèo.</p>
+
+								<h3 class="h3 card-title">
+									Combo trọn gói <span class="span">giảm 25%</span>
+								</h3>
+
+								<a th:href="@{/customer/DatDichVu}" class="btn">Xem thêm</a>
+							</div>
+						</li>
+
+						<li>
+							<div class="offer-card has-bg-image img-holder"
+								style="background-image: url('/img/offer-banner-3.jpg'); --width: 540; --height: 374;">
+								<p class="card-subtitle">Càng đông càng vui.</p>
+
+								<h3 class="h3 card-title">
+									Nhận ưu đãi khi <span class="span"> hơn 2 bé cưng</span>
+								</h3>
+
+								<a th:href="@{/customer/DatDichVu}" class="btn">Xem thêm</a>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- 
+        - #PRODUCT
+      -->
+
+			<section class="section product" id="shop" aria-label="product">
+				<div class="container">
+					<h2 class="h2 section-title">
+						<span class="span">Sản phẩm</span> tốt nhất
+					</h2>
+
+					<ul class="grid-list">
+						<li th:each="product : ${lowStockProducts}">
+							<div class="product-card">
+								<div class="card-banner img-holder"
+									style="--width: 360; --height: 360">
+									<img th:src="@{/img/{imageName}(imageName=${product.hinh})}" width="360" height="360"
+										loading="lazy" alt="Product Image" class="img-cover default" />
+									<img th:src="@{/img/{imageName}(imageName=${product.hinhHover})}" width="360" height="360"
+										loading="lazy" alt="Product Hover Image"
+										class="img-cover hover" />
+										
+									<button class="card-action-btn" aria-label="add to cart"
+										title="Add To Cart">
+										<ion-icon name="bag-add-outline" aria-hidden="true"></ion-icon>
+									</button>
+									
+								</div>
+								<div class="card-content">
+									<h3 class="h3">
+										<a th:href="@{#}" class="card-title"
+											th:text="${product.tenSanPham}">Product Name</a>
+									</h3>
+									<data class="card-price" th:value="${product.giaBan}"
+										th:text="${#numbers.formatCurrency(product.giaBan)}"></data>
+								</div>
+							</div>
+						</li>
+					</ul>
+					<div class="d-flex justify-content-center">
+						<div class="seen"
+							style="border: 2px solid #ED6335; border-radius: 20px; transition: 0.3s;">
+							<a th:href="@{/customer/sanpham}" style="font-size: 15px;"
+								type="button" class="fw-bolder pt-2 pb-2 ps-3 pe-3">Xem thêm
+								sản phẩm</a>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- 
+        - #SERVICE
+      -->
+
+			<section class="section service" aria-label="service">
+				<div class="container">
+					<img src="../../../img/service-image.png" width="122" height="136"
+						loading="lazy" alt="" class="img" />
+
+					<h2 class="h2 section-title">
+						<span class="span"> Thú cưng của bạn cần gì,</span> khi nào chúng
+						cần.
+					</h2>
+
+					<ul class="grid-list">
+						<li>
+							<div class="service-card">
+								<figure class="card-icon">
+									<img src="../../../img/service-icon-1.png" width="70"
+										height="70" loading="lazy" alt="service icon" />
+								</figure>
+
+								<h3 class="h3 card-title">Giao hàng miễn phí trong ngày</h3>
+
+								<p class="card-text">Đặt hàng trước 2 giờ chiều giờ địa
+									phương để được giao hàng miễn phí cho đơn hàng từ 35k trở lên
+									trong hôm nay.</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="service-card">
+								<figure class="card-icon">
+									<img src="../../../img/service-icon-2.png" width="70"
+										height="70" loading="lazy" alt="service icon" />
+								</figure>
+
+								<h3 class="h3 card-title">Trả hàng trong vòng 30 ngày</h3>
+
+								<p class="card-text">Giảm giá 35% cho đơn hàng đầu tiên và
+									giảm giá 5% cho tất cả các đơn hàng sau.</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="service-card">
+								<figure class="card-icon">
+									<img src="../../../img/service-icon-3.png" width="70"
+										height="70" loading="lazy" alt="service icon" />
+								</figure>
+
+								<h3 class="h3 card-title">Thanh toán bảo mật</h3>
+
+								<p class="card-text">Giảm giá 25% cho đơn hàng trực tuyến
+									trị giá 150k trở lên. Có tại hầu hết các địa điểm.</p>
+							</div>
+						</li>
+
+						<li>
+							<div class="service-card">
+								<figure class="card-icon">
+									<img src="../../../img/service-icon-4.png" width="70"
+										height="70" loading="lazy" alt="service icon" />
+								</figure>
+
+								<h3 class="h3 card-title">Hỗ trợ 24/7</h3>
+
+								<p class="card-text">Mua sắm trực tuyến để được giao hàng
+									nhanh chóng và miễn phí cho đơn hàng trên 35k.</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- 
+        - #CTA
+      -->
+
+			<section class="cta has-bg-image" aria-label="cta"
+				style="background-image: url('./assets/images/cta-bg.jpg')">
+				<div class="container">
+					<figure class="cta-banner">
+						<img src="../../../img/cta-banner.png" width="900" height="660"
+							loading="lazy" alt="cat" class="w-100" />
+					</figure>
+
+					<div class="cta-content">
+						<img src="../../../img/cta-icon.png" width="120" height="35"
+							loading="lazy" alt="taste guarantee" class="img" />
+
+						<h2 class="h2 section-title">Hãy nếm thử, thích nó hoặc chúng
+							tôi sẽ thay thế nó… Đảm bảo!</h2>
+
+						<p class="section-text">Tại đây, chúng tôi tin rằng chó và mèo
+							của bạn sẽ thích thức ăn của chúng đến mức nếu chúng không thích…
+							chúng tôi sẽ giúp bạn tìm thức ăn thay thế. Đó là sự đảm bảo về
+							hương vị của chúng tôi.</p>
+
+						<a href="#" class="btn">Tìm hiểu thêm</a>
+					</div>
+				</div>
+			</section>
+
+			<!-- 
+        - #BRAND
+      -->
+
+			<section class="section brand" aria-label="brand">
+				<div class="container">
+					<h2 class="h2 section-title">
+						<span class="span">Thương hiệu</span> phổ biến
+					</h2>
+
+					<ul class="has-scrollbar">
+						<li class="scrollbar-item">
+							<div class="brand-card img-holder"
+								style="--width: 150; --height: 150">
+								<img src="../../../img/brand-1.jpg" width="150" height="150"
+									loading="lazy" alt="brand logo" class="img-cover" />
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="brand-card img-holder"
+								style="--width: 150; --height: 150">
+								<img src="../../../img/brand-2.jpg" width="150" height="150"
+									loading="lazy" alt="brand logo" class="img-cover" />
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="brand-card img-holder"
+								style="--width: 150; --height: 150">
+								<img src="../../../img/brand-3.jpg" width="150" height="150"
+									loading="lazy" alt="brand logo" class="img-cover" />
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="brand-card img-holder"
+								style="--width: 150; --height: 150">
+								<img src="../../../img/brand-4.jpg" width="150" height="150"
+									loading="lazy" alt="brand logo" class="img-cover" />
+							</div>
+						</li>
+
+						<li class="scrollbar-item">
+							<div class="brand-card img-holder"
+								style="--width: 150; --height: 150">
+								<img src="../../../img/brand-5.jpg" width="150" height="150"
+									loading="lazy" alt="brand logo" class="img-cover" />
+							</div>
+						</li>
+					</ul>
+				</div>
+			</section>
+		</article>
+	</main>
+
+	<!-- 
+    - #FOOTER
+  -->
+	<footer th:replace="~{views/layout/footer :: footer}"></footer>
+	<div th:replace="~{views/layout/boxchat :: div}"></div>
+	<!-- 
+    - #BACK TO TOP
+  -->
+
+	<a href="#top" class="back-top-btn" aria-label="back to top"
+		data-back-top-btn> <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+	</a>
+
+	<!-- 
+    - custom js link
+  -->
+	<script src="../../js/script.js" defer></script>
+	<script src="../../js/search.js" defer></script>
+	<script src="../../../js/ShowError.js" defer></script>
+	<!-- 
+    - ionicon link
+  -->
+	<script type="module"
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<!-- Bootstrap JavaScript Libraries -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+</html>

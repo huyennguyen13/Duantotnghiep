@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá sản phẩm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/style-profile.css}" rel="stylesheet" />
+    <style>
+        .rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating label {
+            cursor: pointer;
+            font-size: 2rem;
+            color: #ddd;
+        }
+
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: #f5c518;
+        }
+
+        #imagePreview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-box {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-box .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        /* Đảm bảo nút "Chọn ảnh" nằm bên trái */
+        #uploadTrigger {
+            display: inline-block;
+            text-align: left; /* Nút chọn ảnh căn trái */
+        }
+
+        /* Căn giữa nút "Gửi đánh giá" */
+        form .buttonedit-xemsp[type="submit"] {
+            display: block;
+            width: auto; /* Để độ dài nút không chiếm toàn bộ chiều ngang */
+            margin: 20px auto 0; /* Để nút nằm ở giữa và cách nhau 1 chút */
+            text-align: center;
+            padding: 16px 40px; /* Điều chỉnh padding để làm nút nhỏ lại */
+        }
+
+        .btn-back {
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            margin-bottom: 20px;
+            color: #ffffff;
+            background-color: var(--portland-orange);
+            border-radius: 5px;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            margin: auto;
+        }
+
+        /* Animation to spin the loader */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            z-index: 9999;
+        }
+
+        /* Ẩn form ban đầu */
+        .container {
+            display: none; /* Ẩn form khi mới tải */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Loader section -->
+<div id="loader" class="loading-container">
+    <div class="loader"></div>
+</div>
+
+<!-- Form đánh giá sản phẩm sẽ được ẩn lúc đầu -->
+<div class="container mt-5">
+    <form action="/danhgia/save" method="post" enctype="multipart/form-data" class="p-4 border rounded shadow">
+        <a href="javascript:history.back()" class="btn-back">
+            <i class="bi bi-arrow-left-square-fill me-2"></i> Quay lại
+        </a>
+
+        <h2 class="text-center mb-4" style=" color: #ED6336; font-weight: bold;">Đánh giá sản phẩm</h2>
+        <input type="hidden" name="sanPhamId" th:value="${sanPham != null ? sanPham.sanPhamId : ''}" />
+        <input type="hidden" name="taiKhoanId" th:value="${taiKhoanId != null ? taiKhoanId : ''}" />
+        <div class="product-info text-center mb-4">
+            <img th:src="@{/img/{imageName}(imageName=${sanPham.hinh})}"
+                 alt="Ảnh sản phẩm"
+                 class="img-fluid rounded"
+                 style="max-width: 200px; max-height: 200px;">
+            <h3 class="mt-3" th:text="${sanPham.tenSanPham}">Tên sản phẩm</h3>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Điểm đánh giá:</label>
+            <div class="rating">
+                <input type="radio" id="star5" name="diem" value="5" required />
+                <label for="star5" title="5 sao">★</label>
+                <input type="radio" id="star4" name="diem" value="4" />
+                <label for="star4" title="4 sao">★</label>
+                <input type="radio" id="star3" name="diem" value="3" />
+                <label for="star3" title="3 sao">★</label>
+                <input type="radio" id="star2" name="diem" value="2" />
+                <label for="star2" title="2 sao">★</label>
+                <input type="radio" id="star1" name="diem" value="1" />
+                <label for="star1" title="1 sao">★</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="noiDung" class="form-label">Nội dung đánh giá:</label>
+            <textarea id="noiDung" name="noiDung" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="hinh" class="form-label">Hình ảnh:</label>
+            <input type="file" id="hinh" name="hinh" class="form-control d-none" accept="image/*" multiple />
+            <button type="button" id="uploadTrigger" class="buttonedit-xemsp mt-2">
+                <i class="bi bi-camera-fill me-2"></i>Chọn ảnh
+            </button>
+
+            <div id="imagePreview"></div>
+        </div>
+
+        <button type="submit" class="buttonedit-xemsp">Gửi đánh giá</button>
+    </form>
+    <!-- Toast thông báo -->
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 20px; right: 20px;" data-bs-autohide="true" data-bs-delay="2000">
+        <div class="d-flex">
+            <div class="toast-body">
+                Cảm ơn bạn đã đánh giá sản phẩm!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Khi trang tải xong
+    document.addEventListener("DOMContentLoaded", () => {
+        // Ẩn loader sau 2 giây và hiển thị form
+        setTimeout(() => {
+            document.getElementById("loader").style.display = "none";  // Ẩn loader
+            document.querySelector(".container").style.display = "block";  // Hiển thị form
+        }, 2000);  // 2 giây
+    });
+
+    // Mã JavaScript để xử lý file upload và xem trước ảnh (đã có sẵn trong mã của bạn)
+    document.addEventListener("DOMContentLoaded", () => {
+        const fileInput = document.getElementById("hinh");
+        const imagePreview = document.getElementById("imagePreview");
+        const uploadTrigger = document.getElementById("uploadTrigger");
+
+        uploadTrigger.addEventListener("click", () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener("change", (event) => {
+            const files = event.target.files;
+            const dataTransfer = new DataTransfer();
+
+            Array.from(files).forEach((file) => {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const imageBox = document.createElement("div");
+                    imageBox.className = "image-box";
+
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.alt = "Uploaded Image";
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.className = "remove-btn";
+                    removeBtn.innerText = "×";
+
+                    removeBtn.addEventListener("click", () => {
+                        imageBox.remove();
+                        const updatedFiles = Array.from(fileInput.files).filter(f => f !== file);
+                        dataTransfer.items.clear();
+                        updatedFiles.forEach(f => dataTransfer.items.add(f));
+                        fileInput.files = dataTransfer.files;
+                    });
+
+                    imageBox.appendChild(img);
+                    imageBox.appendChild(removeBtn);
+                    imagePreview.appendChild(imageBox);
+                };
+
+                reader.readAsDataURL(file);
+                dataTransfer.items.add(file);
+            });
+
+            fileInput.files = dataTransfer.files;
+        });
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+        const successToastElement = document.getElementById('successToast');
+        const successToast = new bootstrap.Toast(successToastElement);
+
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault(); // Ngăn chặn form submit mặc định
+
+            // Tạo FormData từ form
+            const formData = new FormData(form);
+
+            try {
+                // Gửi dữ liệu form đến server bằng fetch
+                const response = await fetch("/danhgia/save", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                // Kiểm tra phản hồi từ server
+                if (response.ok) {
+                    // Hiển thị toast thông báo thành công
+                    successToast.show();
+
+                    // Lắng nghe sự kiện khi toast đóng
+                    successToastElement.addEventListener('hidden.bs.toast', () => {
+                        // Trả về trang trước đó
+                        history.back();
+                    });
+                } else {
+                    // Xử lý lỗi nếu server trả về lỗi
+                    console.error("Lỗi khi gửi đánh giá:", await response.text());
+                    alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
+                }
+            } catch (error) {
+                // Xử lý lỗi nếu có lỗi trong quá trình gửi dữ liệu
+                console.error("Lỗi khi gửi đánh giá:", error);
+                alert("Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.");
+            }
+        });
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

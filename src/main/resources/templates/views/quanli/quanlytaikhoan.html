@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quản lý tài khoản</title>
+<!-- ===== Boxicons CSS ===== -->
+<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+	rel="stylesheet" />
+<!-- Linking Google Font Link For Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+	rel="stylesheet" />
+<!-- link css -->
+<link th:href="@{/css/style-admin.css}" rel="stylesheet" />
+<link th:href="@{css/style-thongke.css}" rel="stylesheet" />
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- (Optional) Use CSS or JS implementation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<style>
+.container {
+	margin-left: 100px;
+}
+
+.table td, .table th {
+	font-size: 0.723rem; /* Giảm kích thước chữ trong bảng */
+}
+
+.form-control, .form-select {
+	font-size: 0.875rem; /* Giảm kích thước chữ trong các input */
+}
+
+.card {
+	max-width: 800px; /* Giới hạn chiều rộng form */
+	margin: 0 auto; /* Căn giữa form */
+}
+/* Điều chỉnh kích thước nút */
+.btn-sm {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.55rem; /* Giảm kích thước chữ trong nút */
+	line-height: 1.25;
+}
+</style>
+
+</head>
+
+<body>
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<div class="container box-work">
+
+		<div class="title mt-5">
+			<h1>
+				<b>Quản Lý</b> <span class="edit_text-title"> Tài Khoản</span><a
+					style="color: black" th:href="@{/admin/danhsach/danhsachtaikhoan}"><i
+					title="Danh sách tài khoản" class="fa-solid fa-table-list"></i></a>
+			</h1>
+		</div>
+
+		<!-- Form thông tin sản phẩm -->
+		<form th:action="@{/admin/quanlytaikhoan/luutaikhoan}"
+			th:object="${tk}" method="post" class="card p-4">
+			<div class="row">
+				<div class="col-md-6">
+					<input type="hidden" th:field="*{taiKhoanId}" />
+					<div class="mb-3">
+						<label for="email" class="form-label fw-bold">Email</label> <input
+							type="text" th:field="*{email}" class="form-control" id="email"
+							placeholder="Nhập email"> <span id="emailError"
+							class="text-danger" style="display: none;">Email không hợp
+							lệ.</span>
+						<div th:if="${errorEmail}" class="text-danger">
+							<p th:text="${errorEmail}"></p>
+						</div>
+					</div>
+
+					<div class="mb-3">
+						<label for="password" class="form-label fw-bold">Mật khẩu</label>
+						<input type="password" th:field="*{matKhau}" class="form-control"
+							id="password" placeholder="Nhập mật khẩu"> <span
+							id="passwordError" class="text-danger" style="display: none;">Mật
+							khẩu phải có ít nhất 8 ký tự.</span>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label for="hoTen" class="form-label fw-bold">Họ tên</label> <input
+							type="text" th:field="*{hoTen}" class="form-control" id="hoTen"
+							placeholder="Nhập họ tên"> <span id="hoTenError"
+							class="text-danger" style="display: none;">Tên không hợp
+							lệ. Chỉ có thể là chữ và khoảng trắng.</span>
+					</div>
+
+					<div class="mb-3">
+						<label for="soDienThoai" class="form-label fw-bold">Số
+							điện thoại</label> <input type="text" th:field="*{soDienThoai}"
+							class="form-control" id="soDienThoai"
+							placeholder="Nhập số điện thoại"> <span
+							id="soDienThoaiError" class="text-danger" style="display: none;">Số
+							điện thoại không hợp lệ.</span>
+						<div th:if="${errorSDT}" class="text-danger">
+							<p th:text="${errorSDT}"></p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-end">
+				<button type="submit" class="btn btn-danger mt-3">Lưu</button>
+				<button type="reset" class="btn btn-success mt-3 ms-3">Làm
+					mới</button>
+			</div>
+
+		</form>
+
+	<div th:if="${savesuccess}" class="alert alert-success" role="alert">
+    <p th:text="${savesuccess}"></p>
+</div>
+	
+	</div>
+
+
+	<!-- Bảng tài khoản -->
+	<!-- <table class="table table-hover table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Email</th>
+                <th>Họ tên</th>
+                <th>SDT</th>
+                <th>Vai trò</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="taiKhoan : ${taiKhoanList}">
+                <td th:text="${taiKhoan.email}" data-email="${taiKhoan.email}"></td>
+                <td th:text="${taiKhoan.hoTen}" data-name="${taiKhoan.hoTen}"></td>
+                <td th:text="${taiKhoan.soDienThoai}" data-phone="${taiKhoan.soDienThoai}"></td>
+                <td th:switch="${taiKhoan.quyen.value}">
+                    <span th:case="1">Quản trị</span>
+                    <span th:case="2">Nhân viên</span>
+                    <span th:case="3">Khách hàng</span>
+                </td>
+                <td>
+                    <form action="/admin/quanlytaikhoan/nhuongquyen" method="post">
+                        <input type="hidden" name="taiKhoanId" th:value="${taiKhoan.taiKhoanId}" />
+                        <button class=" btn btn-warning"
+                                th:if="${taiKhoan.roleValueInt == 2}"
+                                type="submit"
+                                onclick="confirmNhuongQuyen(event, '${taiKhoan.taiKhoanId}')">
+                            Nhượng quyền
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    Thông báo
+    <div th:if="${message}" class="alert alert-success text-center mt-3">
+        <p th:text="${message}"></p>
+    </div>
+</div> -->
+
+
+	<!--JavaScript Libraries -->
+	<script src="/js/reload.js"></script>
+	<script src="/js/chart.js"></script>
+	<script src="/js/page.js"></script>
+	<script src="/js/app.js"></script>
+	<script src="/js/script-admin.js"></script>
+	<!-- =================================== -->
+	<script type="text/javascript">
+		function confirmNhuongQuyen(event, taiKhoanId) {
+			// Hiển thị thông báo xác nhận
+			if (confirm("Sau khi nhượng quyền bạn sẽ mất quyền quản lý và đăng xuất khỏi đây, bạn có chắc muốn nhượng quyền?")) {
+				// Nếu đồng ý, tiếp tục gửi form
+				var form = document.getElementById('nhuongQuyenForm_'
+						+ taiKhoanId);
+				form.submit();
+			} else {
+				// Nếu không đồng ý, ngừng hành động
+				event.preventDefault();
+			}
+		}
+	</script>
+
+	<!-- Bắt lỗi -->
+	<script type="text/javascript">
+		// Hàm kiểm tra email hợp lệ
+		function validateEmail(email) {
+			var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+			return re.test(email);
+		}
+
+		// Hàm kiểm tra số điện thoại hợp lệ
+		function validatePhone(phone) {
+			var re = /^[0-9]{10,15}$/;
+			return re.test(phone);
+		}
+
+		// Hàm kiểm tra tên hợp lệ
+		function validateName(name) {
+			var re = /^[a-zA-ZÀ-ỹ\s]+$/;
+			return re.test(name);
+		}
+
+		// Hàm xử lý khi submit form
+		function validateForm(event) {
+			var email = document.getElementById('email').value;
+			var password = document.getElementById('password').value;
+			var hoTen = document.getElementById('hoTen').value;
+			var soDienThoai = document.getElementById('soDienThoai').value;
+
+			var isValid = true;
+
+			// Ẩn tất cả thông báo lỗi ban đầu
+			document.getElementById('emailError').style.display = 'none';
+			document.getElementById('passwordError').style.display = 'none';
+			document.getElementById('hoTenError').style.display = 'none';
+			document.getElementById('soDienThoaiError').style.display = 'none';
+
+			// Kiểm tra không để trống các trường
+			if (!email || !password || !hoTen || !soDienThoai) {
+				alert("Vui lòng điền đầy đủ thông tin.");
+				event.preventDefault(); // Ngừng submit form
+				isValid = false;
+			}
+
+			// Kiểm tra email hợp lệ
+			if (!validateEmail(email)) {
+				document.getElementById('emailError').style.display = 'block';
+				isValid = false;
+			}
+
+			// Kiểm tra mật khẩu có ít nhất 6 ký tự
+			if (password.length < 8) {
+				document.getElementById('passwordError').style.display = 'block';
+				isValid = false;
+			}
+
+			// Kiểm tra số điện thoại hợp lệ
+			if (!validatePhone(soDienThoai)) {
+				document.getElementById('soDienThoaiError').style.display = 'block';
+				isValid = false;
+			}
+
+			// Kiểm tra tên hợp lệ (chỉ chứa chữ và khoảng trắng)
+			if (!validateName(hoTen)) {
+				document.getElementById('hoTenError').style.display = 'block';
+				isValid = false;
+			}
+
+			// Nếu có lỗi, ngừng gửi form
+			if (!isValid) {
+				event.preventDefault();
+			}
+
+			// Nếu tất cả hợp lệ, form sẽ được gửi đi
+			return isValid;
+		}
+
+		// Gán sự kiện submit cho form
+		var form = document.querySelector('form');
+		form.addEventListener('submit', validateForm);
+	</script>
+
+
+
+	<!-- <script src="script.js"></script> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+</html>

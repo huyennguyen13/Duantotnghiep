@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Title</title>
+<!-- Required meta tags -->
+<meta charset="UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link th:href="@{/css/styleDatHang.css}" rel="stylesheet" />
+<!-- FontAwesome 6.2.0 CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+	integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- (Optional) Use CSS or JS implementation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="address-section">
+			<h3 style="color: #FF5722;">
+				<i class="fa-solid fa-location-dot"></i> Địa Chỉ Nhận Hàng
+			</h3>
+			<div class="row w-100">
+				<div class="col-sm-4">
+					<label>Tỉnh/Thành phố <select id="tinh"
+						onchange="chonTinhTP(this.value)">
+							<option value="" disabled selected>-Chưa chọn-</option>
+					</select>
+					</label>
+				</div>
+				<div class="col-sm-4">
+					<label>Quận/huyện <select id="huyen"
+						onchange="chonQuanHuyen(this.value)">
+							<option value="" disabled selected>-Chưa chọn-</option>
+					</select>
+					</label>
+				</div>
+				<div class="col-sm-4">
+					<label>Phường/xã <select id="xa"
+						onchange="tinhPhi(this.value)">
+							<option value="" disabled selected>-Chưa chọn-</option>
+					</select>
+					</label>
+				</div>
+			</div>
+			<br>
+			<div class="d-flex">
+				<label>Địa chỉ nhà/văn phòng: </label> <input id="addressDetail"
+					type="text" placeholder="Nhập địa chỉ cụ thể" />
+			</div>
+		</div>
+
+		<div class="product-section">
+			<form id="cartForm" action="/customer/save-cart" method="POST">
+				<table id="cartTable" class="w-100">
+					<thead>
+						<tr>
+							<th style="width: 50px;"></th>
+							<th>Tên sản phẩm</th>
+							<th style="text-align: center;">Số lượng</th>
+							<th style="text-align: center;">Giá</th>
+							<th style="text-align: center;">Thành tiền</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${cartItems}">
+							<td><img th:src="@{/img/product-1_0.jpg}" alt="Ảnh sản phẩm"
+								width="50" /></td>
+							<td><input type="text" class="input-name-product"
+								name="items[__${iterStat.index}__].tenSanPham"
+								th:value="${item.tenSanPham}" readonly /></td>
+							<td class="input-quantity"><input id="so-doi-giay"
+								type="number" class="quantity" style="text-align: center;"
+								name="items[__${iterStat.index}__].soLuong"
+								th:value="${item.soLuong}" onchange="updateCart(this)" /></td>
+							<td style="text-align: center;" class="price input-price"
+								th:text="'₫' + ${item.giaBan}"><input type="hidden"
+								name="items[__${iterStat.index}__].giaBan"
+								th:value="${item.giaBan}" /></td>
+							<td style="text-align: center;" class="total-price"
+								th:text="'₫' + ${item.giaBan * item.soLuong}"><input
+								class="input-tongTien" type="hidden"
+								name="items[__${iterStat.index}__].thanhTien"
+								th:value="${item.giaBan * item.soLuong}" /></td>
+						</tr>
+
+					</tbody>
+				</table>
+				<div class="total-section">
+					<div>
+						<p></p>
+					</div>
+				</div>
+				<div class="order-summary">
+					<div class="voucher">
+						<p class="voucher-tilte">Voucher của Shop</p>
+						<div class="change-vocher">
+							<select class="w-auto" aria-label="Default select example">
+								<option selected>Chọn vocher</option>
+								<option value="1">1</option>
+								<option value="2">2</option>
+							</select>
+						</div>
+					</div>
+					<br>
+					<div class="voucher">
+						<p class="voucher-tilte">Phương thức thanh toán</p>
+						<div class="change-vocher">
+							<select name="paymentMethod" class="w-auto border-none" aria-label="Default select example">
+								<option value="" selected>Phương thức thanh toán</option>
+								<option value="1">Thanh toán trực tuyến</option>
+								<option value="2">Thanh toán khi nhận hàng</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<div class="summary-row-address">
+					<span class="label">Địa chỉ: </span><input type="text"
+						id="addressInput" name="address" class="input-address" readonly />
+				</div>
+				<div class="payment-section">
+					<div class="summary-container">
+						<div class="summary-row">
+							<span class="label">Tổng tiền hàng:</span> <span id="totalAmount">₫0</span>
+						</div>
+						<div class="summary-row">
+							<span class="label">Tổng tiền phí vận chuyển: </span> <span
+								id="phi-van-chuyen">₫0</span>
+						</div>
+						<div class="summary-row">
+							<span class="label">Tổng thanh toán: </span>
+							<!-- Chuyển từ span thành input -->
+							<input type="text" id="total-payment" name="totalPayment"
+								class="input-total-payment" value="" readonly />
+						</div>
+
+					</div>
+				</div>
+				<button class="order-button" type="submit">Đặt hàng</button>
+			</form>
+		</div>
+	</div>
+
+	<script>
+// 	$("#cartForm").submit(function(event) {
+// 	    event.preventDefault(); // Ngừng hành động submit mặc định của form
+// 	    const formData = {
+// 	        items: [], // Đây sẽ là mảng chứa dữ liệu của các mặt hàng
+// 	        address: $("#addressInput").val(), // Lấy giá trị địa chỉ
+// 	        totalPayment: $("#total-payment").val(), // Lấy tổng tiền thanh toán
+// 	    };
+	    
+// 	    // Thêm các sản phẩm vào formData.items
+// 	    $("#cartTable tbody tr").each(function() {
+// 	        const item = {
+// 	            tenSanPham: $(this).find("input[name*='tenSanPham']").val(),
+// 	            sanPhamId: $(this).find("input[name*='sanPhamId']").val(),
+// 	            soLuong: $(this).find("input[name*='soLuong']").val(),
+// 	            giaBan: $(this).find("input[name*='giaBan']").val(),
+// 	            thanhTien: $(this).find("input[name*='thanhTien']").val(),
+// 	        };
+// 	        formData.items.push(item);
+// 	    });
+
+// 	    // Gửi dữ liệu qua AJAX
+// 	    $.ajax({
+// 	        url: '/customer/save-cart',
+// 	        type: 'POST',
+// 	        contentType: 'application/json',
+// 	        data: JSON.stringify(formData), // Chuyển đổi dữ liệu thành JSON
+// 	        success: function(response) {
+// 	        	console.log(JSON.stringify(formData));
+// 	            console.log("Dữ liệu đã được gửi thành công!");
+// 	        },
+// 	        error: function(xhr, status, error) {
+// 	            console.error("Đã có lỗi xảy ra: " + error);
+// 	        }
+// 	    });
+// 	});
+
+	
+      const token = "505da969-e815-11ed-bc91-ba0234fcde32";
+      const Client_ID = "2505868";
+      const ShopID = "124100";
+      const urlTinhThanh =
+        "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province";
+      const urlQuanHuyen =
+        "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district";
+      const urlPhuongXa =
+        "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id";
+      const urlPhiVanChuyen =
+        "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee";
+      const canNangMoiDoiGiay = 800; //Mỗi đôi giày mặc định nặng 800gram
+      //Kích cỡ mặc định của hộp giày:
+      const dai = 38;
+      const rong = 25;
+      const cao = 16;
+
+      //Hàm khi vừa tải xong hết html
+      $("document").ready(function () {
+        // Sau khi tải html xong thì lấy tất cả tỉnh thành
+        $.ajax({
+          url: urlTinhThanh,
+          type: "post",
+          headers: {
+            token: token,
+          },
+          dataType: "json",
+          success: function (data) {
+            //gắn dữ liệu các tỉnh vào select
+            data.data.forEach((tinh) => {
+              $("#tinh").append(
+                `<option value="${tinh.ProvinceID}">${tinh.ProvinceName}</option>`
+              );
+            });
+          },
+          error: function () {
+            alert("Không thể tải dữ liệu tỉnh thành");
+          },
+        });
+      });
+
+      function chonTinhTP(maTinh) {
+        // khi chọn tỉnh thì lấy danh sách quận huyện
+        $.ajax({
+          url: urlQuanHuyen,
+          type: "post",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          },
+          data: `{
+                      "province_id": ${maTinh}
+                    }`,
+          success: function (data) {
+            //gắn dữ liệu các quận huyện vào select
+            data.data.forEach((huyen) => {
+              $("#huyen").append(
+                `<option value="${huyen.DistrictID}">${huyen.DistrictName}</option>`
+              );
+            });
+          },
+          error: function () {
+            alert("Không thể tải dữ liệu quận huyện");
+          },
+        });
+      }
+
+      function chonQuanHuyen(maHuyen) {
+        // khi chọn huyện thì lấy danh sách phường xã
+        $.ajax({
+          url: urlPhuongXa,
+          type: "post",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+          },
+          data: `{
+                      "district_id": ${maHuyen}
+                    }`,
+          success: function (data) {
+            //gắn dữ liệu các phường xã vào select
+            data.data.forEach((xa) => {
+              $("#xa").append(
+                `<option value="${xa.WardCode}">${xa.WardName}</option>`
+              );
+            });
+          },
+          error: function () {
+            alert("Không thể tải dữ liệu phường xã");
+          },
+        });
+      }
+
+      // Hàm tính phí vận chuyển
+      function tinhPhi() {
+        let soLuong = $("#so-doi-giay").val();
+        // sau khi chọn phường xã thì tính phí dịch vụ
+        $.ajax({
+          url: urlPhiVanChuyen,
+          type: "post",
+          headers: {
+            "Content-Type": "application/json",
+            token: token,
+            shop_id: ShopID,
+          },
+          data: `{
+                        "service_type_id": 2,
+                        "from_district_id": 1572,
+                        "to_district_id": ${$("#huyen").val()},
+                        "to_ward_code": "${$("#xa").val()}",
+                        "height": ${cao},
+                        "length": ${dai},
+                        "weight": ${canNangMoiDoiGiay * soLuong},
+                        "width": ${rong}
+                    }`,
+          success: function (data) {
+            // Cập nhật phí vận chuyển
+            $("#phi-van-chuyen").html(data.data.total);
+            // Tính toán lại tổng thanh toán sau khi nhận được phí vận chuyển
+            calculateTotal();
+            calculateTotalPayment();
+          },
+          error: function () {
+            alert("Không thể tải dữ liệu phí vận chuyển");
+          },
+        });
+      }
+		
+      function updateCart(inputElement) {
+    	    // Lấy thông tin của dòng sản phẩm đang thay đổi
+    	    let row = inputElement.closest('tr'); // Tìm tới dòng <tr> cha chứa input
+    	    let quantity = parseFloat(row.querySelector('.quantity').value); // Lấy số lượng
+    	    let price = parseFloat(row.querySelector('.price input').value); // Lấy giá bán từ input ẩn
+    	    
+    	    if (isNaN(quantity) || isNaN(price)) {
+    	        console.log('Lỗi: Số lượng hoặc giá không hợp lệ.');
+    	        return;
+    	    }
+
+    	    // Tính thành tiền
+    	    let totalPrice = quantity * price;
+    	    
+    	    // Cập nhật giá trị thành tiền vào ô input hidden
+    	    row.querySelector('.total-price input').value = totalPrice.toFixed(0);
+
+    	    // Hiển thị thành tiền trên giao diện (dưới dạng ₫)
+    	    row.querySelector('.total-price').textContent = '₫' + totalPrice.toFixed(0);
+
+    	    // Cập nhật tổng tiền tất cả các sản phẩm
+    	    calculateTotal();
+    	}
+
+    	function calculateTotal() {
+    	    let total = 0;
+
+    	    document.querySelectorAll('#cartTable tbody tr').forEach(function(row) {
+    	        let totalPrice = parseFloat(row.querySelector('.total-price input').value) || 0;
+    	        total += totalPrice;
+    	    });
+
+    	    // Cập nhật tổng tiền vào giao diện (dưới dạng ₫)
+    	    document.getElementById('totalAmount').textContent = '₫' + total.toFixed(0);
+    	}
+    	
+   // Hàm tính tổng tiền của tất cả sản phẩm
+      function calculateTotal() {
+          let total = 0;
+
+          // Lặp qua từng hàng trong bảng
+          document.querySelectorAll('#cartTable tbody tr').forEach(function(row) {
+              var quantity = parseFloat(row.querySelector('.quantity').value);  // Đảm bảo là số
+              var priceText = row.querySelector('.price').textContent.trim();
+              var price = parseFloat(priceText.replace('₫', '').trim()); // Xử lý giá trị để đảm bảo đúng định dạng số
+              
+              // Kiểm tra giá trị hợp lệ
+              if (isNaN(quantity) || isNaN(price)) {
+                  console.log('Lỗi trong việc lấy giá trị số lượng hoặc giá');
+                  return;  // Nếu có lỗi thì bỏ qua hàng này
+              }
+
+              var totalPrice = quantity * price;
+              
+              // Cập nhật giá trị tổng tiền cho từng sản phẩm
+              row.querySelector('.total-price').textContent = '₫' + totalPrice.toFixed(0);
+
+              // Cộng dồn tổng tiền
+              total += totalPrice;
+          });
+
+          // Cập nhật tổng tiền trên trang
+          document.getElementById('totalAmount').textContent = '₫' + total.toFixed(0);
+          return total;
+      }
+      
+   // Hàm tính tổng thanh toán: Tổng tiền hàng + Phí vận chuyển
+      function calculateTotalPayment() {
+          // Tính tổng tiền hàng
+          let totalAmount = calculateTotal(); // Sử dụng hàm calculateTotal để tính tổng tiền hàng
+
+          // Lấy phí vận chuyển từ phần tử HTML (giả sử đã có ở phần tính phí vận chuyển)
+          let shippingFee = parseFloat(document.getElementById('phi-van-chuyen').textContent.replace('₫', '').trim());
+
+          // Kiểm tra xem phí vận chuyển có hợp lệ không
+          if (isNaN(shippingFee)) {
+              shippingFee = 0; // Nếu không có phí vận chuyển, mặc định là 0
+          }
+
+          // Tính tổng thanh toán = Tổng tiền hàng + Phí vận chuyển
+          let totalPayment = totalAmount + shippingFee;
+
+          // Cập nhật giá trị tổng thanh toán trên giao diện
+          document.getElementById('total-payment').value = totalPayment.toFixed(0);
+
+          return totalPayment;
+      }
+	
+      function getAllOptionsText() {
+    	    let outputText = "";
+
+    	    // Lấy tất cả các <select> theo id
+    	    const selects = ["xa", "huyen", "tinh"];
+
+    	    selects.forEach(function(selectId) {
+    	        let selectElement = document.getElementById(selectId);
+    	        let selectedOption = selectElement.options[selectElement.selectedIndex];
+
+    	        // Lấy giá trị của option được chọn
+    	        let selectedText = selectedOption ? selectedOption.text : "";
+    	        
+    	        // Nếu giá trị hợp lệ, thêm vào chuỗi kết quả
+    	        if (selectedText && selectedText !== "-Chưa chọn-") {
+    	            outputText += selectedText + ", ";  // Nối các giá trị
+    	        }
+    	    });
+
+    	    // Lấy giá trị từ ô input "Địa chỉ nhà/văn phòng"
+    	    let addressDetail = document.getElementById("addressDetail").value.trim();
+
+    	    // Thêm địa chỉ chi tiết nếu không rỗng
+    	    if (addressDetail) {
+    	        outputText += addressDetail;
+    	    } else {
+    	        // Xóa dấu ", " cuối nếu không có địa chỉ chi tiết
+    	        outputText = outputText.slice(0, -2);
+    	    }
+
+    	    // Gán chuỗi kết quả vào input #addressInput
+    	    document.getElementById("addressInput").value = outputText;
+
+    	    return outputText; // Trả về chuỗi nếu cần dùng ở nơi khác
+    	}
+
+    	// Hàm để gọi getAllOptionsText khi có sự thay đổi
+    	function handleSelectChange() {
+    	    getAllOptionsText();
+    	}
+
+    	// Gắn sự kiện khi có thay đổi trong các <select> hoặc <input>
+    	document.querySelector("#xa").addEventListener("change", handleSelectChange);
+    	document.querySelector("#huyen").addEventListener("change", handleSelectChange);
+    	document.querySelector("#tinh").addEventListener("change", handleSelectChange);
+
+    	// Gắn sự kiện khi người dùng nhập hoặc chỉnh sửa địa chỉ chi tiết
+    	document.querySelector("#addressDetail").addEventListener("input", handleSelectChange);
+
+
+
+    </script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thống kê sản phẩm</title>
+<!-- ===== Boxicons CSS ===== -->
+<link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css'
+	rel='stylesheet'>
+<!-- Linking Google Font Link For Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+	rel="stylesheet">
+<!-- link css -->
+<link th:href="@{/css/style-admin.css}" rel="stylesheet" />
+<link th:href="@{/css/style-km.css}" rel="stylesheet" /> 
+<!-- <link th:href="@{css/style-thongke.css}" rel="stylesheet" /> -->
+
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- (Optional) Use CSS or JS implementation -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Thư viện excel -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+.container {
+	width: 80%;
+	margin: auto;
+	margin-left: 180px;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	background-color: white;
+	padding: 20px;
+}
+
+.title {
+	color: #ff6600;
+	font-size: 24px;
+	text-align: center;
+}
+
+.date-filter {
+	/* display: flex; */
+	padding: 20px 20px;
+	/* margin-left: 20px; */
+	/* justify-content: space-between; */
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.date-filter input, .search-input {
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	width: 200px;
+}
+
+.search-btn {
+	padding: 10px 20px;
+	background: var(--portland-orange);
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.stats {
+	display: flex;
+	justify-content: space-around;
+	margin-bottom: 20px;
+	height: 90px;
+}
+
+.stat-item {
+	background: linear-gradient(135deg, #feb47b, #f33708);
+	color: white;
+	padding: 15px;
+	border-radius: 10px;
+	font-size: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
+}
+
+thead {
+	background-color: #f2f2f2;
+}
+
+th, td {
+	padding: 10px;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+.red-text {
+	color: red;
+}
+
+.export-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	background-color: #28a745;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.export-btn i {
+	margin-right: 10px;
+}
+
+.chart-container {
+	width: 100%; /* Chiếm toàn bộ chiều rộng khung chứa */
+	max-width: 800px; /* Giới hạn tối đa nếu cần */
+	margin: auto;
+}
+
+canvas {
+	width: 100% !important; /* Canvas tự điều chỉnh theo khung */
+	height: auto !important; /* Giữ tỷ lệ khi thay đổi kích thước */
+}
+
+/* Chỉnh màu cho các nút "Trước" và "Sau" */
+#prevBtn, #nextBtn {
+    padding: 10px 20px;
+    background: var(--portland-orange); /* Đặt màu nền giống nút tìm kiếm */
+    color: white; /* Màu chữ trắng */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#prevBtn:hover, #nextBtn:hover {
+    background: #ff5722; /* Màu nền khi hover (hoặc có thể chọn màu khác) */
+}
+
+</style>
+</head>
+
+<body>
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<div class="container" style="margin-top: 60px;">
+		<div class="title">
+			<h1>
+				<b>THỐNG KÊ</b>
+			</h1>
+		</div>
+		<div class="date-filter">
+			<form th:action="@{/admin/thongkesanpham}" method="get"
+				onsubmit="return validateDates()">
+				<input type="date" name="startDate" th:value="${startDate}"
+					class="ml-2" id="startDate" /> <input type="date" name="endDate"
+					th:value="${endDate}" class="ml-2" id="endDate" />
+				<button type="submit" class="search-btn ml-2">Tìm kiếm</button>
+				<div id="startDateError" class="error-message"
+					style="color: red; display: none;"></div>
+				<div id="endDateError" class="error-message"
+					style="color: red; display: none;"></div>
+			</form>
+		</div>
+
+
+		<div class="stats">
+			<div class="stat-item">
+				Tổng sản phẩm trong kho: <span
+					th:text="${thongKe.tongSanPhamTrongKho}"></span>
+			</div>
+			<div class="stat-item">
+				Tổng sản phẩm đã bán: <span th:text="${thongKe.tongSanPhamDaBan}"></span>
+			</div>
+			<div class="stat-item">
+				Tổng doanh thu: <span th:text="${thongKe.tongDoanhThu}"></span>
+			</div>
+			<div class="stat-item">
+				Tổng lợi nhuận: <span th:text="${thongKe.tongLoiNhuan}"></span>
+			</div>
+		</div>
+
+
+		<table id="myTable">
+			<thead>
+				<tr>
+					<th>Tên sản phẩm</th>
+					<th>Số lượng trong kho</th>
+					<th>Số lượng đã bán</th>
+					<th>Doanh Thu</th>
+					<th>Lợi Nhuận</th>
+					<!-- <th>Giá nhập</th>
+              <th>Giá bán</th> -->
+				</tr>
+			</thead>
+			<tbody>
+				<!-- <tr th:each="sp : ${sps}">
+            <td th:text="${sp.sanphamid}"></td>
+            <td th:text="${sp.tensanpham}"></td>
+            <td th:text="${sp.soluongkho}"></td>
+            <td th:text="${sp.tongsoluongdaban}"></td>
+            <td th:text="${sp.gianhap}"></td>
+            <td th:text="${sp.giaban}"></td>
+        </tr> -->
+				<tr th:each="sanPham : ${sps}">
+					<!-- TenSanPham -->
+					<td th:text="${sanPham[1]}"></td>
+					<!-- SoLuongKho -->
+					<td th:text="${sanPham[2]}"></td>
+					<!-- SoLuongDaBan -->
+					<td th:text="${sanPham[3]}"></td>
+					<td th:text="${sanPham[4]}"></td>
+					<td th:text="${sanPham[5]}"></td>
+
+				</tr>
+			</tbody>
+		</table>
+		<div style="text-align: center; margin-top: 20px;">
+    <button id="prevBtn" class="btn btn-primary">Trước</button>
+    <button id="nextBtn" class="btn btn-primary">Sau</button>
+</div>
+		
+
+		<!-- <button class="export-btn" >
+          <i class="fa fa-file-excel"></i> Xuất Excel
+        </button> -->
+		<div>
+			<!-- Nút xuất Excel -->
+			<a th:href="@{/admin/exportExcel(startDate=${startDate}, endDate=${endDate})}"><button 
+				class="float-end btn btn-outline-success tex fw-bold" onclick="return confirmExportExcel()">
+				<img class="pe-2" th:src="@{../img/admin/excel.png}" alt="">Xuất
+				Excel
+			</button></a>
+		</div>
+		<br>
+		<h2>Biểu đồ doanh thu</h2>
+		<br>
+		<!-- Biểu đồ tròn -->
+		<div class="chart-container" style="width: 400px;">
+			<canvas id="doughnutChart"></canvas>
+		</div>
+		<!-- Biểu đồ cột -->
+		<!-- <div class="chart-container" style="width: 400px; margin: auto;">
+    <canvas id="barChart"></canvas>
+</div> -->
+	</div>
+
+
+
+	<script>
+    // Hàm lấy dữ liệu từ bảng HTML
+    function getDataFromTable() {
+        const table = document.getElementById('myTable'); // Lấy bảng theo ID
+        const rows = table.querySelectorAll('tbody tr'); // Lấy tất cả các hàng trong <tbody>
+        const labels = []; // Mảng lưu tên sản phẩm
+        const values = []; // Mảng lưu giá trị doanh thu (hoặc cột khác)
+
+        // Duyệt qua từng hàng để lấy dữ liệu
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td'); // Lấy tất cả ô trong hàng
+            labels.push(cells[0].textContent.trim()); // Lấy tên sản phẩm (cột đầu tiên)
+            values.push(parseInt(cells[3].textContent.trim(), 10)); // Lấy Doanh Thu (cột thứ 4)
+        });
+
+        return { labels, values }; // Trả về đối tượng chứa labels và values
+    }
+
+    // Hàm khởi tạo và cập nhật biểu đồ
+    function createChart(labels, values) {
+        const ctx = document.getElementById('doughnutChart').getContext('2d'); // Lấy canvas theo ID
+
+        // Khởi tạo biểu đồ Doughnut
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels, // Tên sản phẩm
+                datasets: [{
+                    label: 'Doanh thu',
+                    data: values, // Giá trị doanh thu
+                    backgroundColor: ['#FF7E5F', '#76EEC6', '#FFFF33', '#FF0000', '#98F5FF', '#FF6699'], // Màu sắc
+                    borderColor: ['#fff', '#fff', '#fff', '#fff', '#fff'], // Màu viền
+                    borderWidth: 2 // Độ dày viền
+                }]
+            },
+            options: {
+                responsive: true, // Biểu đồ phản hồi kích thước
+                plugins: {
+                    legend: {
+                        position: 'top', // Vị trí của chú thích
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                // Hiển thị tooltip với định dạng số và thêm đơn vị
+                                return tooltipItem.raw.toLocaleString() + ' VND';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true, // Hiệu ứng scale
+                    animateRotate: true // Hiệu ứng quay
+                }
+            }
+        });
+    }
+
+    // Tự động chạy sau khi tải trang
+    document.addEventListener("DOMContentLoaded", function () {
+        const { labels, values } = getDataFromTable(); // Lấy dữ liệu từ bảng
+        createChart(labels, values); // Tạo biểu đồ với dữ liệu
+    });
+    
+    
+    
+    //biểu đồ cột
+    // Hàm khởi tạo và cập nhật biểu đồ cột
+function createChartBar(labels, values) {
+    const ctx = document.getElementById('barChart').getContext('2d'); // Lấy canvas theo ID
+
+    // Khởi tạo biểu đồ Cột
+    new Chart(ctx, {
+        type: 'bar', // Thay đổi từ 'doughnut' thành 'bar' để tạo biểu đồ cột
+        data: {
+            labels: labels, // Tên sản phẩm
+            datasets: [{
+                label: 'Doanh thu', 
+                data: values, // Giá trị doanh thu
+                backgroundColor: '#ff7e5f', // Màu nền cột
+                borderColor: '#fff', // Màu viền cột
+                borderWidth: 2 // Độ dày viền
+            }]
+        },
+        options: {
+            responsive: true, // Biểu đồ phản hồi kích thước
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top', // Vị trí của chú thích
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            // Hiển thị tooltip với định dạng số và thêm đơn vị
+                            return tooltipItem.raw.toLocaleString() + ' VND';
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        autoSkip: false, // Đảm bảo không bỏ qua nhãn
+                        maxRotation: 45, // Góc xoay tối đa
+                        minRotation: 45, // Góc xoay tối thiểu
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                }
+            }
+
+        }
+    });
+}
+
+// Tự động chạy sau khi tải trang
+document.addEventListener("DOMContentLoaded", function () {
+    const { labels, values } = getDataFromTable(); // Lấy dữ liệu từ bảng
+    createChartBar(labels, values); // Tạo biểu đồ cột với dữ liệu
+});
+
+
+
+//Phân trang
+document.addEventListener("DOMContentLoaded", function () {
+    const table = document.getElementById("myTable");
+    const rows = table.querySelectorAll("tbody tr");
+    const rowsPerPage = 3; // Số hàng mỗi trang (ở đây là 1)
+    let currentPage = 1; // Trang hiện tại
+
+    // Tính tổng số trang
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+    // Hiển thị trang
+    function displayPage(page) {
+        const start = (page - 1) * rowsPerPage;
+        const end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            if (index >= start && index < end) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        // Cập nhật trạng thái của nút
+        document.getElementById("prevBtn").disabled = page === 1;
+        document.getElementById("nextBtn").disabled = page === totalPages;
+    }
+
+    // Xử lý sự kiện nút "Trước"
+    document.getElementById("prevBtn").addEventListener("click", function () {
+        if (currentPage > 1) {
+            currentPage--;
+            displayPage(currentPage);
+        }
+    });
+
+    // Xử lý sự kiện nút "Sau"
+    document.getElementById("nextBtn").addEventListener("click", function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            displayPage(currentPage);
+        }
+    });
+
+    // Hiển thị trang đầu tiên
+    displayPage(currentPage);
+});
+
+</script>
+
+
+
+
+	<!--JavaScript Libraries -->
+	<script th:src="@{/js/reload.js}"></script>
+	<!-- <script th:src="@{/js/chart.js}"></script> -->
+	<script th:src="@{/js/page.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<script th:src="@{/js/script-admin.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<script>
+		function validateDates() {
+			var startDate = document.getElementById("startDate").value;
+			var endDate = document.getElementById("endDate").value;
+
+			// Lấy các phần tử hiển thị lỗi
+			var startDateError = document.getElementById("startDateError");
+			var endDateError = document.getElementById("endDateError");
+
+			// Ẩn tất cả thông báo lỗi trước khi kiểm tra
+			startDateError.style.display = 'none';
+			endDateError.style.display = 'none';
+
+			// Kiểm tra nếu chưa chọn ngày bắt đầu
+			if (!startDate) {
+				startDateError.style.display = 'block';
+				return false; // Dừng việc gửi form
+			}
+
+			// Kiểm tra nếu chưa chọn ngày kết thúc
+			if (!endDate) {
+				endDateError.style.display = 'block';
+				return false; // Dừng việc gửi form
+			}
+
+			// Kiểm tra nếu ngày kết thúc nhỏ hơn ngày bắt đầu
+			if (new Date(endDate) < new Date(startDate)) {
+				endDateError.textContent = "Ngày kết thúc phải lớn hơn ngày bắt đầu.";
+				endDateError.style.display = 'block';
+				return false; // Dừng việc gửi form
+			}
+
+			return true; // Nếu không có lỗi, cho phép gửi form
+		}
+	</script>
+	<script>
+	function confirmExportExcel() {
+	    return confirm("Bạn có chắc chắn muốn xuất Excel không?");
+	}
+</script>
+
+	<script>
+    // Thiết lập ngày hiện tại vào max của endDate
+    document.getElementById('endDate').setAttribute('max', new Date().toISOString().split('T')[0]);
+</script>
+
+
+
+
+
+
+
+	<!-- =================================== -->
+
+	<!-- <script src="script.js"></script> -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

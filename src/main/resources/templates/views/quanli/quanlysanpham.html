@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách hóa đơn</title>
+<!-- Boxicons CSS -->
+<link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css"
+	rel="stylesheet">
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link
+	href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+	rel="stylesheet">
+<!-- Custom CSS -->
+<link th:href="@{/css/style-admin.css}" rel="stylesheet" />
+<!-- Bootstrap CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+<!-- Font Awesome -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"
+	integrity="sha512-naukR7I+Nk6gp7p5TMA4ycgfxaZBJ7MO5iC3Fp6ySQyKFHOGfpkSZkYVWV5R7u7cfAicxanwYQ5D1e17EfJcMA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript"
+	src="https://www.gstatic.com/charts/loader.js"></script>
+<!-- Thư viện jsdelivr -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+.container{
+	margin-left: 100px;
+}
+
+.table td, .table th {
+	font-size: 0.723rem; /* Giảm kích thước chữ trong bảng */
+}
+
+.form-control, .form-select {
+	font-size: 0.875rem; /* Giảm kích thước chữ trong các input */
+}
+
+.card {
+	max-width: 800px; /* Giới hạn chiều rộng form */
+	margin: 0 auto; /* Căn giữa form */
+}
+/* Điều chỉnh kích thước nút */
+.btn-sm {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.55rem; /* Giảm kích thước chữ trong nút */
+	line-height: 1.25;
+}
+</style>
+</head>
+
+<body>
+	<nav th:replace="~{views/layout/header :: nav}"></nav>
+	<aside th:replace="~{views/layout/aside :: aside}"></aside>
+	<div class="container mt-5">
+		<h1>
+		<span><b>Quản Lý</b></span> <span class="edit_text-title">Sản Phẩm</span> <a style="color: black" th:href="@{/employee/danhsach/danhsachsanpham}"><i title="Danh sách sản phẩm" class="fa-solid fa-table-list"></i></a> 
+		</h1>
+
+		<!-- Form thông tin sản phẩm -->
+		<form th:action="@{/employee/quanlysanpham/luu}" th:object="${sp}"
+			method="post" class="card p-4" enctype="multipart/form-data">
+			<div class="row">
+				<div class="col-md-6">
+					<input type="hidden" th:field="*{sanPhamId}" />
+					<div class="mb-3">
+						<label for="tenSanPham" class="form-label fw-bold">Tên Sản
+							Phẩm</label> <input type="text" th:field="*{tenSanPham}"
+							class="form-control" id="tenSanPham"
+							placeholder="Nhập tên sản phẩm">
+					</div>
+
+					<div class="mb-3">
+						<label for="giaBan" class="form-label fw-bold">Giá Bán</label> <input
+							type="number" th:field="*{giaBan}" class="form-control"
+							id="giaBan" placeholder="Nhập giá bán">
+					</div>
+
+					<div class="mb-3">
+						<label for="giaNhap" class="form-label fw-bold">Giá Nhập</label> <input
+							type="number" th:field="*{giaNhap}" class="form-control"
+							id="giaNhap" placeholder="Nhập giá nhập">
+					</div>
+
+					<div class="mb-3">
+						<label for="xuatXu" class="form-label fw-bold">Xuất sứ</label> <input
+							type="text" th:field="*{xuatXu}" class="form-control" id="xuatSu"
+							placeholder="Nhập xuất xứ sản phẩm">
+					</div>
+
+					<div class="mb-3">
+						<label for="donVi" class="form-label fw-bold">Đơn Vị</label> <select
+							th:field="*{donVi}" class="form-select" id="donVi">
+							<option value="1">Gam</option>
+							<option value="2">Kg</option>
+							<option value="3">Ml</option>
+							<option value="4">Cm</option>
+						</select>
+					</div>
+
+					<div class="mb-3">
+						<label for="loaiSanPham" class="form-label fw-bold">Loại
+							Sản Phẩm</label> <select th:field="*{loaiSanPham}" class="form-select"
+							id="loaiSanPham">
+							<option value="1">Thức ăn</option>
+							<option value="2">Phụ kiện</option>
+							<option value="3">Vật dụng</option>
+							<option value="4">Thuốc</option>
+						</select>
+					</div>
+
+					<div class="mb-3">
+						<label for="loaiThuCung" class="form-label fw-bold">Loại
+							Thú Cưng</label> <select th:field="*{loaiThuCung}" class="form-select"
+							id="loaiThuCung">
+							<option value="1">Tất cả</option>
+							<option value="2">Mèo meo</option>
+							<option value="3">Cún</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="mb-3">
+						<label for="soLuongKho" class="form-label fw-bold">Số
+							Lượng Kho</label> <input type="number" th:field="*{soLuongKho}"
+							class="form-control" id="soLuongKho"
+							placeholder="Nhập số lượng kho">
+					</div>
+
+					<div class="mb-3">
+						<label for="khoiLuong" class="form-label fw-bold">Khối
+							Lượng</label> <input type="number" th:field="*{khoiLuong}"
+							class="form-control" id="khoiLuong" placeholder="Nhập khối lượng" step="any">
+					</div>
+
+					<div class="mb-3">
+    <label for="hinh" class="form-label fw-bold">Hình Ảnh</label>
+    <!-- Nút để chọn ảnh -->
+    <div class="input-group">
+        <input type="text" th:value="${sp.hinh}" name="hinh" class="form-control" id="fileName1" placeholder="Chọn ảnh" readonly>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileInput1').click()">Chọn ảnh</button>
+        <!-- Input ẩn để chọn ảnh -->
+        <input type="file" id="fileInput1" style="display: none;" accept="image/*" onchange="updateFileName('fileInput1', 'fileName1')">
+    </div>
+</div>
+
+<div class="mb-3">
+    <label for="hinh" class="form-label fw-bold">Hình Ảnh Hover</label>
+    <!-- Nút để chọn ảnh -->
+    <div class="input-group">
+        <input type="text" th:value="${sp.hinhHover}" name="hinhHover" class="form-control" id="fileName2" placeholder="Chọn ảnh" readonly>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('fileInput2').click()">Chọn ảnh</button>
+        <!-- Input ẩn để chọn ảnh -->
+        <input type="file" id="fileInput2" style="display: none;" accept="image/*" onchange="updateFileName('fileInput2', 'fileName2')">
+    </div>
+</div>
+
+					<div class="mb-3">
+						<label for="baoBi" class="form-label fw-bold">Bao Bì</label> <input
+							type="text" th:field="*{baoBi}" class="form-control" id="baoBi"
+							placeholder="Nhập bao bì sản phẩm">
+					</div>
+
+					<div class="mb-3">
+						<label for="thanhPhan" class="form-label fw-bold">Thành
+							Phần</label> <input type="text" th:field="*{thanhPhan}"
+							class="form-control" id="thanhPhan"
+							placeholder="Nhập thành phần sản phẩm">
+					</div>
+
+					<div class="mb-3">
+						<label for="moTa" class="form-label fw-bold">Mô Tả</label>
+						<textarea th:field="*{moTa}" class="form-control" id="moTa"
+							placeholder="Nhập mô tả sản phẩm"></textarea>
+					</div>
+				</div>
+			</div>
+
+			<div class="d-flex justify-content-end">
+    <button type="submit" class="btn btn-danger mt-3"
+        th:if="${sp.sanPhamId != null}"
+        th:action="@{/employee/quanlysanpham/capnhat}">Lưu</button>
+    <button type="reset" class="btn btn-success mt-3 ms-3">Làm mới</button>
+    
+</div>
+
+		</form>
+		
+
+		
+	</div>
+
+	<!-- Scripts -->
+	<script th:src="@{/js/reload.js}"></script>
+	<script th:src="@{/js/chart.js}"></script>
+	<script th:src="@{/js/page.js}"></script>
+	<script th:src="@{/js/script-admin.js}"></script>
+	<script th:src="@{/js/app.js}"></script>
+	<script>
+    function updateFileName(fileInputId, fileNameId) {
+        var fileInput = document.getElementById(fileInputId);
+        var fileName = fileInput.files[0] ? fileInput.files[0].name : 'Chưa chọn file';
+        document.getElementById(fileNameId).value = fileName;
+    }
+</script>
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function (event) {
+        let isValid = true;
+
+        // Danh sách các input cần kiểm tra
+        const fields = [
+            { id: "tenSanPham", message: "Tên sản phẩm không được để trống" },
+            { id: "giaBan", message: "Giá bán phải lớn hơn 0", minValue: 1 },
+            { id: "giaNhap", message: "Giá nhập phải lớn hơn 0", minValue: 1 },
+            { id: "soLuongKho", message: "Số lượng kho phải lớn hơn 0", minValue: 1 },
+            { id: "khoiLuong", message: "Khối lượng là sô phải lớn hơn 0", minValue: 0.1 },
+            { id: "xuatSu", message: "Xuất sứ không được bỏ trống"},
+            { id: "baoBi", message: "Bao bì không được bỏ trống"},
+            { id: "thanhPhan", message: "Thành phần không được bỏ trống"},
+            { id: "moTa", message: "Mô tả không được bỏ trống"}
+        ];
+
+        // Xóa thông báo lỗi cũ
+        document.querySelectorAll(".error-message").forEach(e => e.remove());
+
+        // Kiểm tra từng trường
+        fields.forEach(field => {
+            const input = document.getElementById(field.id);
+            const value = input.value.trim();
+            const error = document.createElement("div");
+            error.className = "error-message";
+            error.style.color = "red";
+            error.style.fontSize = "0.875rem";
+
+            if (!value || (field.minValue && value <= 0)) {
+                error.innerText = field.message;
+                input.parentElement.appendChild(error);
+                isValid = false;
+            }
+        });
+
+        // Ngăn submit nếu có lỗi
+        if (!isValid) {
+            event.preventDefault();
+            alert('Vui lòng nhập đầy đủ thông tin');
+        }
+    });
+});
+
+</script>
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hP9GllH/1XHVPpD"
+		crossorigin="anonymous">
+		
+	</script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		integrity="sha384-VAdfpmC1qDq7xPHmD8XnmB1CSJ74Mmd/BsmgyWJfI/tCuXvbCJAy8dHah/zrrGyP"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
+

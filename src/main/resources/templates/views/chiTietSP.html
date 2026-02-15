@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Pet shop - High Quality Pet Food</title>
+<meta name="title" content="Kitter - High Quality Pet Food" />
+<meta name="description"
+	content="This is an eCommerce html template made by codewithsadee" />
+
+<link rel="shortcut icon" th:href="@{/img/favicon.svg}"
+	type="image/svg+xml" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+	href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Nunito+Sans:wght@400;700&display=swap"
+	rel="stylesheet" />
+<link rel="preload" as="image" th:href="@{/img/hero-banner.jpg}" />
+
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+	crossorigin="anonymous" />
+
+<!-- 
+    - custom css link
+  -->
+<link rel="stylesheet" th:href="@{/css/style.css}" />
+<style type="text/css">
+.header{
+	background-color: #fff!important;
+}
+.header.active{
+	color: #000!important;
+	background: #fff!important;
+}
+.navbar-link{
+	color: #000!important;
+}
+.header .action-btn{
+	color: #000!important;
+}
+.text-logo{
+	color: #000!important;
+}
+.btns {
+	background-color: transparent !important;
+	color: #EC6335 !important;
+	font-size: 18px !important;
+	width: auto !important;
+	max-width: auto !important;
+	padding: 8px 25px !important;
+	border-radius: 0px !important;
+	border: #EC6335 2px solid !important;
+	padding: 8px 25px !important;
+}
+
+.btns:hover {
+	color: #fff !important;
+	background-color: #EC6335 !important;
+	border-color: #EC6335 !important;
+}
+
+.btn-outline-secondary {
+	border-color: #EC6335 !important;
+}
+
+.button {
+	background-color: transparent !important;
+	color: #EC6335 !important;
+	border: 1px #EC6335 solid !important;
+}
+
+.button:hover {
+	background-color: #EC6335 !important;
+	color: #fff !important;
+}
+</style>
+</head>
+
+<body id="top" style="background-color: #F5F5F5;">
+	<!-- HEADER -->
+	<header th:replace="~{views/layout/header-customer.html :: header}"></header>
+
+	<main>
+		<article>
+			<!-- HERO -->
+			<div
+				style="background-color: #F9942A; height: 100px; width: 100%; box-shadow: 4px 8px 10px rgba(0, 0, 0, 0.1);"></div>
+
+			<div class="product-container container pt-5">
+				<div class="product-header">
+					<div class="row"
+						style="background-color: #FFF; box-shadow: 0px 0px 10px 5px #E0E0E0;">
+						<div class="col-sm-6 product-image p-5">
+							<!-- Sử dụng th:src để thay thế đường dẫn hình ảnh động -->
+							<img
+								th:src="@{${sanpham.hinh != null} ? '/img/' + ${sanpham.hinh} : '/img/default.jpg'}"
+								alt="Product Image" width="600px" />
+
+
+						</div>
+						<div class="col-sm-6 product-info">
+							<!-- Sử dụng th:text để hiển thị tên sản phẩm -->
+							<h1 class="fw-bold pt-5" style="font-size: 42px"
+								th:text="${sanpham.tenSanPham}"></h1>
+							<!-- Hiển thị số lượng đã bán -->
+							<p class="sold ps-1" style="color: #757575; font-size: 12px;"
+								th:text="'Còn: ' + ${sanpham.soLuongKho}"></p>
+							<!-- Hiển thị giá sản phẩm -->
+							<p class="price fw-bold" style="font-size: 40px; color: #ED6335;"
+								th:text="${#numbers.formatCurrency(sanpham.giaBan)}"></p>
+
+							<div class="product-options"
+								style="font-size: 18px; color: #757575; padding-top: 40px;">
+								<label>Khối Lượng: <!-- Tạo select cho khối lượng với giá trị động -->
+									<span class="text-muted" th:text="${sanpham.khoiLuong}">kg</span></label>
+							</div>
+							<div class="product-options d-flex pt-1"
+								style="font-size: 18px; color: #757575;">
+								<label>Loại:</label>
+								<!-- Hiển thị loại sản phẩm -->
+								<span class="text-muted" th:text="${sanpham.loaiSanPham}"></span>
+							</div>
+							<div class="product-options  pt-5"
+								style="font-size: 22px; color: #757575;">
+								<label>Số Lượng:</label> <input type="number" id="quantity"
+									name="soLuong" value="1" min="1"
+									style="width: 60px; text-align: center;" />
+							</div>
+							<div class="d-flex product-buttons" style="padding-top: 90px;">
+								<form
+									th:action="@{/cart/add/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}"
+									method="post" id="add-to-cart-form-[[${sanpham.sanPhamId}]]">
+									<input type="hidden" name="soLuong" value="1">
+									<button type="button" class="btns btn-outline-secondary d-flex"
+										th:attr="onclick='addToCart(' + ${sanpham.sanPhamId} + ')'">
+										Thêm vào giỏ hàng</button>
+								</form>
+							</div>
+							<div id="toast-container" class="position-fixed top-0 end-0 p-3"
+								style="z-index: 9999;"></div>
+						</div>
+					</div>
+					<br>
+					<div class="product-details p-5 row"
+						style="background-color: #FFF; box-shadow: 0px 0px 10px 5px #E0E0E0;">
+						<h2 style="font-size: 28px;">Thông tin sản phẩm</h2>
+						<!-- Hiển thị kho hàng -->
+						<p>
+							<strong style="font-size: 18px;">Kho:</strong> <span
+								style="font-size: 18px;" th:text="${sanpham.soLuongKho}"></span>
+						</p>
+						<!-- Hiển thị xuất xứ -->
+						<p>
+							<strong style="font-size: 18px;">Xuất xứ:</strong> <span
+								style="font-size: 18px;" th:text="${sanpham.xuatXu}"></span>
+						</p>
+						<!-- Hiển thị bao bì -->
+						<p>
+							<strong style="font-size: 18px;">Bao bì:</strong> <span
+								style="font-size: 18px;" th:text="${sanpham.baoBi}"></span>
+						</p>
+						<p>
+							<strong style="font-size: 18px;">Thành phần chủ yếu:</strong><span
+								style="font-size: 18px;" th:text="${sanpham.thanhPhan}"></span>
+						</p>
+
+						<strong style="font-size: 18px;">Mô tả</strong>
+						<!-- Mô tả sản phẩm -->
+						<p th:text="${sanpham.moTa}" style="font-size: 18px;"></p>
+					</div>
+				</div>
+
+
+
+				<section class="section product" id="shop" aria-label="sanpham">
+					<div class="container">
+						<h2 class="h2 section-title">
+							<span class="span">Sản phẩm</span> khác
+						</h2>
+
+						<ul class="grid-list">
+							<li th:each="sanpham : ${sanPhamList}">
+								<div class="product-card">
+									<!-- Card Banner -->
+									<div class="card-banner img-holder"
+										style="--width: 360px; --height: 360px">
+										<a
+											th:href="@{/sanpham/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}">
+											<!-- Default Image --> <img
+											th:src="@{/img/{imageName}(imageName=${sanpham.hinh != null ? sanpham.hinh : 'default.jpg'})}"
+											width="360" height="360" loading="lazy"
+											th:alt="${sanpham.tenSanPham}" class="img-cover default" />
+											<!-- Hover Image --> <img
+											th:src="@{/img/{hoverImageName}(hoverImageName=${sanpham.hinhHover != null ? sanpham.hinhHover : 'default-hover.jpg'})}"
+											width="360" height="360" loading="lazy"
+											alt="Product hover image" class="img-cover hover" />
+										</a>
+									</div>
+
+									<!-- Add to Cart Form -->
+									<form
+										th:action="@{/cart/add/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}"
+										method="post" id="add-to-cart-form-[[${sanpham.sanPhamId}]]">
+										<input type="hidden" name="soLuong" value="1">
+										<button type="button" class="btn btn-primary"
+											onclick="addToCart([[${sanpham.sanPhamId}]])"
+											data-sanpham-id="[[${sanpham.sanPhamId}]]">
+											<ion-icon name="bag-add-outline"></ion-icon>
+											Thêm vào giỏ hàng
+										</button>
+									</form>
+
+									<!-- Toast Notification -->
+									<div class="position-fixed top-0 end-0 p-3"
+										style="z-index: 9999;">
+										<!-- Toast messages can go here dynamically -->
+									</div>
+
+									<!-- Card Content -->
+									<div class="card-content">
+										<!-- Rating Section -->
+										<div class="wrapper">
+											<div class="rating-wrapper">
+												<ion-icon name="star" aria-hidden="true"></ion-icon>
+												<ion-icon name="star" aria-hidden="true"></ion-icon>
+												<ion-icon name="star" aria-hidden="true"></ion-icon>
+												<ion-icon name="star" aria-hidden="true"></ion-icon>
+												<ion-icon name="star" aria-hidden="true"></ion-icon>
+											</div>
+											<span class="span">(1)</span>
+										</div>
+
+										<!-- Product Title -->
+										<h3 class="h3">
+											<a
+												th:href="@{/sanpham/{sanPhamId}(sanPhamId=${sanpham.sanPhamId})}"
+												class="card-title" th:text="${sanpham.tenSanPham}">Tên
+												sản phẩm</a>
+										</h3>
+
+										<!-- Product Price -->
+										<data class="card-price"
+											th:text="${#numbers.formatCurrency(sanpham.giaBan)}">0
+										₫</data>
+									</div>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</section>
+			</div>
+		</article>
+	</main>
+
+	<!-- 
+    - #FOOTER
+  -->
+
+	<footer th:replace="~{views/layout/footer :: footer}"></footer>
+
+	<a href="#top" class="back-top-btn" aria-label="back to top"
+		data-back-top-btn> <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+	</a>
+
+	<script>
+      function addToCart(sanPhamId) {
+          fetch('/cart/add/' + sanPhamId, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: 'soLuong=1',
+          })
+              .then(response => response.json())
+              .then(data => {
+                  if (data && data.count !== undefined) {
+                      // Lưu giá trị số lượng vào localStorage
+                      localStorage.setItem('cartCount', data.count);
+
+                      // Cập nhật giao diện
+                      document.getElementById('cart-count').textContent = data.count;
+                  }
+                  showToast('Sản phẩm đã được thêm vào giỏ hàng!');
+              })
+              .catch(error => {
+                  console.error('Có lỗi xảy ra:', error);
+                  showToast('Thêm vào giỏ hàng thất bại!', true);
+              });
+      }
+
+
+      // Hàm để hiển thị thông báo toast
+      function showToast(message, isError = false) {
+          const toastContainer = document.getElementById('toast-container');
+          const toastMessage = document.createElement('div');
+          toastMessage.classList.add('toast', 'fade', 'show');
+          toastMessage.style.backgroundColor = isError ? '#f8d7da' : '#d4edda';
+          toastMessage.innerHTML = `<div class="toast-body">${message}</div>`;
+          toastContainer.appendChild(toastMessage);
+
+          setTimeout(() => {
+              toastMessage.classList.remove('show');
+              toastMessage.classList.add('fade');
+              setTimeout(() => toastMessage.remove(), 1000);
+          }, 2000);
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+          // Gọi hàm cập nhật số lượng giỏ hàng khi trang đã tải xong
+          updateCartCount();
+      });
+
+      function updateCartCount() {
+          fetch('/cart/count')  // API trả về số lượng sản phẩm trong giỏ
+              .then(response => response.json())
+              .then(data => {
+                  document.getElementById('cart-count').textContent = data.count;  // Cập nhật số lượng sản phẩm trong giỏ hàng
+              })
+              .catch(error => {
+                  console.error('Lỗi khi lấy số lượng giỏ hàng:', error);
+              });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+          const storedCount = localStorage.getItem('cartCount');
+          if (storedCount) {
+              document.getElementById('cart-count').textContent = storedCount; // Hiển thị số lượng từ localStorage
+          } else {
+              updateCartCount(); // Lấy số lượng từ backend nếu localStorage không có
+          }
+      });
+
+  </script>
+	<script src="../../js/script.js" defer></script>
+	<script type="module"
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule
+		src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

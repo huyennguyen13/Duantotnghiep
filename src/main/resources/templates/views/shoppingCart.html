@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>Giỏ hàng</title>
+
+<!-- Link tới Bootstrap CSS -->
+<link
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- Link tới FontAwesome (tùy chọn, nếu cần dùng các icon) -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" th:href="@{/css/styleGioHang.css}" />
+<!-- Link tới các style tùy chỉnh của bạn (nếu có) -->
+<link th:href="@{/css/style.css}" rel="stylesheet" />
+<style>
+/* Thêm các style tùy chỉnh nếu cần */
+.table td, .table th {
+	vertical-align: middle;
+	border: none !important;
+}
+table{
+	border: none!important;
+}
+.PetShop {
+	color: #EC6335;
+}
+
+.card-cart {
+	width: 100% !important;
+	height: auto !important;
+}
+input {
+	font-size: 18px!important;
+	text-align: center !important;
+}
+.btnc{
+	background-color: transparent!important; 
+	color: #000 !important;
+	font-size: 10px !important;
+	height: 38px !important;
+}
+.input-quantity{
+	background-color: transparent !important;
+	border-radius: 50px !important;
+}
+.action {
+	background-color: #EC6335 !important;
+	font-size: 12px !important;
+}
+th{
+	background: transparent !important;
+	color: #8E8E8E !important;
+	font-weight: none !important;
+}
+.oder{
+	background-color: #EC6335 !important;
+	border-radius: 0px !important;
+	font-size: 18px !important;
+}
+</style>
+</head>
+<body>
+
+	<div class="">
+		<!-- Header -->
+		<div class="header-top" style="background-color: #EC6335;">
+			<div class="header-right">
+				<a href="#" class="username">anvo251103</a>
+			</div>
+		</div>
+
+		<div class="header-bottom">
+			<div class="logo">
+				<img src="../../../img/logo_preview_rev_1.png" alt="PetShop Logo" />
+				<a th:href="@{/customer/TrangChu}" class="d-flex"><span class="PetShop">PetShop</span> <span class="text-muted"
+					style="font-size: 40px;">|</span> </a><span
+					class="cart text-muted GioHang" style="font-size: 28px;">Giỏ
+					Hàng</span>
+			</div>
+		</div>
+
+		<!-- Giỏ hàng -->
+		<div class="container mt-5 card-cart">
+			<table class="table table-bordered"
+				th:if="${!#lists.isEmpty(cartItems)}">
+				<thead class="thead-dark border">
+					<tr style="font-size: 20px;">
+						<th>Tên sản phẩm</th>
+						<th class="text-center">Giá</th>
+						<th class="text-center">Số lượng</th>
+						<th class="text-center">Thành tiền</th>
+						<th class="text-center">Hành động</th>
+					</tr>
+				</thead>
+				
+				<tbody style="font-size: 18px;">
+					<tr th:each="item : ${cartItems}">
+						<td th:text="${item.tenSanPham}"></td>
+						<td
+							th:text="${#numbers.formatDecimal(item.giaBan, 0, 2)} + ' VND'"
+							id="price-${item.sanPhamId}" data-price="${item.giaBan}"></td>
+						<td>
+							<button type="button" class="btn btn-outline-secondary btn-sm btnc"
+								th:onclick="|updateQuantity(${item.sanPhamId}, ${item.soLuong - 1})|"
+								th:disabled="${item.soLuong == 1}">-</button> <input
+							type="number" th:value="${item.soLuong}"
+							class="form-control mx-2 d-inline input-quantity" style="width: 80px;" readonly />
+
+							<button type="button" class="btn btn-outline-secondary btn-sm btnc"
+								th:onclick="|updateQuantity(${item.sanPhamId}, ${item.soLuong + 1})|">+</button>
+						</td>
+						<td><span id="total-${item.sanPhamId}"
+							th:text="${#numbers.formatDecimal(item.giaBan * item.soLuong, 0, 2)} + ' VND'"></span>
+						</td>
+						<td>
+						<div style="display: flex; justify-content:center; align-items: center;">
+							<form
+								th:action="@{/cart/remove/{sanPhamId}(sanPhamId=${item.sanPhamId})}"
+								method="post">
+								<button type="submit" class="btn btn-danger btn-sm action">Xóa</button>
+							</form>
+						</div>
+							
+							
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+			<br>
+			<div class="border rounded p-4" th:if="${cartItems != null && !cartItems.isEmpty()}">
+				<div class="d-flex justify-content-between">
+					<h4 style="font-size: 24px;">Tổng tiền:</h4>
+					<h4>
+						<span id="total-cart-amount" style="font-size: 24px;"
+							th:text="${#numbers.formatDecimal(totalAmount, 0, 2)} + ' VND'"></span>
+					</h4>
+				</div>
+				<hr>
+				<form action="/customer/datHang" method="get" class="d-flex justify-content-end">
+					<button type="submit" class="btn oder"><span class="ps-5 pe-5">Đặt Hàng</span></button>
+				</form>
+
+			</div>
+			<br>
+			<br>
+		</div>
+		<br>
+		<footer th:replace="~{views/layout/footer :: footer}"></footer>
+	</div>
+
+	<!-- Bootstrap JS và Popper.js (Đảm bảo tương thích với Bootstrap) -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.10/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<!-- JavaScript cho các hành động giỏ hàng -->
+	<script th:inline="javascript">
+    function updateQuantity(sanPhamId, newQuantity) {
+        fetch('/cart/cart/update/' + sanPhamId + '?soLuong=' + newQuantity, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "soLuong=" + newQuantity
+        })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();  // Tải lại trang để cập nhật số lượng giỏ hàng
+                } else {
+                    console.error('Cập nhật thất bại');
+                }
+            })
+            .catch(error => {
+                console.error('Có lỗi xảy ra', error);
+            });
+    }
+
+    function formatCurrency(amount) {
+        if (amount == null || isNaN(amount)) {
+            console.error("Dữ liệu không hợp lệ:", amount);
+            return "0 VND";
+        }
+        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    // Hàm cập nhật tổng tiền giỏ hàng khi trang tải xong
+    function updateCartTotal() {
+        fetch('/cart/total')
+            .then(response => response.json())
+            .then(data => {
+                const totalAmountElement = document.getElementById('total-cart-amount');
+                if (totalAmountElement && data.totalAmount != null) {
+                    totalAmountElement.textContent = formatCurrency(data.totalAmount);
+                } else {
+                    console.error('Dữ liệu không hợp lệ từ API:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Lỗi khi lấy tổng tiền giỏ hàng:', error);
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCartTotal();
+    });
+</script>
+
+</body>
+</html>
