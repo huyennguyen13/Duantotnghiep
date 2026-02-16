@@ -38,8 +38,8 @@ public class AuthConfig {
 
             return User.withUsername(taiKhoan.getEmail())
                     .password(taiKhoan.getMatKhau())
-                    .roles(taiKhoan.getQuyen().name())
-                    // Ví dụ: QUAN_LY -> Spring tự thêm ROLE_
+                    .roles(taiKhoan.getQuyen().name()) 
+                    // Ví dụ: KHACH_HANG -> Spring tự thêm ROLE_
                     .build();
         };
     }
@@ -49,9 +49,10 @@ public class AuthConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
-                .authorizeHttpRequests(auth -> auth
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
+
+            .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                         "/views/DangNhap",
                         "/process-signup",
@@ -64,39 +65,45 @@ public class AuthConfig {
                 .requestMatchers("/employee/**").hasAnyRole("QUAN_LY", "NHAN_VIEN")
                 .requestMatchers("/customer/**").hasRole("KHACH_HANG")
                 .anyRequest().authenticated()
-                )
-                .exceptionHandling(e -> e
+            )
+
+            .exceptionHandling(e -> e
                 .accessDeniedPage("/views/TrangChu")
-                )
-                // ===== FORM LOGIN =====
-                .formLogin(f -> f
+            )
+
+            // ===== FORM LOGIN =====
+            .formLogin(f -> f
                 .loginPage("/views/DangNhap")
-                .loginProcessingUrl("/login") // Spring xử lý tại đây
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/TrangChu", true)
                 .failureUrl("/views/DangNhap?error=true")
                 .usernameParameter("email")
                 .passwordParameter("matKhau")
                 .permitAll()
-                )
-                // ===== REMEMBER ME =====
-                .rememberMe(r -> r
+            )
+
+            // ===== REMEMBER ME (FIX CHUẨN) =====
+            .rememberMe(r -> r
                 .rememberMeParameter("remember")
                 .key("uniqueAndSecretKey123")
                 .tokenValiditySeconds(86400)
-                )
-                // ===== GOOGLE LOGIN =====
-                .oauth2Login(oauth2 -> oauth2
+                .userDetailsService(userDetailsService()) // 👈 QUAN TRỌNG
+            )
+
+            // ===== GOOGLE LOGIN =====
+            .oauth2Login(oauth2 -> oauth2
                 .loginPage("/views/DangNhap")
                 .defaultSuccessUrl("/TrangChu", true)
-                )
-                // ===== LOGOUT =====
-                .logout(l -> l
+            )
+
+            // ===== LOGOUT =====
+            .logout(l -> l
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/views/DangNhap?logout=true")
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
+                .deleteCookies("JSESSIONID", "remember-me")
                 .permitAll()
-                );
+            );
 
         return http.build();
     }
