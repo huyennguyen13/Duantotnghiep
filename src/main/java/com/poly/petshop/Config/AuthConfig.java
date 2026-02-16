@@ -39,7 +39,6 @@ public class AuthConfig {
             return User.withUsername(taiKhoan.getEmail())
                     .password(taiKhoan.getMatKhau())
                     .roles(taiKhoan.getQuyen().name()) 
-                    // Ví dụ: KHACH_HANG -> Spring tự thêm ROLE_
                     .build();
         };
     }
@@ -61,39 +60,59 @@ public class AuthConfig {
                         "/js/**",
                         "/images/**"
                 ).permitAll()
-                .requestMatchers("/admin/**").hasRole("QUAN_LY")
-                .requestMatchers("/employee/**").hasAnyRole("QUAN_LY", "NHAN_VIEN")
-                .requestMatchers("/customer/**").hasRole("KHACH_HANG")
-                .anyRequest().authenticated()
-            )
 
-            .exceptionHandling(e -> e
-                .accessDeniedPage("/views/TrangChu")
+                // Trang quản trị
+                .requestMatchers("/employee/**")
+                    .hasAnyRole("QUAN_LY", "NHAN_VIEN")
+
+                // Trang khách hàng
+                .requestMatchers("/customer/**")
+                    .hasAnyRole("KHACH_HANG", "QUAN_LY", "NHAN_VIEN")
+
+                .anyRequest().authenticated()
             )
 
             // ===== FORM LOGIN =====
             .formLogin(f -> f
                 .loginPage("/views/DangNhap")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/TrangChu", true)
+
+                // ✅ ROLE-BASED REDIRECT
+                .successHandler((request, response, authentication) -> {
+
+                    var authorities = authentication.getAuthorities();
+
+                    if (authorities.stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_QUAN_LY"))) {
+                        response.sendRedirect("/employee/TrangQuanTri");
+                    }
+                    else if (authorities.stream()
+                            .anyMatch(a -> a.getAuthority().equals("ROLE_NHAN_VIEN"))) {
+                        response.sendRedirect("/employee/TrangQuanTri");
+                    }
+                    else {
+                        response.sendRedirect("/customer/TrangChu");
+                    }
+                })
+
                 .failureUrl("/views/DangNhap?error=true")
                 .usernameParameter("email")
                 .passwordParameter("matKhau")
                 .permitAll()
             )
 
-            // ===== REMEMBER ME (FIX CHUẨN) =====
+            // ===== REMEMBER ME =====
             .rememberMe(r -> r
                 .rememberMeParameter("remember")
                 .key("uniqueAndSecretKey123")
                 .tokenValiditySeconds(86400)
-                .userDetailsService(userDetailsService()) // 👈 QUAN TRỌNG
+                .userDetailsService(userDetailsService())
             )
 
             // ===== GOOGLE LOGIN =====
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/views/DangNhap")
-                .defaultSuccessUrl("/TrangChu", true)
+                .defaultSuccessUrl("/customer/TrangChu", true)
             )
 
             // ===== LOGOUT =====
@@ -107,17 +126,4 @@ public class AuthConfig {
 
         return http.build();
     }
-    @Bean
-public org.springframework.boot.CommandLineRunner testPassword(BCryptPasswordEncoder encoder) {
-    return args -> {
-        String rawPassword = "123";
-        String encoded = encoder.encode(rawPassword);
-
-        System.out.println("==== TEST ENCODE PASSWORD ====");
-        System.out.println("Raw: " + rawPassword);
-        System.out.println("Encoded: " + encoded);
-        System.out.println("================================");
-    };
-}
-
 }
