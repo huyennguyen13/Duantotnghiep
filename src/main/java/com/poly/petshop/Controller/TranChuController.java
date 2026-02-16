@@ -18,50 +18,46 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class TranChuController {
 
-    // @Autowired
-    // SanPhamDao sanphamDAO;
+    @Autowired
+    SanPhamDao sanphamDAO;
 
-    @GetMapping("/customer/TrangChu")
-public String Trangchu(Model model) {
-    return "views/TrangChu";
-}
-
-
-    // @GetMapping("/")
-    // public String home() {
-    //     return "redirect:/customer/TrangChu";
-    // }
-
-    // @GetMapping("/TrangChu")
-    // public String redirectTrangChu() {
-    //     return "redirect:/customer/TrangChu";
-    // }
     
 
-    // @GetMapping("/customer/TrangChu")
-    // public String Trangchu(@RequestParam(required = false) String error, Model model) {
-    //     if (error != null) {
-    //         model.addAttribute("error","bạn không có quyền truy cập");
-    //     }
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/customer/TrangChu";
+    }
 
-    //     List<SanPhamEntity> randomProducts = sanphamDAO.findRandomLowStockProducts();
+    @GetMapping("/TrangChu")
+    public String redirectTrangChu() {
+        return "redirect:/customer/TrangChu";
+    }
+    
 
-    //     List<SanPhamEntity> limitedRandomProducts = randomProducts.stream()
-    //             .limit(8)
-    //             .collect(Collectors.toList());
+    @GetMapping("/customer/TrangChu")
+    public String Trangchu(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error","bạn không có quyền truy cập");
+        }
 
-    //     model.addAttribute("lowStockProducts", limitedRandomProducts);
+        List<SanPhamEntity> randomProducts = sanphamDAO.findRandomLowStockProducts();
 
-    //     return "views/TrangChu";
-    // }
+        List<SanPhamEntity> limitedRandomProducts = randomProducts.stream()
+                .limit(8)
+                .collect(Collectors.toList());
 
-    // @GetMapping("/employee/TrangQuanTri")
-    // public String Trangquantri(@RequestParam(required = false) String error, Model model) {
+        model.addAttribute("lowStockProducts", limitedRandomProducts);
 
-    //     if (error != null) {
-    //         model.addAttribute("error", "Bạn không có quyền truy cập");
-    //     }
+        return "views/TrangChu";
+    }
 
-    //     return "views/TrangQuanTri";
-    // }
+    @GetMapping("/employee/TrangQuanTri")
+    public String Trangquantri(@RequestParam(required = false) String error, Model model) {
+
+        if (error != null) {
+            model.addAttribute("error", "Bạn không có quyền truy cập");
+        }
+
+        return "views/TrangQuanTri";
+    }
 }
