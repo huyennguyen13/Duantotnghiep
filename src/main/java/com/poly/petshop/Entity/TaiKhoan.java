@@ -72,7 +72,7 @@ private static final long serialVersionUID = 1L;
 
     // ===== Quan hệ hóa đơn =====
     @JsonIgnore
-    @OneToMany(mappedBy = "taiKhoan")
+    @OneToMany(mappedBy = "taiKhoans")
     private List<HoaDonEntity> hoaDons;
 
     // ===== Helper cho Spring Security =====
