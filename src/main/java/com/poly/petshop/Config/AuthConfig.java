@@ -107,4 +107,17 @@ public class AuthConfig {
 
         return http.build();
     }
+    @Bean
+public org.springframework.boot.CommandLineRunner testPassword(BCryptPasswordEncoder encoder) {
+    return args -> {
+        String rawPassword = "123";
+        String encoded = encoder.encode(rawPassword);
+
+        System.out.println("==== TEST ENCODE PASSWORD ====");
+        System.out.println("Raw: " + rawPassword);
+        System.out.println("Encoded: " + encoded);
+        System.out.println("================================");
+    };
+}
+
 }
