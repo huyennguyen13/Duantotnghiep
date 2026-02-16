@@ -1,11 +1,8 @@
 package com.poly.petshop.Service;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,91 +16,96 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class TaiKhoanService {
-	@Autowired
-	TaiKhoanDao taikhoanDao;
-	
-	private final BCryptPasswordEncoder passwordEncoder;
 
-    public TaiKhoanService(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = new BCryptPasswordEncoder();
+    private final TaiKhoanDao taiKhoanDao;
+    private final PasswordEncoder passwordEncoder;
+
+    public TaiKhoanService(TaiKhoanDao taiKhoanDao,
+            PasswordEncoder passwordEncoder) {
+        this.taiKhoanDao = taiKhoanDao;
+        this.passwordEncoder = passwordEncoder;
     }
+
+    // ========================
+    // Encode mật khẩu nếu DB còn mật khẩu thuần
+    // ========================
+    @PostConstruct
+    public void init() {
+        for (TaiKhoan user : taiKhoanDao.findAll()) {
+            if (!user.getMatKhau().matches("^\\$2[aby]\\$.*")) {
+                user.setMatKhau(passwordEncoder.encode(user.getMatKhau()));
+                taiKhoanDao.save(user);
+            }
+        }
+    }
+
+    // ========================
+    // So sánh mật khẩu
+    // ========================
     public boolean matches(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
-    //Mã hóa mật khẩu chạy một lần
-    @PostConstruct
-    public void init() {
-        try {
-            for (TaiKhoan user : taikhoanDao.findAll()) {
-                if (!user.getMatKhau().matches("^\\$2[aby]\\$.*")) {
-                    user.setMatKhau(passwordEncoder.encode(user.getMatKhau()));
-                    taikhoanDao.save(user);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace(); // In lỗi chi tiết
-        }
-    }
 
-
-    public void CapNhatMaThongBao(String maThongBao, String email) 
+    // ========================
+    // Cập nhật mã reset password
+    // ========================
+    public void capNhatMaThongBao(String maThongBao, String email)
             throws CustomerNotFoundException {
-        if (email == null || email.isEmpty()) {
-            throw new IllegalArgumentException("Email không được bỏ trống!");
-        }
 
-        Optional<TaiKhoan> optionalTaiKhoan = taikhoanDao.findByEmail(email);
+        TaiKhoan taiKhoan = taiKhoanDao.findByEmail(email)
+                .orElseThrow(()
+                        -> new CustomerNotFoundException("Không tìm thấy tài khoản với email: " + email));
 
-        if (optionalTaiKhoan.isPresent()) { // Kiểm tra nếu tài khoản tồn tại
-            TaiKhoan taikhoan = optionalTaiKhoan.get(); // Lấy đối tượng bên trong Optional
-            taikhoan.setMaThongBao(maThongBao);
+        taiKhoan.setMaThongBao(maThongBao);
+        taiKhoan.setNgayHetHan(LocalDateTime.now().plusMinutes(10));
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(calendar.MINUTE, 10);
-
-            Date ngayHetHan = calendar.getTime();
-            taikhoan.setNgayHetHan(ngayHetHan);
-
-            taikhoanDao.save(taikhoan);
-        } else {
-            throw new CustomerNotFoundException("Không tìm thấy bất kỳ tài khoản nào có Email: " + email);
-        }
+        taiKhoanDao.save(taiKhoan);
     }
 
-	
-	public TaiKhoan getByResetPasswordToken(String maThongBao) {
-		return taikhoanDao.findByresetpasswordtoken(maThongBao);
-	}
-//Cập nhật mật khẩu
-	public void CapNhatMatKhau(TaiKhoan taikhoan, String newPassword) {
-		if (newPassword == null || newPassword.isEmpty()) {
-			throw new IllegalArgumentException("mật khẩu mới không dược bỏ trống");
-		}
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		String encoderpassword = passwordEncoder.encode(newPassword);
-		taikhoan.setMatKhau(encoderpassword);
-//		
-		taikhoan.setMaThongBao(null);
-		taikhoanDao.save(taikhoan);
-	}
-	public boolean existsByEmail(String email) {
-		return taikhoanDao.existsByEmail(email);
-	}
-	public TaiKhoan findByEmailAndPassword(String email, String password) {
-	    return taikhoanDao.findByEmailAndPassword(email, password);
-	}
-	
-	//Phú nhượng quyền
-	public Optional<TaiKhoan> findTaiKhoanById(int taiKhoanId) {
-        return taikhoanDao.findById(taiKhoanId);
+    // ========================
+    // Lấy theo token reset
+    // ========================
+    public Optional<TaiKhoan> getByResetPasswordToken(String maThongBao) {
+        return taiKhoanDao.findByMaThongBao(maThongBao);
     }
-	
-	public void updateTaiKhoan(TaiKhoan taiKhoan) {
-	    taikhoanDao.save(taiKhoan);
-	}
-	
-	public Optional<TaiKhoan> findTaiKhoanByEmail(String email) {
-	     return taikhoanDao.findByEmail(email);
-	 }
+
+    // ========================
+    // Cập nhật mật khẩu mới
+    // ========================
+    public void capNhatMatKhau(TaiKhoan taiKhoan, String newPassword) {
+
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("Mật khẩu mới không được bỏ trống");
+        }
+
+        taiKhoan.setMatKhau(passwordEncoder.encode(newPassword));
+        taiKhoan.setMaThongBao(null);
+
+        taiKhoanDao.save(taiKhoan);
+    }
+
+    // ========================
+    // Kiểm tra tồn tại
+    // ========================
+    public boolean existsByEmail(String email) {
+        return taiKhoanDao.existsByEmail(email);
+    }
+
+    // ========================
+    // Tìm theo ID
+    // ========================
+    public Optional<TaiKhoan> findTaiKhoanById(Integer taiKhoanId) {
+        return taiKhoanDao.findById(taiKhoanId);
+    }
+
+    // ========================
+    // Update tài khoản
+    // ========================
+    public void updateTaiKhoan(TaiKhoan taiKhoan) {
+        taiKhoanDao.save(taiKhoan);
+    }
+
+    public Optional<TaiKhoan> findTaiKhoanByEmail(String email) {
+        return taiKhoanDao.findByEmail(email);
+    }
 }
-

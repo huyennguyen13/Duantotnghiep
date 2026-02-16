@@ -1,109 +1,82 @@
 package com.poly.petshop.Entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.poly.petshop.Classer.Quyen;
-import com.poly.petshop.Config.QuyenConverter;
-import com.poly.petshop.Dao.TaiKhoanDao;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "taikhoan")
-public class TaiKhoan implements Serializable{
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    @Column(name = "TaiKhoanId")
-	    private int taiKhoanId;
-	    
-	    @Column(name = "Email", nullable = false, unique = true, length = 500)
-	    private String email;
+public class TaiKhoan implements Serializable {
+private static final long serialVersionUID = 1L;
 
-	    @Column(name = "MatKhau", nullable = false, columnDefinition = "varchar(500)")
-	    private String matKhau;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "TaiKhoanId")
+    private Integer taiKhoanId;
 
-	    @Convert(converter = QuyenConverter.class)
-	    @Column(name = "Quyen", nullable = false)
-	    private Quyen quyen;
+    @NotBlank
+    @Column(name = "Email", nullable = false, unique = true, length = 500)
+    private String email;
 
-	    @Column(name = "MaThongBao", length = 60)
-	    private String maThongBao;
+    @NotBlank
+    @Column(name = "MatKhau", nullable = false, length = 500)
+    private String matKhau;
 
-	    @Column(name = "NgayTao", nullable = false, updatable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
-	    @Temporal(TemporalType.TIMESTAMP)
-	    private Date ngayTao;
+    // ===== ROLE tinyint dùng QuyenConverter (autoApply=true) =====
+    @Column(name = "Quyen", nullable = false)
+    private Quyen quyen = Quyen.KHACH_HANG;
 
-	    @Column(name = "TrangThai")
-	    private Boolean trangThai;
+    @Column(name = "MaThongBao", length = 60)
+    private String maThongBao;
 
-	    @Column(name = "HoTen", nullable = false, length = 100)
-	    private String hoTen;
+    // ===== PostgreSQL Timestamp =====
+    @Column(name = "NgayTao", nullable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime ngayTao;
 
-	    @Column(name = "SoDienThoai", unique = true, length = 10)
-	    private String soDienThoai;
+    @Column(name = "TrangThai")
+    private Boolean trangThai = true;
 
-	    @Column(name = "GioiTinh")
-	    private Boolean gioiTinh;
+    @Column(name = "HoTen", nullable = false, length = 100)
+    private String hoTen;
 
-	    @Column(name = "NgaySinh")
-	    @DateTimeFormat(pattern = "yyyy-MM-dd")
-	    @Temporal(TemporalType.DATE)
-	    private Date ngaySinh;
+    @Column(name = "SoDienThoai", unique = true, length = 10)
+    private String soDienThoai;
 
-	    @Column(name = "Hinh", length = 255)
-	    private String hinh;
-	    
-	    @Column(name = "NgayHetHan")
-	    private Date ngayHetHan;
+    @Column(name = "GioiTinh")
+    private Boolean gioiTinh;
 
-        @Column(name = "Provider")
-        private String provider;
-	    public String getRoleValue() {
-	        if (quyen != null) {
-	            return quyen.name();
-	        }
-	        return null; 
-	    }
-	    public int getRoleValueInt() {
-	        if (quyen != null) {
-	            return quyen.getValue(); 
-	        }
-	        return -1;  
-	    }
-	    public void setQuyen(Quyen quyen) {
-	        if (quyen == null) {
-	            this.quyen = Quyen.KHACH_HANG; // Gán giá trị mặc định nếu quyen là null
-	        } else {
-	            this.quyen = quyen;
-	        }
-	    }
-	    public void setProvider(String provider) {
-	        this.provider = provider;
-	    }
-	    @OneToMany(mappedBy = "taiKhoans")
-		List<HoaDonEntity> hoaDons;
+    @Column(name = "NgaySinh")
+    private LocalDate ngaySinh;
 
+    @Column(name = "Hinh", length = 255)
+    private String hinh;
+
+    @Column(name = "NgayHetHan")
+    private LocalDateTime ngayHetHan;
+
+    @Column(name = "Provider", length = 15)
+    private String provider;
+
+    // ===== Quan hệ hóa đơn =====
+    @JsonIgnore
+    @OneToMany(mappedBy = "taiKhoan")
+    private List<HoaDonEntity> hoaDons;
+
+    // ===== Helper cho Spring Security =====
+    public String getRoleName() {
+        return quyen != null ? quyen.name() : null;
+    }
 }
-

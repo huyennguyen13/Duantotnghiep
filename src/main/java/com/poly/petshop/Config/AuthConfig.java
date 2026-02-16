@@ -39,6 +39,7 @@ public class AuthConfig {
             return User.withUsername(taiKhoan.getEmail())
                     .password(taiKhoan.getMatKhau())
                     .roles(taiKhoan.getQuyen().name())
+                    // Ví dụ: QUAN_LY -> Spring tự thêm ROLE_
                     .build();
         };
     }
@@ -48,60 +49,54 @@ public class AuthConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
-
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/views/DangNhap", "/process-signup", "/login/**").permitAll()
-
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                        "/views/DangNhap",
+                        "/process-signup",
+                        "/oauth2/**",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**"
+                ).permitAll()
                 .requestMatchers("/admin/**").hasRole("QUAN_LY")
-
-                .requestMatchers("/employee/**")
-                    .hasAnyRole("QUAN_LY", "NHAN_VIEN")
-
-                .requestMatchers("/customer/**")
-                    .hasRole("KHACH_HANG")
-
-                .anyRequest().permitAll()
-
-            )
-
-            .exceptionHandling(e -> e
+                .requestMatchers("/employee/**").hasAnyRole("QUAN_LY", "NHAN_VIEN")
+                .requestMatchers("/customer/**").hasRole("KHACH_HANG")
+                .anyRequest().authenticated()
+                )
+                .exceptionHandling(e -> e
                 .accessDeniedPage("/views/TrangChu")
-            )
-
-            // ===== FORM LOGIN =====
-            .formLogin(f -> f
+                )
+                // ===== FORM LOGIN =====
+                .formLogin(f -> f
                 .loginPage("/views/DangNhap")
-                .loginProcessingUrl("/views/DangNhap/submit")
-                .defaultSuccessUrl("/views/DangNhap/success", false)
+                .loginProcessingUrl("/login") // Spring xử lý tại đây
+                .defaultSuccessUrl("/TrangChu", true)
                 .failureUrl("/views/DangNhap?error=true")
                 .usernameParameter("email")
                 .passwordParameter("matKhau")
                 .permitAll()
-            )
-
-            // ===== REMEMBER ME =====
-            .rememberMe(r -> r
+                )
+                // ===== REMEMBER ME =====
+                .rememberMe(r -> r
                 .rememberMeParameter("remember")
                 .key("uniqueAndSecretKey123")
                 .tokenValiditySeconds(86400)
-            )
-
-            // ===== GOOGLE LOGIN =====
-            .oauth2Login(oauth2 -> oauth2
+                )
+                // ===== GOOGLE LOGIN =====
+                .oauth2Login(oauth2 -> oauth2
                 .loginPage("/views/DangNhap")
-                .defaultSuccessUrl("/login/success", true)
-            )
-
-            // ===== LOGOUT =====
-            .logout(l -> l
-                .logoutUrl("/views/logoff")
+                .defaultSuccessUrl("/TrangChu", true)
+                )
+                // ===== LOGOUT =====
+                .logout(l -> l
+                .logoutUrl("/logout")
                 .logoutSuccessUrl("/views/DangNhap?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-            );
+                );
 
         return http.build();
     }

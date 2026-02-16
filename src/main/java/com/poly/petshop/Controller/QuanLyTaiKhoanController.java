@@ -63,47 +63,51 @@ public class QuanLyTaiKhoanController {
 
 	
 	@PostMapping("/quanlytaikhoan/nhuongquyen")
-    public String nhuongQuyen(@RequestParam("taiKhoanId") int taiKhoanId,
-                               @AuthenticationPrincipal UserDetails currentUser,
-                               RedirectAttributes redirectAttributes, HttpSession session) {
-        Optional<TaiKhoan> optionalTaiKhoan = taiKhoanService.findTaiKhoanById(taiKhoanId);
-        if (optionalTaiKhoan.isPresent()) {
-            TaiKhoan taiKhoan = optionalTaiKhoan.get();
+public String nhuongQuyen(@RequestParam("taiKhoanId") int taiKhoanId,
+                          @AuthenticationPrincipal UserDetails currentUser,
+                          RedirectAttributes redirectAttributes,
+                          HttpSession session) {
 
-            // Nhượng quyền: Đổi vai trò của người nhân viên thành quản lý và ngược lại
-            if (taiKhoan.getRoleValueInt() == 2) {
-                taiKhoan.setQuyen(Quyen.QUAN_LY); // Đổi thành quản lý
-            } else if (taiKhoan.getRoleValueInt() == 1) {
-                taiKhoan.setQuyen(Quyen.NHAN_VIEN); // Đổi thành nhân viên
-            }
+    Optional<TaiKhoan> optionalTaiKhoan = taiKhoanService.findTaiKhoanById(taiKhoanId);
 
-            // Cập nhật tài khoản đã nhượng quyền
-            taiKhoanService.updateTaiKhoan(taiKhoan);
+    if (optionalTaiKhoan.isPresent()) {
+        TaiKhoan taiKhoan = optionalTaiKhoan.get();
 
-            // Cập nhật tài khoản hiện tại (quản lý -> nhân viên, nhân viên -> quản lý)
-            Optional<TaiKhoan> currentTaiKhoan = taiKhoanService.findTaiKhoanByEmail(currentUser.getUsername());
-            if (currentTaiKhoan.isPresent()) {
-                TaiKhoan currentAccount = currentTaiKhoan.get();
-                if (currentAccount.getRoleValueInt() == 1) {
-                    currentAccount.setQuyen(Quyen.NHAN_VIEN); // Đổi quyền thành nhân viên
-                } else if (currentAccount.getRoleValueInt() == 2) {
-                    currentAccount.setQuyen(Quyen.QUAN_LY); // Đổi quyền thành quản lý
-                }
-                taiKhoanService.updateTaiKhoan(currentAccount);
-            }
-
-            redirectAttributes.addFlashAttribute("message", "Nhượng quyền thành công!");
-
-            // Xóa session của người dùng hiện tại
-            session.invalidate();
-
-            // Chuyển hướng đến trang đăng nhập
-            return "redirect:/views/DangNhap"; // Chuyển hướng tới trang đăng nhập
-        } else {
-            redirectAttributes.addFlashAttribute("message", "Tài khoản không tồn tại.");
+        // Đổi quyền người được nhượng
+        if (taiKhoan.getQuyen() == Quyen.NHAN_VIEN) {
+            taiKhoan.setQuyen(Quyen.QUAN_LY);
+        } else if (taiKhoan.getQuyen() == Quyen.QUAN_LY) {
+            taiKhoan.setQuyen(Quyen.NHAN_VIEN);
         }
-        return "redirect:/admin/quanlytaikhoan";
+
+        taiKhoanService.updateTaiKhoan(taiKhoan);
+
+        // Đổi quyền người hiện tại
+        Optional<TaiKhoan> currentTaiKhoan =
+                taiKhoanService.findTaiKhoanByEmail(currentUser.getUsername());
+
+        if (currentTaiKhoan.isPresent()) {
+            TaiKhoan currentAccount = currentTaiKhoan.get();
+
+            if (currentAccount.getQuyen() == Quyen.NHAN_VIEN) {
+                currentAccount.setQuyen(Quyen.QUAN_LY);
+            } else if (currentAccount.getQuyen() == Quyen.QUAN_LY) {
+                currentAccount.setQuyen(Quyen.NHAN_VIEN);
+            }
+
+            taiKhoanService.updateTaiKhoan(currentAccount);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Nhượng quyền thành công!");
+
+        session.invalidate();
+        return "redirect:/views/DangNhap";
     }
+
+    redirectAttributes.addFlashAttribute("message", "Tài khoản không tồn tại.");
+    return "redirect:/admin/quanlytaikhoan";
+}
+
 
 
 	@PostMapping("/quanlytaikhoan/luutaikhoan")
