@@ -1,3 +1,20 @@
+package com.poly.petshop.Controller;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.poly.petshop.Dao.SanPhamDao;
+import com.poly.petshop.Entity.SanPhamEntity;
+import com.poly.petshop.Service.SreachService;
+
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class TranChuController {
 
@@ -16,7 +33,6 @@ public class TranChuController {
 
     @GetMapping("/customer/TrangChu")
     public String Trangchu(@RequestParam(required = false) String error, Model model) {
-
         if (error != null) {
             model.addAttribute("error","bạn không có quyền truy cập");
         }
