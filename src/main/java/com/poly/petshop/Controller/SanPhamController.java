@@ -23,7 +23,7 @@ import com.poly.petshop.Dao.SanPhamDao;
 import com.poly.petshop.Entity.SanPhamEntity;
 
 @Controller
-@RequestMapping("/employee/danhsach")
+@RequestMapping("/admin/danhsach")
 public class SanPhamController {
 	@Autowired
 	SanPhamDao sanPhamDao;
