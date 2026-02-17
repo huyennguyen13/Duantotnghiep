@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import com.poly.petshop.Dao.HoaDonDao;
 import com.poly.petshop.Entity.HoaDonEntity;
 
 @Controller
-@RequestMapping("/admin/danhsach") // ✅ giống tài khoản
+@RequestMapping("/admin/danhsach")
 public class HoaDonController {
 
     @Autowired
@@ -37,14 +38,15 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/DanhSachHoaDon"; // ⚠ đúng với templates/views/
+        return "views/DanhSachHoaDon";
     }
 
-    // ================= CẬP NHẬT =================
+    // ================= CẬP NHẬT TRẠNG THÁI =================
     @PostMapping("/danhsachhoadon/capnhat")
     @ResponseBody
-    public String capNhatHoaDon(@RequestParam Integer hoaDonId,
-                                @RequestParam Integer choXacNhan) {
+    public ResponseEntity<String> capNhatHoaDon(
+            @RequestParam Integer hoaDonId,
+            @RequestParam Integer choXacNhan) {
 
         Optional<HoaDonEntity> optional = hoaDonDao.findById(hoaDonId);
 
@@ -52,29 +54,9 @@ public class HoaDonController {
             HoaDonEntity hd = optional.get();
             hd.setChoXacNhan(choXacNhan);
             hoaDonDao.save(hd);
-            return "OK";
+            return ResponseEntity.ok("OK");
         }
 
-        return "NOT_FOUND";
-    }
-
-    // ================= FILTER =================
-    @GetMapping("/danhsachhoadon/filter")
-    public String filterHoaDon(
-            @RequestParam(value = "status", required = false) Integer status,
-            Model model) {
-
-        List<HoaDonEntity> hds;
-
-        if (status != null && status > 0) {
-            hds = hoaDonDao.findByChoXacNhan(status);
-        } else {
-            hds = hoaDonDao.findAll();
-        }
-
-        model.addAttribute("hds", hds);
-        model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
-
-        return "views/DanhSachHoaDon";
+        return ResponseEntity.badRequest().body("NOT_FOUND");
     }
 }

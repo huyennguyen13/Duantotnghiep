@@ -92,9 +92,8 @@
 							<td th:text="${hd.trangThai ? 'Tiền mặt' : 'Trực tuyến'}"></td>
 							<td th:text="${hd.trangThai ? 'Chưa thanh toán' : 'Đã thanh toán'}"></td>
 							<td class="text-start">
-								<select name="choXacNhan"
-									style="border: none; background-color: transparent;" th:value="${hd.choXacNhan}"
-									class="choXacNhanSelect w-100 text-center">
+								<select name="choXacNhan" style="border: none; background-color: transparent;"
+									th:value="${hd.choXacNhan}" class="choXacNhanSelect w-100 text-center">
 									<option th:each="entry : ${trangThaiMap}" th:value="${entry.key}"
 										th:text="${entry.value}" th:selected="${hd.choXacNhan == entry.key}"></option>
 								</select>
@@ -107,11 +106,11 @@
 				</table>
 			</div>
 			<!-- Nút xuất Excel -->
-			<button onclick="confirmExport('orderTable', 'Danh sách hóa đơn')"
-				class="float-end btn btn-outline-success tex fw-bold">
-				<img class="pe-2" th:src="@{/img/admin/excel.png}" alt="Xuất Excel" />Xuất
-				Excel
+			<button onclick="exportToExcel()" class="float-end btn btn-outline-success fw-bold">
+				<img class="pe-2" th:src="@{/img/admin/excel.png}" />
+				Xuất Excel
 			</button>
+
 		</div>
 	</article>
 	<!-- Include jQuery -->
@@ -164,46 +163,58 @@
 
 
 	<script>
-		$(document)
-			.ready(
-				function () {
-					// Khi nhấn nút "Lưu"
-					$(".updateBtn")
-						.click(
-							function () {
-								var hoaDonId = $(this).data(
-									"id"); // Lấy ID hóa đơn từ data-id
-								var choXacNhan = $(this)
-									.closest("tr")
-									.find(
-										"select[name='choXacNhan']")
-									.val(); // Lấy giá trị chọn từ select
+		$(document).ready(function () {
 
-								// Gửi yêu cầu AJAX
-								$
-									.ajax({
-										url: '/employee/danhsach/danhsachhoadon/capnhat', // Đường dẫn đến controller
-										type: 'POST',
-										data: {
-											hoaDonId: hoaDonId,
-											choXacNhan: choXacNhan
-										},
-										success: function (
-											response) {
-											alert("Cập nhật thành công!");
-											// Có thể làm mới bảng hoặc làm gì đó khi thành công
-										},
-										error: function (
-											xhr,
-											status,
-											error) {
-											alert("Đã có lỗi xảy ra: "
-												+ error);
-										}
-									});
-							});
+			$(".updateBtn").click(function () {
+
+				let button = $(this);
+				let hoaDonId = button.data("id");
+				let choXacNhan = button.closest("tr")
+					.find("select[name='choXacNhan']")
+					.val();
+
+				$.ajax({
+					url: '/admin/danhsach/danhsachhoadon/capnhat',
+					type: 'POST',
+					data: {
+						hoaDonId: hoaDonId,
+						choXacNhan: choXacNhan
+					},
+					success: function (response) {
+
+						if (response === "OK") {
+							alert("Cập nhật thành công!");
+						} else {
+							alert("Không tìm thấy hóa đơn!");
+						}
+					},
+					error: function () {
+						alert("Lỗi server!");
+					}
 				});
+
+			});
+
+		});
 	</script>
+	<script>
+		function exportToExcel() {
+
+			let table = document.getElementById("orderTable");
+
+			let clone = table.cloneNode(true);
+
+			// Xóa cột hành động (cột cuối)
+			for (let row of clone.rows) {
+				row.deleteCell(row.cells.length - 1);
+			}
+
+			let wb = XLSX.utils.table_to_book(clone, { sheet: "DanhSachHoaDon" });
+
+			XLSX.writeFile(wb, "DanhSachHoaDon.xlsx");
+		}
+	</script>
+
 
 	<!--JavaScript Libraries -->
 	<script th:src="@{/js/reload.js}"></script>
