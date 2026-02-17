@@ -1,755 +1,91 @@
-
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="UTF-8">
+	<title>Đặt Dịch Vụ</title>
 
-<!-- 
-    - primary meta tag
-  -->
-<title>Pet shop - Hight Quality Pet Food</title>
-<meta name="title" content="Kitter - Hight Quality Pet Food" />
-<meta name="description"
-	content="This is an eCommerce html template made by codewithsadee" />
+	<!-- Bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- 
-    - favicon
-  -->
-<link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
-
-<!-- 
-    - custom css link
-  -->
-<link rel="stylesheet" th:href="@{/css/style.css}" />
-<link rel="stylesheet" th:href="@{/css/style-error.css}" />
-
-<!-- 
-    - google font link
-  -->
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link
-	href="https://fonts.googleapis.com/css2?family=Bangers&family=Carter+One&family=Nunito+Sans:wght@400;700&display=swap"
-	rel="stylesheet" />
-
-<!-- 
-    - preload images
-  -->
-<link rel="preload" as="image" th:href="@{/images/hero-banner.jpg}" />
-
-<!-- Bootstrap CSS v5.2.1 -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-	crossorigin="anonymous" />
+	<!-- CSS riêng -->
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<link rel="stylesheet" th:href="@{/css/style-error.css}">
 </head>
-<style>
 
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px; /* Khoảng cách giữa các số */
-}
-.page-btn {
-        padding: 5px 10px;
-        margin: 2px;
-        cursor: pointer;
-    }
-    .page-btn.active {
-        font-weight: bold;
-        color: white;
-        background-color: #007bff;
-        border: 1px solid #007bff;
-        border-radius: 4px;
-    }
-.pagination a,
-.pagination span {
-  font-size: 20px; /* Tăng kích thước chữ */
-  padding: 10px 15px;
-  color: #333;
-  text-decoration: none;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  transition: all 0.3s;
-}
+<body>
 
-.pagination a:hover {
-  background-color: #f9942a; /* Màu nền khi hover */
-  color: #fff; /* Màu chữ khi hover */
-}
+	<!-- HEADER -->
+	<header>
+		<div class="container py-3">
+			<h2 class="text-center">PET SHOP</h2>
+		</div>
+	</header>
 
-.pagination .active {
-  background-color: #f9942a;
-  color: #fff;
-  font-weight: bold;
-  pointer-events: none;
-}
+	<!-- HERO -->
+	<section class="text-white text-center d-flex align-items-center justify-content-center" style="height:300px;"
+		th:style="'background-image: url(' + @{/img/hero-banner.jpg} + '); background-size: cover; background-position: center;'">
+		<div>
+			<h1>Đặt Dịch Vụ</h1>
+			<p>Chăm sóc thú cưng của bạn với dịch vụ tốt nhất</p>
+		</div>
+	</section>
 
-.container-form {
-	max-width: 800px;
-	margin: 50px auto;
-	padding: 20px;
-	background-color: #fff;
-	border-radius: 8px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
+	<!-- DANH SÁCH DỊCH VỤ -->
+	<div class="container my-5">
+		<div class="row g-4">
 
-
-
-.image-container {
-	display: flex; /* Sử dụng Flexbox để ảnh nằm ngang */
-	justify-content: center; /* Căn giữa ảnh theo chiều ngang */
-	align-items: center; /* Căn giữa ảnh theo chiều dọc */
-	gap: 20px; /* Khoảng cách giữa hai ảnh */
-}
-
-.image-container img {
-	height: 300px; /* Đặt chiều cao cố định cho cả hai ảnh */
-	object-fit: cover; /* Cắt ảnh để vừa chiều cao và giữ tỉ lệ ảnh */
-	border-radius: 10px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-</style>
-
-<body id="top">
-	<!-- 
-      - #HEADER
-    -->
-
-	<header th:replace="~{views/layout/header-customer.html :: header}"></header>
-
-	<main>
-
-		<article>
-			<!-- 
-          - #HERO
-        -->
-			<section class="section hero has-bg-image" id="home"
-				aria-label="home"
-				style="background-image: url('/img/hero-banner.jpg')">
-				<div class="container">
-					<h1 class="h1 hero-title">
-						<span class="span">Đặt biệt</span> Thức ăn thú cưng
-					</h1>
-
-					<p class="hero-text">Giảm giá tới 40% ngay hôm nay</p>
-
-					<a href="#" class="btn">Mua ngay</a>
-				</div>
-			</section>
-
-
-			<!-- 
-          - #CATEGORY
-        -->
-
-	
-	
-			<section class="section category" aria-label="category">
-    <div class="container">
-        <h2 class="h2 section-title">
-            <span style="color: #F9942A; font-family: 'Bangers', cursive; font-size: 70px;">Cắt tỉa lông, tạo kiểu cho thú cưng</span>
-        </h2>
-        <h3 style="font-weight: bold; font-size: 35px;">Quy trình cắt tỉa lông, tạo kiểu</h3>
-        <ul>
-            <li>Bước 1: Kiểm tra da, lông vật nuôi nhằm xác định tình trạng lông và da của thú cưng</li>
-            <li>Bước 2: Tư vấn các kiểu cắt lông, vệ sinh phù hợp đối với tình trạng thú cưng cho khách lựa chọn</li>
-            <li>Bước 3: Vệ sinh các vùng chân, bụng, hậu môn, tai, mắt và cắt móng cho thú cưng</li>
-            <li>Bước 4: Spa và massage trong lúc tắm, giúp các bé thư giãn</li>
-            <li>Bước 5: Sấy kết hợp chải lông để loại bỏ lớp lông thừa bám dính trên thân bé</li>
-            <li>Bước 6: Chải lông cắt tỉa tạo kiểu trên thú cưng theo yêu cầu</li>
-            <li>Bước 7: Thoa nước hoa dưỡng lông tạo độ óng ánh và mùi hương cho lông</li>
-        </ul>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Những kiểu Grooming đẹp</h3>
-        <div class="image-container">
-            <img src="/img/dichvuvesinh.png" alt="Dịch vụ vệ sinh" style="height: 200px" >
-            <img src="/img/dichvuCTNhuom.png" alt="Dịch vụ cắt tỉa lông" style="height: 200px">
-        </div>
-        <hr>
-        <div class="image-container">
-            <img src="/img/dichvuTam1.png" alt="Dịch vụ tắm" style="height: 200px;">
-            <img src="/img/dichvuChamSocThucung.png" alt="Dịch vụ chăm sóc thú cưng" style="height: 200px;">
-        </div>
-    </div>
-</section>
-
-<section class="section category" aria-label="category">
-    <div class="container">
-        <h2 class="h2 section-title">
-            <span style="color: #F9942A; font-family: 'Bangers', cursive; font-size: 65px;">Khách sạn thú cưng cần thơ - Fromage Pet Shop</span>
-        </h2>
-        <h3>Chiết khấu lên đến 20% cho khách hàng gửi dài ngày. Bé cưng được thả ra chơi 1-2 lần/ngày (30-60 phút). Gửi trên 5 ngày giảm 50% phí tắm, trên 7 ngày tặng suất tắm - sấy vệ sinh. Giữ 2 bé cùng lúc, bé thứ 2 giảm 50.000đ.</h3>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Xứ mệnh của Fromage Pet Shop</h3>
-        <p>Fromage Pet Shop ra đời với mong muốn mang lại cho khách hàng sự chuyên nghiệp, uy tín mang nét đẹp hoa mỹ mà chúng tôi đem lại sự trải nghiệm tốt nhất cho thú cưng của mọi nhà. Với nhiều năm kinh nghiệm trong ngành dịch vụ thú cưng bao gồm: Spa thú cưng tại Spa và tại Nhà, Khách sạn thú cưng, Thú y, Sản phẩm dành cho thú cưng, Dịch vụ dắt chó đi dạo…</p>
-
-        <div class="image-container">
-            <img src="/img/choivoithucung.jpg" alt="Dịch vụ vệ sinh" style="height: 200px;">
-        </div>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Trông giữ với chế độ như ở nhà</h3>
-        <p>Để làm được điều này, Fromage Pet Shop cung cấp dịch vụ trông giữ như tại nhà bạn. Chế độ ăn uống, điều kiện chăm sóc sẽ ưu tiên theo chế độ của khách hàng.</p>
-
-        <div class="image-container">
-            <img src="/img/chothucungchoi.jpg" alt="Dịch vụ trông giữ" style="height: 400px; width: 1092.69px;">
-        </div>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Ưu điểm của Fromage Pet Shop mang lại</h3>
-        <ul>
-            <li>Tình yêu dành cho thú cưng là tiêu chí cao nhất;</li>
-            <li>Phòng ốc chuẩn 5 sao, nơi ở cho thú cưng sạch sẽ, đảm bảo điều kiện tốt nhất;</li>
-            <li>Được thả ra chơi 1-2 lần/ngày (30-60 phút);</li>
-            <li>Cập nhật hình ảnh, video;</li>
-            <li>Khẩu phần ăn đầy đủ chất dinh dưỡng được nghiên cứu bài bản, nhập từ các thương hiệu uy tín;</li>
-            <li>Chế độ ăn: 2 cử sáng hạt và chiều thịt xay rau củ, 1 buổi phụ (Snack, treat);</li>
-            <li>Gửi trên 5 ngày giảm 50% phí tắm, trên 7 ngày tặng suất tắm – sấy vệ sinh;</li>
-            <li>Có dịch vụ đưa đón khứ hồi tận nhà, miễn phí đưa đón tại Ninh Kiều;</li>
-            <li>Giá cả cạnh tranh tốt nhất thị trường;</li>
-            <li>Giữ 2 bé cùng lúc, bé thứ 2 giảm 50.000đ.</li>
-        </ul>
-
-        <div class="image-container">
-            <img src="/img/chomeoan.jpg" alt="Dịch vụ vệ sinh" style="height: 500px; width: 1092.69px;">
-        </div>
-    </div>
-</section>
-
-<section class="section category" aria-label="category">
-    <div class="container">
-        <h2 class="h2 section-title">
-            <span style="color: #F9942A; font-family: 'Bangers', cursive; font-size: 70px;">Nhuộm lông, tạo kiểu cho thú cưng</span>
-        </h2>
-        <h3 style="font-weight: bold; font-size: 35px;">Nhuộm lông cho thú cưng thế nào là đúng?</h3>
-        <ul>
-            <li>- Không sử dụng thuốc nhuộm tóc của con người để nhuộm lông chó mèo</li>
-            <li>- Tránh để thuốc nhuộm tiếp xúc với mắt và miệng các bé</li>
-            <li>- Lựa chọn các loại thuốc nhuộm an toàn cho cún cưng</li>
-            <li>- Tránh dùng thuốc nhuộm nếu chú chó của bạn có làn da nhạy cảm</li>
-        </ul>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Các loại thuốc nhuộm lông an toàn</h3>
-        <p><strong>Nhuộm thực phẩm tự nhiên:</strong> Sử dụng các loại nhuộm thực phẩm tự nhiên được làm từ trái cây, rau củ hoặc hoa để nhuộm lông chó. Đảm bảo rằng chúng là không độc hại và đã được sấy khô trước khi chó được thả ra để tránh làm bẩn nội thất.</p>
-        <p><strong>Bột pha nước trái cây Kool-Aid:</strong> Là một lựa chọn an toàn khác, tuy nhiên, Kool-Aid thường lên màu tốt nhất trên chó có màu lông trắng hoặc màu nhạt.</p>
-        <p><strong>Phấn lông:</strong> Phấn lông thân thiện với chó là một cách tạm thời để thay đổi màu lông của chúng mà có thể dễ dàng rửa sạch.</p>
-        <p><strong>Thuốc nhuộm lông cho chó:</strong> Bạn có thể mua thuốc nhuộm an toàn dành cho thú cưng. Tùy thuộc vào loại nhuộm, nó có thể kéo dài sau vài ngày đến 4-5 lần tắm.</p>
-
-        <h3 style="font-weight: bold; font-size: 35px;">Tác hại không mong muốn mang lại</h3>
-        <p><strong>Dễ bị mắc bệnh ngoài da:</strong> Thuốc nhuộm, dù có quảng cáo là an toàn đến đâu, đều chứa hóa chất và có thể gây hậu quả nghiêm trọng, khiến chó bị viêm da, sưng đỏ đến lở loét.</p>
-        <p><strong>Gây khó chịu:</strong> Hóa chất trong thuốc nhuộm có thể khiến chó cảm thấy khó chịu, gây ngứa và làm hại đến lớp biểu bì da của chúng.</p>
-
-        <div class="image-container">
-            <img src="/img/nhuomlongthu.jpg" alt="Dịch vụ nhuộm lông" style="height: 200px;">
-        </div>
-    </div>
-</section>
-<section class="section category" aria-label="category">
-          <div class="container">
-            <h2 class="h2 section-title">
-                <span style="color: #F9942A; font-family: 'Bangers', cursive; font-size: 70px;">Vệ sinh toàn diện cho thú cưng</span>
-              </h2>
-            <h2 style="font-weight: bold; font-size: 35px;">
-              Giới thiệu quy trình vệ sinh toàn diện
-            </h2>
-            
-            <div class="image-container">
-              <img src="/img/vesinhthucung2.jpg" alt="" style="height: 200px; text-align: center;">
-             
-            </div>
-            <br>
-            <h2>Sau khi hoàn thành các bước trên các bé sẽ được thêm một phần thức ăn và  được các nhân viên thường trực dẫn đi dạo và chơi đùa với các bé được nuôi tại Fromage Pet Shop</h2>
-            <div class="image-container">
-              <img src="/img/vesinhthucung.jpg" alt="" style="height: 300px; width: 673.13px; text-align: center;">
-             
-            </div>
-        </div>
-        </section>
-        <section class="section category" aria-label="category">
-          <div class="container">
-            <h2 class="h2 section-title">
-                <span style="color: #F9942A; font-family: 'Bangers', cursive; font-size: 70px;">TẮM MASSAGE, SẤY CHO THÚ CƯNG</span>
-              </h2>
-            <h2 style="font-weight: bold; font-size: 35px;">
-                Giới thiệu dịch vụ tắm massage tại Fromage Pet Shop
-            </h2>
-            <h2>Thú cưng của bạn đang muốn tìm một spa thú cưng ở Cần Thơ chất lượng và đáng tin cậy để tắm vệ sinh. Vì thế, Fromage Pet Shop sẽ giới thiệu đến các bạn trung tâm chăm sóc thú cưng chuyên nghiệp với đội ngũ nhân viên dầy dặn kinh nghiêm, chúng tôi cung cấp Combo Tắm Vệ Sinh để thú cưng của bạn được sạch sẽ thơm tho sau 9 bước.</h2>
-            
-            <div class="image-container">
-              <img src="/img/tamsaythucung.jpg" alt="" style="height: 200px; text-align: center;">
-             
-            </div>
-            <br>
-            <h2 style="font-weight: bold; font-size: 35px;">
-              Lợi ích của việc tắm thú cưng thường xuyên
-          </h2>
-
-          <ul>
-            <li>Tránh kí sinh trùng (ve, rận) và vi khuẩn có hại sinh sôi, phát triển trên da thú cưng.</li>
-            <li>Tránh tình trạng lông bết, vón cục.</li>
-            <li>Tránh ảnh hưởng đến sức khỏe thú cưng.</li>
-            <li>Giữ cho thú cưng luôn trong tâm trạng thoải mái và năng động nhất.</li>
-          </ul>
-          <div class="image-container">
-            <img src="/img/tamchothucung.jpg/" alt="">
-            
-          </div>
-        </div>
-        </section>
-			<hr>
-	
-			
-			<div id="pagination" class="pagination">
-			<button id="prev-btn" class="page-btn">Previous</button>
-    <button class="page-btn" data-page="1">1</button>
-    <button class="page-btn" data-page="2">2</button>
-    <button class="page-btn" data-page="3">3</button>
-    <button class="page-btn" data-page="4">4</button>
-    <button class="page-btn" data-page="5">5</button>
-        <button id="next-btn" class="page-btn">Next</button>
-    
-    
-</div>
-			
-			<!-- Nút kích hoạt modal -->
-			<div class="d-flex justify-content-center align-items-center"
-				style="height: 200px;">
-				<button type="button" class="btn btn-primary" data-bs-toggle="modal"
-					data-bs-target="#serviceModal">Đặt dịch vụ tại Shop</button>
-			</div>
-
-
-			<!-- Modal -->
-			<div class="modal fade" id="serviceModal" tabindex="-1"
-				aria-labelledby="serviceModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="serviceModalLabel">ĐẶT DỊCH VỤ
-								TẠI SHOP</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-
-							<form  method="post" th:action="@{/customer/ThemdichVu}" onsubmit="return validateForm()">
-								<!--  <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
-								<!-- Các trường thông tin -->
-								<div class="form-group">
-									<label for="name">Họ Tên</label> <input type="text" id="name"
-										name="hoTen" class="form-control" th:value="${hoTen}" disabled>
-								</div>
-								<div class="form-group">
-									<label for="phone">Số điện thoại</label> <input type="tel"
-										id="phone" name="soDienThoai" class="form-control"
-										th:value="${soDienThoai}" disabled>
-								</div>
-								<div class="form-group">
-									<label for="date">Ngày đặt</label> <input type="date" id="date"
-										name="ngayDat" class="form-control" th:value="${today}"
-										disabled>
-								</div>
-							<div class="form-group">
-    <label for="pet-name">Tên thú cưng</label>
-    <input type="text" id="pet-name" name="petName" placeholder="Nhập tên thú cưng" class="form-control" required>
-    <span id="pet-name-error" class="text-danger" style="display:none;"></span> <!-- Thông báo lỗi cho tên thú cưng -->
-</div>
-								<div class="form-group">
-									<label for="type">Loài</label> <select id="type"
-										name="loaiThuCung" class="form-control" required>
-										<option value="1">Chó</option>
-										<option value="2">Mèo</option>
-									</select>
-								</div>
-								<div class="form-group">
-									<label for="breed">Giới tính</label> <select id="breed"
-										name="giongThuCung" class="form-control" required>
-										<option value="male">Đực</option>
-										<option value="female">Cái</option>
-									</select>
-								</div>
-								<div class="form-group">
-    <label for="age">Tháng Tuổi</label>
-    <input type="number" id="age" name="tuoi" placeholder="Nhập tuổi thú cưng" class="form-control" required>
-    <span id="age-error" class="text-danger" style="display:none;"></span> <!-- Thông báo lỗi cho tuổi -->
-</div>
-								<!-- Cân nặng -->
-		<div class="form-group">
-    <label for="weight">Cân nặng</label>
-    <input type="number" id="weight" name="canNang" placeholder="Nhập cân nặng thú cưng (kg)" class="form-control" step="0.1" required>
-    <span id="weight-error" class="text-danger" style="display:none;"></span> <!-- Thông báo lỗi cho cân nặng -->
-</div>
-								       <div class="form-group">
-        <label for="service">Chọn dịch vụ</label>
-        <select id="service" name="dichVuId" class="form-control" onchange="updatePrice()" required>
-            <option value="0" disabled selected>Chọn lựa dịch vụ</option> <!-- Option mặc định -->
-            <option th:each="dichVu : ${dichVuList}"
-                    th:value="${dichVu.dichVuId}"
-                    th:text="${dichVu.tenDichVu}"
-                    th:data-price="${dichVu.giaDichVu}"></option>
-        </select>
-    </div>
-
-								 <div class="form-group">
-        <label for="price">Giá dịch vụ</label>
-        <input type="text" id="price" name="giaDichVu" class="form-control" disabled>
-    </div>
-								
-								<div class="form-group">
-    <label for="notes">Ghi chú</label>
-    <textarea id="notes" name="ghiChu" placeholder="Nhập ghi chú"
-        class="form-control" required></textarea>
-</div>
-
-<!-- Thêm khoảng trống cho nút -->
-<div class="form-group" style="margin-top: 20px;">
-    <button type="submit" class="btn btn-primary">Gửi yêu cầu</button>
-</div>
-
-
-							</form>
-
-
-						</div>
+			<!-- Dịch vụ 1 -->
+			<div class="col-md-4">
+				<div class="card h-100 shadow">
+					<img class="card-img-top" th:src="@{/img/dichvuvesinh.png}" alt="Vệ sinh">
+					<div class="card-body">
+						<h5 class="card-title">Vệ Sinh Thú Cưng</h5>
+						<p class="card-text">Tắm, cắt tỉa lông, vệ sinh tai...</p>
+						<a href="#" class="btn btn-primary w-100">Đặt ngay</a>
 					</div>
 				</div>
 			</div>
-			
 
-
-			<!-- 
-      - #FOOTER
-    -->
-
-			<footer class="footer"
-				style="background-image: url('../images/footer-bg.jpg')">
-				<div class="footer-top section">
-					<div class="container">
-						<div class="footer-brand">
-							<a href="#" class="logo">Pet Shop</a>
-
-							<p class="footer-text">
-								Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi
-								tại <a href="#" class="link">fromageteam@gmail.com</a>
-							</p>
-
-							<ul class="contact-list">
-								<li class="contact-item"><ion-icon name="location-outline"
-										aria-hidden="true"></ion-icon>
-
-									<address class="address">54 KV Thạnh Mỹ, Thường
-										Thạnh, Cái Răng, Cần Thơ, Việt Nam</address></li>
-
-								<li class="contact-item"><ion-icon name="call-outline"
-										aria-hidden="true"></ion-icon> <a href="tel:+16234567891011"
-									class="contact-link">(+84)-328-059-731</a></li>
-							</ul>
-
-							<ul class="social-list">
-								<li><a href="#" class="social-link"> <ion-icon
-											name="logo-facebook"></ion-icon>
-								</a></li>
-
-								<li><a href="#" class="social-link"> <ion-icon
-											name="logo-twitter"></ion-icon>
-								</a></li>
-
-								<li><a href="#" class="social-link"> <ion-icon
-											name="logo-pinterest"></ion-icon>
-								</a></li>
-
-								<li><a href="#" class="social-link"> <ion-icon
-											name="logo-instagram"></ion-icon>
-								</a></li>
-							</ul>
-						</div>
-
-						<ul class="footer-list">
-							<li>
-								<p class="footer-list-title">Doanh nghiệp</p>
-							</li>
-
-							<li><a href="#" class="footer-link">Nghề nghiệp</a></li>
-
-							<li><a href="#" class="footer-link">Về chúng tôi</a></li>
-
-							<li><a href="#" class="footer-link">Liên hệ chúng tôi</a></li>
-
-							<li><a href="#" class="footer-link">Câu hỏi thường gặp</a></li>
-
-							<li><a href="#" class="footer-link">Nhà cung cấp</a></li>
-						</ul>
-
-						<ul class="footer-list">
-							<li>
-								<p class="footer-list-title">Thông tin</p>
-							</li>
-
-							<li><a href="#" class="footer-link">Cửa hàng trục tuyến</a></li>
-
-							<li><a href="#" class="footer-link">Chính sách bảo mật</a></li>
-
-							<li><a href="#" class="footer-link">Chính sách hoàn tiền</a></li>
-
-							<li><a href="#" class="footer-link">Chính sách vận
-									chuyển</a></li>
-
-							<li><a href="#" class="footer-link">Điều khoản dịch vụ</a></li>
-
-							<li><a href="#" class="footer-link">Theo dõi thứ tự</a></li>
-						</ul>
-
-						<ul class="footer-list">
-							<li>
-								<p class="footer-list-title">Dịch vụ</p>
-							</li>
-
-							<li><a href="#" class="footer-link">Cắt tỉa tạo kiểu</a></li>
-
-							<li><a href="#" class="footer-link">Tắm massage</a></li>
-
-							<li><a href="#" class="footer-link">Nhận nuôi thú cưng</a></li>
-
-							<li><a href="#" class="footer-link">Vệ sinh toàn diện</a></li>
-
-							<li><a href="#" class="footer-link">Trung tâm tài nguyên</a></li>
-
-							<li><a href="#" class="footer-link">Nhận nuôi thú cưng</a></li>
-							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iusto
-							laborum, ab nam, aspernatur unde quidem voluptas reprehenderit
-							cumque maiores explicabo sint sequi nemo placeat, quas ipsam
-							voluptate velit eaque impedit!
-						</ul>
+			<!-- Dịch vụ 2 -->
+			<div class="col-md-4">
+				<div class="card h-100 shadow">
+					<img class="card-img-top" th:src="@{/img/khamchuabenh.png}" alt="Khám bệnh">
+					<div class="card-body">
+						<h5 class="card-title">Khám Chữa Bệnh</h5>
+						<p class="card-text">Bác sĩ thú y chuyên nghiệp.</p>
+						<a href="#" class="btn btn-primary w-100">Đặt ngay</a>
 					</div>
 				</div>
+			</div>
 
-				<div class="footer-bottom">
-					<div class="container">
-						<p class="copyright">
-							&copy; 2024 được tạo bởi <a href="#" class="copyright-link">Fromage
-								team.</a>
-						</p>
-
-						<img src="../../../img/payment.png" width="397" height="32"
-							loading="lazy" alt="payment method" class="img" />
+			<!-- Dịch vụ 3 -->
+			<div class="col-md-4">
+				<div class="card h-100 shadow">
+					<img class="card-img-top" th:src="@{/img/tronggiu.png}" alt="Trông giữ">
+					<div class="card-body">
+						<h5 class="card-title">Trông Giữ</h5>
+						<p class="card-text">Chăm sóc 24/7 khi bạn bận.</p>
+						<a href="#" class="btn btn-primary w-100">Đặt ngay</a>
 					</div>
 				</div>
-			</footer>
+			</div>
 
-			<!-- 
-    - #BACK TO TOP
-  -->
+		</div>
+	</div>
 
-			<a href="#top" class="back-top-btn" aria-label="back to top"
-				data-back-top-btn> <ion-icon name="chevron-up"
-					aria-hidden="true"></ion-icon>
-			</a>
+	<!-- FOOTER -->
+	<footer class="text-white text-center py-4"
+		th:style="'background-image: url(' + @{/images/footer-bg.jpg} + '); background-size: cover;'">
+		<p>© 2026 PetShop. All rights reserved.</p>
+	</footer>
 
-			<!-- 
-    - custom js link
-    
-  -->
-  <script>
-    // Hàm để cập nhật giá dịch vụ khi chọn dịch vụ
-    function updatePrice() {
-        var serviceSelect = document.getElementById("service");
-        var priceSelect = document.getElementById("price");
-        var selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-        
-        // Lấy giá dịch vụ từ thuộc tính dữ liệu của option
-        var servicePrice = selectedOption.getAttribute("data-price");
+	<!-- JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-        // Cập nhật giá dịch vụ
-        priceSelect.value = servicePrice;
-    }
-</script>
-  
-  <script>
-    // Hàm kiểm tra Tên thú cưng
-    function validatePetName() {
-        var petName = document.getElementById("pet-name").value;
-        var petNameError = document.getElementById("pet-name-error");
+	<script th:src="@{/js/script.js}" defer></script>
+	<script th:src="@{/js/ShowError.js}" defer></script>
 
-        if (petName === "") {
-            petNameError.textContent = "Tên thú cưng không được để trống.";
-            petNameError.style.display = 'block';
-        } else if (/[\d]/.test(petName)) {
-            petNameError.textContent = "Tên thú cưng không được chứa số.";
-            petNameError.style.display = 'block';
-        } else {
-            petNameError.style.display = 'none';
-        }
-    }
-
-    // Hàm kiểm tra Tuổi
-    function validateAge() {
-        var petAge = document.getElementById("age").value;
-        var ageError = document.getElementById("age-error");
-
-        if (petAge === "") {
-            ageError.textContent = "Tuổi thú cưng không được để trống.";
-            ageError.style.display = 'block';
-        } else if (isNaN(petAge) || petAge < 1 || petAge > 30) {
-            ageError.textContent = "Tuổi phải là một số, không nhỏ hơn 1 và không lớn hơn 30.";
-            ageError.style.display = 'block';
-        } else {
-            ageError.style.display = 'none';
-        }
-    }
-
-    // Hàm kiểm tra Cân nặng
-    function validateWeight() {
-        var petWeight = document.getElementById("weight").value;
-        var weightError = document.getElementById("weight-error");
-
-        if (petWeight === "") {
-            weightError.textContent = "Cân nặng không được để trống.";
-            weightError.style.display = 'block';
-        } else if (isNaN(petWeight) || petWeight <= 0 || petWeight > 400) {
-            weightError.textContent = "Cân nặng phải là một số dương và không lớn hơn 400.";
-            weightError.style.display = 'block';
-        } else {
-            weightError.style.display = 'none';
-        }
-    }
-
-    // Hàm kiểm tra tất cả các trường khi form submit
-    function validateForm() {
-        validatePetName();
-        validateAge();
-        validateWeight();
-
-        var petNameError = document.getElementById("pet-name-error").style.display;
-        var ageError = document.getElementById("age-error").style.display;
-        var weightError = document.getElementById("weight-error").style.display;
-
-        // Nếu có bất kỳ lỗi nào, không cho phép submit form
-        if (petNameError === 'block' || ageError === 'block' || weightError === 'block') {
-            return false;
-        }
-        return true;
-    }
-
-    // Thêm sự kiện kiểm tra khi người dùng nhập
-    document.getElementById("pet-name").addEventListener("input", validatePetName);
-    document.getElementById("age").addEventListener("input", validateAge);
-    document.getElementById("weight").addEventListener("input", validateWeight);
-</script>
-
-
-  
- <script >
- document.addEventListener("DOMContentLoaded", () => {
-	    const itemsPerPage = 1; // Số lượng dịch vụ mỗi trang
-	    const sections = document.querySelectorAll("section.category");
-	    const pagination = document.getElementById("pagination");
-
-	    // Biến lưu trạng thái trang hiện tại
-	    let currentPage = 1;
-
-	    // Tính tổng số trang
-	    const totalPages = Math.ceil(sections.length / itemsPerPage);
-
-	    // Ẩn tất cả các dịch vụ
-	    const hideAllSections = () => {
-	        sections.forEach(section => section.style.display = "none");
-	    };
-
-	    // Hiển thị dịch vụ của trang hiện tại
-	    const showPage = (page) => {
-	        hideAllSections();
-	        const start = (page - 1) * itemsPerPage;
-	        const end = start + itemsPerPage;
-	        for (let i = start; i < end && i < sections.length; i++) {
-	            sections[i].style.display = "block";
-	        }
-	    };
-
-	    // Cập nhật trạng thái nút "Previous", "Next", và in đậm nút hiện tại
-	    const updateNavButtons = () => {
-	        document.getElementById("prev-btn").disabled = currentPage === 1;
-	        document.getElementById("next-btn").disabled = currentPage === totalPages;
-
-	        // Xóa lớp "active" khỏi tất cả các nút
-	        const buttons = pagination.querySelectorAll(".page-btn");
-	        buttons.forEach(btn => btn.classList.remove("active"));
-
-	        // Thêm lớp "active" cho nút trang hiện tại
-	        const currentButton = pagination.querySelector(`[data-page="${currentPage}"]`);
-	        if (currentButton) {
-	            currentButton.classList.add("active");
-	        }
-	    };
-
-	    // Xóa các nút phân trang cũ nếu có (tránh lặp)
-	    pagination.innerHTML = `
-	        <button id="prev-btn" class="page-btn">Previous</button>
-	        <button id="next-btn" class="page-btn">Next</button>
-	    `;
-
-	    // Sự kiện cho nút "Previous"
-	    document.getElementById("prev-btn").addEventListener("click", () => {
-	        if (currentPage > 1) {
-	            currentPage--;
-	            showPage(currentPage);
-	            updateNavButtons();
-	        }
-	    });
-
-	    // Sự kiện cho nút "Next"
-	    document.getElementById("next-btn").addEventListener("click", () => {
-	        if (currentPage < totalPages) {
-	            currentPage++;
-	            showPage(currentPage);
-	            updateNavButtons();
-	        }
-	    });
-
-	    // Tạo nút phân trang động
-	    for (let i = 1; i <= totalPages; i++) {
-	        const btn = document.createElement("button");
-	        btn.textContent = i;
-	        btn.className = "page-btn";
-	        btn.dataset.page = i;
-	        btn.addEventListener("click", () => {
-	            currentPage = i;
-	            showPage(currentPage);
-	            updateNavButtons();
-	        });
-	        pagination.insertBefore(btn, document.getElementById("next-btn"));
-	    }
-
-	    // Hiển thị trang đầu tiên và cập nhật trạng thái nút
-	    showPage(currentPage);
-	    updateNavButtons();
-	});
-
-
-
-
-</script>
-			<script src="../../js/script.js" defer></script>
-			<script src="../../../js/ShowError.js" defer></script>
-			<!-- 
-    - ionicon link
-  -->
-			<script type="module"
-				src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-			<script nomodule
-				src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-			<!-- Bootstrap JavaScript Libraries -->
-			<script
-				src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-				integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-				crossorigin="anonymous"></script>
-
-			<script
-				src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-				integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-				crossorigin="anonymous"></script>
 </body>
+
 </html>
