@@ -13,7 +13,7 @@ import com.poly.petshop.Dao.HoaDonDao;
 import com.poly.petshop.Entity.HoaDonEntity;
 
 @Controller
-@RequestMapping("/employee/danhsach")
+@RequestMapping("/admin/danhsach") // ✅ giống tài khoản
 public class HoaDonController {
 
     @Autowired
@@ -28,8 +28,8 @@ public class HoaDonController {
             6, "Đã hủy"
     );
 
-    // ===== DANH SÁCH =====
-    @GetMapping("/DanhSachHoaDon")
+    // ================= DANH SÁCH =================
+    @GetMapping("/danhsachhoadon")
     public String danhSachHoaDon(Model model) {
 
         List<HoaDonEntity> hds = hoaDonDao.findAll();
@@ -37,11 +37,11 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/DanhSachHoaDon";
+        return "views/DanhSachHoaDon"; // ⚠ đúng với templates/views/
     }
 
-    // ===== CẬP NHẬT TRẠNG THÁI =====
-    @PostMapping("/DanhSachHoaDon/capnhat")
+    // ================= CẬP NHẬT =================
+    @PostMapping("/danhsachhoadon/capnhat")
     @ResponseBody
     public String capNhatHoaDon(@RequestParam Integer hoaDonId,
                                 @RequestParam Integer choXacNhan) {
@@ -58,8 +58,8 @@ public class HoaDonController {
         return "NOT_FOUND";
     }
 
-    // ===== FILTER =====
-    @GetMapping("/DanhSachHoaDon/filter")
+    // ================= FILTER =================
+    @GetMapping("/danhsachhoadon/filter")
     public String filterHoaDon(
             @RequestParam(value = "status", required = false) Integer status,
             Model model) {
