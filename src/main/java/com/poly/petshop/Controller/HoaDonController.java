@@ -29,7 +29,7 @@ public class HoaDonController {
     );
 
     // ===== DANH SÁCH =====
-    @GetMapping("/danhsachhoadon")
+    @GetMapping("/DanhSachHoaDon")
     public String danhSachHoaDon(Model model) {
 
         List<HoaDonEntity> hds = hoaDonDao.findAll();
@@ -37,11 +37,11 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/quanli/DanhSachHoaDon";
+        return "views/DanhSachHoaDon";
     }
 
     // ===== CẬP NHẬT TRẠNG THÁI =====
-    @PostMapping("/danhsachhoadon/capnhat")
+    @PostMapping("/DanhSachHoaDon/capnhat")
     @ResponseBody
     public String capNhatHoaDon(@RequestParam Integer hoaDonId,
                                 @RequestParam Integer choXacNhan) {
@@ -59,7 +59,7 @@ public class HoaDonController {
     }
 
     // ===== FILTER =====
-    @GetMapping("/danhsachhoadon/filter")
+    @GetMapping("/DanhSachHoaDon/filter")
     public String filterHoaDon(
             @RequestParam(value = "status", required = false) Integer status,
             Model model) {
@@ -75,6 +75,6 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/quanli/DanhSachHoaDon";
+        return "views/DanhSachHoaDon";
     }
 }
