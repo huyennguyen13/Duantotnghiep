@@ -37,7 +37,7 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/danhsachhoadon";
+        return "views/quanli/DanhSachHoaDon";
     }
 
     // ===== CẬP NHẬT TRẠNG THÁI =====
@@ -75,6 +75,6 @@ public class HoaDonController {
         model.addAttribute("hds", hds);
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/danhsachhoadon";
+        return "views/quanli/DanhSachHoaDon";
     }
 }
