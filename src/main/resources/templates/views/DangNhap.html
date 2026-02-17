@@ -3,14 +3,18 @@
     xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 
 <head>
-    <title>Login & Register</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Title</title>
 
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" th:href="@{/css/Login.css}" />
     <link rel="stylesheet" th:href="@{/css/style-error.css}" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"></script>
 
     <style>
         .error {
@@ -22,9 +26,10 @@
 </head>
 
 <body>
+
     <div class="container" id="container">
 
-        <!-- REGISTER -->
+        <!-- ================= REGISTER ================= -->
         <div class="form-container register-container">
             <form th:action="@{/process-signup}" method="post" th:object="${taiKhoan}">
                 <h1>Đăng ký</h1>
@@ -36,7 +41,7 @@
                 </div>
 
                 <div class="form-control">
-                    <input type="email" id="registerEmail" placeholder="Email" th:field="*{email}" required />
+                    <input type="email" placeholder="Email" th:field="*{email}" required />
                     <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></p>
                 </div>
 
@@ -49,66 +54,94 @@
                 <span>Đăng ký với</span>
                 <div class="social-container">
                     <a th:href="@{/oauth2/authorization/google}" class="social">
-                        Google
+                        <i class="fa-brands fa-google"></i>
                     </a>
                 </div>
             </form>
         </div>
 
-        <!-- LOGIN -->
+        <!-- ================= LOGIN ================= -->
         <div class="form-container login-container">
-            <form th:action="@{/login}" method="post">
+            <form class="form-lg" th:action="@{/login}" method="post">
 
                 <h1>Đăng nhập</h1>
 
                 <div class="form-control2">
-                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="email" class="email-2" placeholder="Email" name="email" required />
                 </div>
 
                 <div class="form-control2">
-                    <input type="password" name="matKhau" placeholder="Password" required />
+                    <input type="password" class="password-2" placeholder="Password" name="matKhau" required />
+                </div>
+
+                <!-- Hiển thị lỗi nếu login sai -->
+                <div th:if="${param.error}" class="error text-center mb-2">
+                    Email hoặc mật khẩu không đúng!
                 </div>
 
                 <div class="content">
                     <div class="checkbox">
-                        <input type="checkbox" name="remember" />
+                        <input type="checkbox" name="remember-me" />
                         <label>Ghi nhớ tôi</label>
                     </div>
 
                     <div class="pass-link">
-                        <a th:href="@{/views/QuenMK}">Quên mật khẩu?</a>
+                        <a th:href="@{/views/QuenMK}">
+                            Quên mật khẩu?
+                        </a>
                     </div>
                 </div>
 
-                <button type="submit">Đăng nhập</button>
+                <button type="submit" id="loginButton">
+                    Đăng Nhập
+                </button>
+
+                <span>Đăng nhập với</span>
+                <div class="social-container">
+                    <a th:href="@{/oauth2/authorization/google}" class="social">
+                        <i class="fa-brands fa-google"></i>
+                    </a>
+                </div>
 
             </form>
-
         </div>
 
-        <!-- NOTIFICATION SUCCESS -->
-        <div th:if="${successMessage}" id="successNotification" class="notification">
+        <!-- ================= OVERLAY ================= -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1 class="title">Bạn đã đăng ký rồi đúng không!</h1>
+                    <p>Thì bạn hãy đăng nhập nhé!</p>
+                    <button class="ghost" id="login">
+                        Đăng nhập
+                    </button>
+                </div>
+
+                <div class="overlay-panel overlay-right">
+                    <h1 class="title">Chào bạn!</h1>
+                    <p>Nếu bạn chưa có tài khoản thì hãy đăng ký nhé!</p>
+                    <button class="ghost" id="register">
+                        Đăng ký
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUCCESS MESSAGE -->
+        <div th:if="${successMessage}" class="notification">
             <p th:text="${successMessage}"></p>
-        </div>
-
-        <!-- NOTIFICATION ERROR -->
-        <div th:if="${error}" id="errorNotification" class="notification">
-            <p th:text="${error}"></p>
         </div>
 
     </div>
 
     <script>
-        function closeNotification(id) {
-            const el = document.getElementById(id);
-            if (el) el.style.display = "none";
-        }
-
         setTimeout(() => {
-            closeNotification("successNotification");
-            closeNotification("errorNotification");
+            const noti = document.querySelector(".notification");
+            if (noti) noti.style.display = "none";
         }, 3000);
     </script>
+
+    <script src="../../../js/Login.js"></script>
 
 </body>
 

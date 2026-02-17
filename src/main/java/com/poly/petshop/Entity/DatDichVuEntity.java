@@ -15,15 +15,15 @@ public class DatDichVuEntity {
 
     @ManyToOne
     @JoinColumn(name = "DichVuId", nullable = false)
-    private DichVu dichVu;  
+    private DichVu dichVu;
 
     @ManyToOne
     @JoinColumn(name = "TaiKhoanId", nullable = false)
-    private TaiKhoan taiKhoan; 
+    private TaiKhoan taiKhoan;
 
     @ManyToOne
     @JoinColumn(name = "ThuCungId", nullable = false)
-    private ThuCungEntity thuCung; 
+    private ThuCungEntity thuCung;
 
     @Column(name = "NgayDat", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
