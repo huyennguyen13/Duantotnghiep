@@ -7,83 +7,72 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.poly.petshop.Dao.CthdDao;
 import com.poly.petshop.Dao.HoaDonDao;
 import com.poly.petshop.Entity.CthdEntity;
 import com.poly.petshop.Entity.HoaDonEntity;
 
-
 @Controller
-@RequestMapping("/employee/quanli")
+@RequestMapping("/employee") // 🔥 đổi về employee
 public class QLHoaDonController {
-	@Autowired
-	HoaDonDao hoaDonDao;
-	@Autowired
-	CthdDao cthdDao;
-	
-	// Danh sách trạng thái
+
+    @Autowired
+    HoaDonDao hoaDonDao;
+
+    @Autowired
+    CthdDao cthdDao;
+
+    // Danh sách trạng thái
     private static final Map<Integer, String> TRANG_THAI_MAP = Map.of(
-        1, "Chờ xác nhận",
-        2, "Đã xác nhận",
-        3, "Đang giao",
-        4, "Đã giao",
-        5, "Đã nhận",
-        6, "Đã hủy"
+            1, "Chờ xác nhận",
+            2, "Đã xác nhận",
+            3, "Đang giao",
+            4, "Đã giao",
+            5, "Đã nhận",
+            6, "Đã hủy"
     );
-    
-	@RequestMapping("/quanlihoadon")
-	public String dshd(Model model) {
-		HoaDonEntity hd = new HoaDonEntity();
-		model.addAttribute("hd", hd);
-		List<HoaDonEntity> hds = hoaDonDao.findAll();
-        model.addAttribute("hds", hds);
+
+    // ===== DANH SÁCH HÓA ĐƠN =====
+    @GetMapping("/quanlyhoadon")
+    public String dshd(Model model) {
+
+        model.addAttribute("hd", new HoaDonEntity());
+        model.addAttribute("hds", hoaDonDao.findAll());
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
-		
-		return "views/quanli/quanlihoadon";
-	}
 
+        return "views/quanli/quanlihoadon";
+    }
 
-	@GetMapping("/quanlihoadon/xem/{hoaDonId}")
-	public String xem(@PathVariable("hoaDonId") int hoaDonId, Model model) {
-		
-	    List<CthdEntity> ct = cthdDao.findByHoaDonId(hoaDonId);
-	    if (ct != null) {
-			model.addAttribute("ct", ct);
-		}
-	    List<HoaDonEntity> hds = hoaDonDao.findAll();
-		model.addAttribute("hds", hds);
-		
-		List<HoaDonEntity> hdfs = hoaDonDao.findByHoaDonId(hoaDonId);
-		model.addAttribute("hdfs", hdfs);
+    // ===== XEM CHI TIẾT =====
+    @GetMapping("/quanlyhoadon/xem/{hoaDonId}")
+    public String xem(@PathVariable("hoaDonId") int hoaDonId, Model model) {
 
-		List<CthdEntity> cts = cthdDao.findByHoaDonId(hoaDonId);
-		model.addAttribute("cts", cts);
-		model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
-	    return "views/quanli/quanlihoadon";
-	}
-	
-	@PostMapping("/quanlihoadon/capnhat")
-	@ResponseBody
-	public String capNhatHoaDon(@RequestParam("hoaDonId") Integer hoaDonId,
-	                            @RequestParam("choXacNhan") Integer choXacNhan) {
-	    Optional<HoaDonEntity> optionalHoaDon = hoaDonDao.findById(hoaDonId);
-	    if (optionalHoaDon.isPresent()) {
-	        HoaDonEntity hoaDon = optionalHoaDon.get();
-	        hoaDon.setChoXacNhan(choXacNhan);
-	        hoaDonDao.save(hoaDon);
-	        return "Cập nhật thành công!";
-	    } else {
-	        return "Không tìm thấy hóa đơn";
-	    }
-	}
-	
-	
+        List<CthdEntity> cts = cthdDao.findByHoaDonId(hoaDonId);
+        model.addAttribute("cts", cts);
 
+        model.addAttribute("hds", hoaDonDao.findAll());
+        model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
+
+        return "views/quanli/quanlihoadon";
+    }
+
+    // ===== CẬP NHẬT TRẠNG THÁI (AJAX) =====
+    @PostMapping("/quanlyhoadon/capnhat")
+    @ResponseBody
+    public String capNhatHoaDon(@RequestParam("hoaDonId") Integer hoaDonId,
+                                @RequestParam("choXacNhan") Integer choXacNhan) {
+
+        Optional<HoaDonEntity> optional = hoaDonDao.findById(hoaDonId);
+
+        if (optional.isPresent()) {
+            HoaDonEntity hoaDon = optional.get();
+            hoaDon.setChoXacNhan(choXacNhan);
+            hoaDonDao.save(hoaDon);
+            return "success";
+        }
+
+        return "error";
+    }
 }
