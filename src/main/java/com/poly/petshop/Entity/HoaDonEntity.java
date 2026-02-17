@@ -4,54 +4,44 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "hoadon")
-public class HoaDonEntity implements Serializable{
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	int hoaDonId;
-	int phuongThucThanhToan;
-	boolean trangThai;
-	int choXacNhan; //1, "Chờ xác nhận", 2, "Đã xác nhận", 3, "Đang giao", 4, "Đã giao", 5, "Đã nhận", 6, "Đã hủy"
-	@Temporal(TemporalType.DATE)
-	@Column(name = "ngayTao")
-	Date ngayTao = new Date();
-	
-	double tongTien;
-	String diaChi;
-	
-	@ManyToOne @JoinColumn(name = "taiKhoanId")
-	TaiKhoan taiKhoans;
-	@ManyToOne @JoinColumn(name = "khuyenMaiId")
-	KhuyenMaiEntity khuyenMais;
-	
-	@OneToMany(mappedBy = "hoaDons", fetch = FetchType.EAGER)
-	List<CthdEntity> cthds;
-	
-	@Transient // Không lưu thuộc tính này vào cơ sở dữ liệu
-    private String trangThaiMoTa; // Lưu chuỗi mô tả trạng thái
-    // Getter và Setter cho trangThaiMoTa
-    public String getTrangThaiMoTa() {
-        return trangThaiMoTa;
-    }
+public class HoaDonEntity implements Serializable {
 
-    public void setTrangThaiMoTa(String trangThaiMoTa) {
-        this.trangThaiMoTa = trangThaiMoTa;
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int hoaDonId;
+
+    private int phuongThucThanhToan;
+
+    private boolean trangThai;
+
+    private int choXacNhan;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "ngayTao")
+    private Date ngayTao = new Date();
+
+    private double tongTien;
+
+    private String diaChi;
+
+    // ✅ FIX: thêm fetch = EAGER để tránh lỗi lazy loading
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "taiKhoanId")
+    private TaiKhoan taiKhoans;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "khuyenMaiId")
+    private KhuyenMaiEntity khuyenMais;
+
+    @OneToMany(mappedBy = "hoaDons", fetch = FetchType.EAGER)
+    private List<CthdEntity> cthds;
+
+    @Transient
+    private String trangThaiMoTa;
 }

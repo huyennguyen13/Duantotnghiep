@@ -7,12 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.poly.petshop.Dao.HoaDonDao;
 import com.poly.petshop.Entity.HoaDonEntity;
@@ -21,49 +16,65 @@ import com.poly.petshop.Entity.HoaDonEntity;
 @RequestMapping("/employee/danhsach")
 public class HoaDonController {
 
-	@Autowired
-	HoaDonDao hoaDonDao;
+    @Autowired
+    private HoaDonDao hoaDonDao;
 
-	// Danh sách trạng thái
-	private static final Map<Integer, String> TRANG_THAI_MAP = Map.of(1, "Chờ xác nhận", 2, "Đã xác nhận", 3,
-			"Đang giao", 4, "Đã giao", 6, "Đã hủy");
+    private static final Map<Integer, String> TRANG_THAI_MAP = Map.of(
+            1, "Chờ xác nhận",
+            2, "Đã xác nhận",
+            3, "Đang giao",
+            4, "Đã giao",
+            5, "Đã nhận",
+            6, "Đã hủy"
+    );
 
-	@RequestMapping("/danhsachhoadon")
-	public String dshd(Model model) {
-//		HoaDonEntity hd = new HoaDonEntity();
-//		model.addAttribute("hd", hd);
-		List<HoaDonEntity> hds = hoaDonDao.findAll();
-		model.addAttribute("hds", hds);
-		model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
-		return "views/danhsachhoadon";
-	}
+    // ===== DANH SÁCH =====
+    @GetMapping("/danhsachhoadon")
+    public String danhSachHoaDon(Model model) {
 
-	@PostMapping("/danhsachhoadon/capnhat")
-	@ResponseBody
-	public String capNhatHoaDon(@RequestParam("hoaDonId") Integer hoaDonId,
-			@RequestParam("choXacNhan") Integer choXacNhan) {
-		Optional<HoaDonEntity> optionalHoaDon = hoaDonDao.findById(hoaDonId);
-		if (optionalHoaDon.isPresent()) {
-			HoaDonEntity hoaDon = optionalHoaDon.get();
-			hoaDon.setChoXacNhan(choXacNhan);
-			hoaDonDao.save(hoaDon);
-			return "Cập nhật thành công!";
-		} else {
-			return "Không tìm thấy hóa đơn";
-		}
-	}
+        List<HoaDonEntity> hds = hoaDonDao.findAll();
 
-	// Lọc danh sách hóa đơn theo trạng thái
-	@GetMapping("/danhsachhoadon/filter")
-	public String filterHoaDon(@RequestParam("status") Integer status, Model model) {
-		List<HoaDonEntity> hds;
-		if (status != null && status > 0) {
-			hds = hoaDonDao.findByChoXacNhan(status); // Lọc theo trạng thái
-		} else {
-			hds = hoaDonDao.findAll(); // Nếu không lọc thì lấy tất cả
-		}
-		model.addAttribute("hds", hds);
-		model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
-		return "views/danhsachhoadon";
-	}
+        model.addAttribute("hds", hds);
+        model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
+
+        return "views/danhsachhoadon";
+    }
+
+    // ===== CẬP NHẬT TRẠNG THÁI =====
+    @PostMapping("/danhsachhoadon/capnhat")
+    @ResponseBody
+    public String capNhatHoaDon(@RequestParam Integer hoaDonId,
+                                @RequestParam Integer choXacNhan) {
+
+        Optional<HoaDonEntity> optional = hoaDonDao.findById(hoaDonId);
+
+        if (optional.isPresent()) {
+            HoaDonEntity hd = optional.get();
+            hd.setChoXacNhan(choXacNhan);
+            hoaDonDao.save(hd);
+            return "OK";
+        }
+
+        return "NOT_FOUND";
+    }
+
+    // ===== FILTER =====
+    @GetMapping("/danhsachhoadon/filter")
+    public String filterHoaDon(
+            @RequestParam(value = "status", required = false) Integer status,
+            Model model) {
+
+        List<HoaDonEntity> hds;
+
+        if (status != null && status > 0) {
+            hds = hoaDonDao.findByChoXacNhan(status);
+        } else {
+            hds = hoaDonDao.findAll();
+        }
+
+        model.addAttribute("hds", hds);
+        model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
+
+        return "views/danhsachhoadon";
+    }
 }
