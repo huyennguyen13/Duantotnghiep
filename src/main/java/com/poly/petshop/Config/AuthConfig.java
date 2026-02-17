@@ -23,13 +23,13 @@ public class AuthConfig {
     @Autowired
     private TaiKhoanDao taiKhoanDao;
 
-    // ================= PASSWORD ENCODER =================
+    // ===== PASSWORD ENCODER =====
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ================= USER DETAILS SERVICE =================
+    // ===== USER DETAILS SERVICE =====
     @Bean
     public UserDetailsService userDetailsService() {
         return email -> {
@@ -38,34 +38,36 @@ public class AuthConfig {
 
             return User.withUsername(taiKhoan.getEmail())
                     .password(taiKhoan.getMatKhau())
-                    .roles(taiKhoan.getQuyen().name()) 
+                    .roles(taiKhoan.getQuyen().name())
                     .build();
         };
     }
 
-    // ================= SECURITY FILTER =================
+    // ===== SECURITY FILTER =====
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
 
             .authorizeHttpRequests(auth -> auth
+
+                // PUBLIC
                 .requestMatchers(
                         "/views/DangNhap",
                         "/process-signup",
                         "/oauth2/**",
                         "/css/**",
                         "/js/**",
-                        "/images/**"
+                        "/images/**",
+                        "/DatDichVu"   // 👈 tránh bị loop nếu là trang public
                 ).permitAll()
 
-                // Trang quản trị
+                // EMPLOYEE
                 .requestMatchers("/employee/**")
                     .hasAnyRole("QUAN_LY", "NHAN_VIEN")
 
-                // Trang khách hàng
+                // CUSTOMER
                 .requestMatchers("/customer/**")
                     .hasAnyRole("KHACH_HANG", "QUAN_LY", "NHAN_VIEN")
 
@@ -77,7 +79,6 @@ public class AuthConfig {
                 .loginPage("/views/DangNhap")
                 .loginProcessingUrl("/login")
 
-                // ✅ ROLE-BASED REDIRECT
                 .successHandler((request, response, authentication) -> {
 
                     var authorities = authentication.getAuthorities();
@@ -109,7 +110,7 @@ public class AuthConfig {
                 .userDetailsService(userDetailsService())
             )
 
-            // ===== GOOGLE LOGIN =====
+            // ===== OAUTH2 =====
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/views/DangNhap")
                 .defaultSuccessUrl("/customer/TrangChu", true)
