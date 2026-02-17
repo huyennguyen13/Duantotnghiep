@@ -23,7 +23,7 @@ public class DSDichVuCon {
 	@Autowired
 	DichVuDao dichVuDao;
 	
-	@GetMapping("/employee/DSDichVu")
+	@GetMapping("/user/DSDichVu")
 	public String dsdv(Model model) {
 		DichVu dv = new DichVu();
 		model.addAttribute("dv", dv);

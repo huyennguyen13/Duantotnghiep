@@ -35,6 +35,6 @@ public class SanPhamController {
 		List<SanPhamEntity> sps = sanPhamDao.findAll();
 		model.addAttribute("sps", sps);
 
-		return "views/danhsachsanpham";
+		return "views/DanhSachSanPham";
 	}
 }

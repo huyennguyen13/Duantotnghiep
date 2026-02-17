@@ -21,7 +21,7 @@ public class DichVuController {
 
 	@Autowired
 	private DichVuDao dichvuDao;
-	@RequestMapping("/employee/QLDichVu")
+	@RequestMapping("/user/QLDichVu")
 	public String QLDichVu(Model model) {
 		List<DichVu> listdichvu = dichvuDao.findAll();
 		model.addAttribute("dichvuList", listdichvu);
