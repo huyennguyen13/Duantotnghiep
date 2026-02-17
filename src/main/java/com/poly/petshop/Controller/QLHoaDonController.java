@@ -15,7 +15,7 @@ import com.poly.petshop.Entity.CthdEntity;
 import com.poly.petshop.Entity.HoaDonEntity;
 
 @Controller
-@RequestMapping("/employee") // 🔥 đổi về employee
+@RequestMapping("/admin") // 🔥 đổi về employee
 public class QLHoaDonController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class QLHoaDonController {
         model.addAttribute("hds", hoaDonDao.findAll());
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/quanli/quanlihoadon";
+        return "views/quanli/QuanLiHoaDon";
     }
 
     // ===== XEM CHI TIẾT =====
@@ -55,7 +55,7 @@ public class QLHoaDonController {
         model.addAttribute("hds", hoaDonDao.findAll());
         model.addAttribute("trangThaiMap", TRANG_THAI_MAP);
 
-        return "views/quanli/quanlihoadon";
+        return "views/quanli/QuanLiHoaDon";
     }
 
     // ===== CẬP NHẬT TRẠNG THÁI (AJAX) =====
