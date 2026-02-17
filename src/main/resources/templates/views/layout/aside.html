@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
 </head>
+
 <body>
-<aside class="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
-        	<a th:href="@{/Profile}"><img src="../../../img/congcu.png" alt="logo" class="images_border--rounded" /></a>
+            <a th:href="@{/Profile}"><img src="../../../img/congcu.png" alt="logo" class="images_border--rounded" /></a>
             <div class="row">
                 <h2 class="fw-bold">Trang Quản Trị</h2>
                 <span class="span_text--edit">User Administration</span>
@@ -47,19 +49,24 @@
                         <div class="menu-separator"></div>
                     </h4>
                     <li>
-                        <a th:href="@{/admin/danhsach/danhsachtaikhoan}" onclick="loadPage('DanhSach/TaiKhoan.html')"><span class="material-symbols-outlined"><i
+                        <a th:href="@{/admin/danhsach/danhsachtaikhoan}"
+                            onclick="loadPage('DanhSach/TaiKhoan.html')"><span class="material-symbols-outlined"><i
                                     class="fa-solid fa-address-book"></i></span>Danh sách tài khoản</a>
                     </li>
                     <li>
-                       <a th:href="@{/employee/DSDichVu}" onclick="loadPage('DanhSach/DichVu.html')"><span class="material-symbols-outlined"><i
-                                    class="fa-solid fa-shield-dog"></i></span>Danh sách dịch vụ</a>
+                        <a th:href="@{/employee/DSDichVu}" onclick="loadPage('DanhSach/DichVu.html')"><span
+                                class="material-symbols-outlined"><i class="fa-solid fa-shield-dog"></i></span>Danh sách
+                            dịch vụ</a>
                     </li>
                     <li>
-                        <a th:href="@{/employee/danhsach/danhsachsanpham}" onclick="loadPage('DanhSach/SanPham.html')"><span class="material-symbols-outlined"><i class="fa-solid fa-bars"></i></span>Danh
+                        <a th:href="@{/employee/danhsach/danhsachsanpham}"
+                            onclick="loadPage('DanhSach/SanPham.html')"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-bars"></i></span>Danh
                             sách sản phẩm</a>
                     </li>
                     <li>
-						<a th:href="@{/employee/danhsach/danhsachhoadon}" onclick="loadPage('DanhSach/HoaDon.html')"><span class="material-symbols-outlined"><i
+                        <a th:href="@{/admin/danhsach/danhsachhoadon}"><span
+                                class="material-symbols-outlined"><i
                                     class="fa-solid fa-file-invoice-dollar"></i></span>Danh sách hóa đơn</a>
                     </li>
                 </div>
@@ -70,11 +77,13 @@
                         <div class="menu-separator"></div>
                     </h4>
                     <li>
-                        <a th:href="@{/admin/quanlytaikhoan}" onclick="loadPage('QuanLy/TaiKhoan.html')"><span class="material-symbols-outlined"><i class="fa-solid fa-gear"></i></span>Quản
+                        <a th:href="@{/admin/quanlytaikhoan}" onclick="loadPage('QuanLy/TaiKhoan.html')"><span
+                                class="material-symbols-outlined"><i class="fa-solid fa-gear"></i></span>Quản
                             lý tài khoản</a>
                     </li>
                     <li>
-                        <a th:href="@{/employee/QLDichVu}" onclick="loadPage('QuanLy/DichVu.html')"><span class="material-symbols-outlined"><i class="fa-solid fa-bell"></i></span>Quản
+                        <a th:href="@{/employee/QLDichVu}" onclick="loadPage('QuanLy/DichVu.html')"><span
+                                class="material-symbols-outlined"><i class="fa-solid fa-bell"></i></span>Quản
                             lý dịch vụ</a>
                     </li>
                     <li>
@@ -82,12 +91,14 @@
                                     class="fa-solid fa-pen-to-square"></i></span>Quản lý sản phẩm</a>
                     </li>
                     <li>
-                        <a th:href="@{/employee/quanli/quanlihoadon}" onclick="loadPage('QuanLy/HoaDon.html')"><span class="material-symbols-outlined"><i
-                                    class="fa-solid fa-money-bill"></i></span>Quản lý hóa đơn</a>
+                        <a th:href="@{/employee/quanli/quanlihoadon}" onclick="loadPage('QuanLy/HoaDon.html')"><span
+                                class="material-symbols-outlined"><i class="fa-solid fa-money-bill"></i></span>Quản lý
+                            hóa đơn</a>
                     </li>
                     <li>
-                        <a th:href="@{/employee/quanli/quanlikhuyenmai}" onclick="loadPage('QuanLy/HoaDon.html')"><span class="material-symbols-outlined"><i
-                                    class="fa-solid fa-money-bill"></i></span>Quản lý khuyến mãi</a>
+                        <a th:href="@{/employee/quanli/quanlikhuyenmai}" onclick="loadPage('QuanLy/HoaDon.html')"><span
+                                class="material-symbols-outlined"><i class="fa-solid fa-money-bill"></i></span>Quản lý
+                            khuyến mãi</a>
                     </li>
                 </div>
                 <div class="box-history"></div>
@@ -96,15 +107,17 @@
                     <div class="menu-separator"></div>
                 </h4>
                 <li>
-                    <a th:href="@{/employee/DSDVCho}" onclick="loadPage('LichSu/DanhSachCho.html')"><span class="material-symbols-outlined"><i
-                                class="fa-solid fa-clock-rotate-left"></i></span>Dịch vụ đang chờ</a>
+                    <a th:href="@{/employee/DSDVCho}" onclick="loadPage('LichSu/DanhSachCho.html')"><span
+                            class="material-symbols-outlined"><i class="fa-solid fa-clock-rotate-left"></i></span>Dịch
+                        vụ đang chờ</a>
                 </li>
                 <li>
-                    <a href="#" onclick="loadPage('LichSu/LichSuDichVu.html')"><span class="material-symbols-outlined"><i
-                                class="fa-solid fa-business-time"></i></span>Lịch sử dịch vụ</a>
+                    <a href="#" onclick="loadPage('LichSu/LichSuDichVu.html')"><span
+                            class="material-symbols-outlined"><i class="fa-solid fa-business-time"></i></span>Lịch sử
+                        dịch vụ</a>
                 </li>
             </div>
-           
+
             <!-- Đăng xuất -->
             <div class="box-logout">
                 <h4>
@@ -130,4 +143,5 @@
         </div>
     </aside>
 </body>
+
 </html>
