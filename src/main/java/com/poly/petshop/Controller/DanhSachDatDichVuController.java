@@ -59,7 +59,7 @@ public class DanhSachDatDichVuController {
         model.addAttribute("soDienThoai", taiKhoan.getSoDienThoai());
         model.addAttribute("today", today);
 
-        return "/views/DatDichVu"; 
+        return "redirect:/customer/DatDichVu";
     }
 
     // Xử lý yêu cầu thêm dịch vụ
