@@ -19,11 +19,11 @@ public class DSDichVuCon {
 //		model.addAttribute("dichVuList", listdichvu);
 //		return "views/DSDichVu";
 //	}
-//	
+
 	@Autowired
 	DichVuDao dichVuDao;
 	
-	@GetMapping("/user/DSDichVu")
+	@GetMapping("/admin/DSDichVu")
 	public String dsdv(Model model) {
 		DichVu dv = new DichVu();
 		model.addAttribute("dv", dv);
