@@ -12,36 +12,33 @@ import lombok.Data;
 @Table(name = "hoadon")
 public class HoaDonEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int hoaDonId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	int hoaDonId;
 
-    private int phuongThucThanhToan;
+	int phuongThucThanhToan;
+	boolean trangThai;
+	int choXacNhan;
 
-    private boolean trangThai;
+	@Temporal(TemporalType.DATE)
+	@Column(name = "ngayTao")
+	Date ngayTao = new Date();
 
-    private int choXacNhan;
+	double tongTien;
+	String diaChi;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "ngayTao")
-    private Date ngayTao = new Date();
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "taiKhoanId")
+	TaiKhoan taiKhoans;
 
-    private double tongTien;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "khuyenMaiId")
+	KhuyenMaiEntity khuyenMais;
 
-    private String diaChi;
+	// 🔥 QUAN TRỌNG: phải trùng với hoaDons bên CthdEntity
+	@OneToMany(mappedBy = "hoaDons", fetch = FetchType.LAZY)
+	List<CthdEntity> cthds;
 
-    // ✅ FIX: thêm fetch = EAGER để tránh lỗi lazy loading
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "taiKhoanId")
-    private TaiKhoan taiKhoans;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "khuyenMaiId")
-    private KhuyenMaiEntity khuyenMais;
-
-    @OneToMany(mappedBy = "hoaDons", fetch = FetchType.EAGER)
-    private List<CthdEntity> cthds;
-
-    @Transient
-    private String trangThaiMoTa;
+	@Transient
+	String trangThaiMoTa;
 }
