@@ -56,7 +56,7 @@ public String adminPage() {
         return "views/TrangChu";
     }
 
-    @GetMapping("/admin/TrangQuanTri")
+    @GetMapping("/employee/TrangQuanTri")
     public String Trangquantri(@RequestParam(required = false) String error, Model model) {
 
         if (error != null) {
