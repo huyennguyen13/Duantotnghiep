@@ -54,8 +54,8 @@
                                     class="fa-solid fa-address-book"></i></span>Danh sách tài khoản</a>
                     </li>
                     <li>
-                        <a th:href="@{/admin/DSDichVu}"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-shield-dog"></i></span>Danh sách
+                        <a th:href="@{/admin/DSDichVu}"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-shield-dog"></i></span>Danh sách
                             dịch vụ</a>
                     </li>
                     <li>
@@ -75,13 +75,13 @@
                         <div class="menu-separator"></div>
                     </h4>
                     <li>
-                        <a th:href="@{/admin/quanli/quanlytaikhoan}"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-gear"></i></span>Quản
+                        <a th:href="@{/admin/quanli/quanlytaikhoan}"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-gear"></i></span>Quản
                             lý tài khoản</a>
                     </li>
                     <li>
-                        <a th:href="@{/admin/quanli/QLDichVu}"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-bell"></i></span>Quản
+                        <a th:href="@{/admin/quanli/QLDichVu}"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-bell"></i></span>Quản
                             lý dịch vụ</a>
                     </li>
                     <li>
@@ -89,13 +89,13 @@
                                     class="fa-solid fa-pen-to-square"></i></span>Quản lý sản phẩm</a>
                     </li>
                     <li>
-                        <a th:href="@{/admin/quanli/quanlihoadon}><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-money-bill"></i></span>Quản lý
+                        <a th:href="@{/admin/quanli/quanlihoadon}"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-money-bill"></i></span>Quản lý
                             hóa đơn</a>
                     </li>
                     <li>
-                        <a th:href="@{/admin/quanli/quanlikhuyenmai}"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-money-bill"></i></span>Quản lý
+                        <a th:href="@{/admin/quanli/quanlikhuyenmai}"><span class="material-symbols-outlined"><i
+                                    class="fa-solid fa-money-bill"></i></span>Quản lý
                             khuyến mãi</a>
                     </li>
                 </div>
@@ -105,8 +105,8 @@
                     <div class="menu-separator"></div>
                 </h4>
                 <li>
-                    <a th:href="@{/admin/DSDVCho}"><span
-                            class="material-symbols-outlined"><i class="fa-solid fa-clock-rotate-left"></i></span>Dịch
+                    <a th:href="@{/admin/DSDVCho}"><span class="material-symbols-outlined"><i
+                                class="fa-solid fa-clock-rotate-left"></i></span>Dịch
                         vụ đang chờ</a>
                 </li>
                 <li>
@@ -124,9 +124,17 @@
                                     onclick="reloadPage()"></i></span>Làm mới</a>
                     </li>
                     <li>
-                        <a th:href="@{/views/logoff}"><span class="material-symbols-outlined "><i
-                                    class="fa-solid fa-right-from-bracket"></i></span>Đăng xuất</a>
+                        <form th:action="@{/logout}" method="post" style="display:inline;">
+                            <button type="submit" style="background:none;border:none;padding:0;">
+                                <span class="material-symbols-outlined">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </span>
+                                Đăng xuất
+                            </button>
+                        </form>
                     </li>
+
+
                 </h4>
             </div>
         </ul>

@@ -118,12 +118,13 @@ public class AuthConfig {
 
             // ===== LOGOUT =====
             .logout(l -> l
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/views/DangNhap?logout=true")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .permitAll()
-            );
+    .logoutUrl("/logout")
+    .logoutSuccessUrl("/views/DangNhap?logout=true")
+    .invalidateHttpSession(true)
+    .deleteCookies("JSESSIONID", "remember-me")
+    .permitAll()
+);
+
 
         return http.build();
     }
