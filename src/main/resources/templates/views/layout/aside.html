@@ -124,14 +124,16 @@
                                     onclick="reloadPage()"></i></span>Làm mới</a>
                     </li>
                     <li>
-                        <form th:action="@{/logout}" method="post" style="display:inline;">
-                            <button type="submit" style="background:none;border:none;padding:0;">
-                                <span class="material-symbols-outlined">
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                                </span>
-                                Đăng xuất
-                            </button>
-                        </form>
+                        <a href="">
+                            <form th:action="@{/logout}" method="post" style="display:inline;">
+                                <button type="submit" style="background:none;border:none;padding:0;">
+                                    <span class="material-symbols-outlined">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                    </span>
+                                    Đăng xuất
+                                </button>
+                            </form>
+                        </a>
                     </li>
 
 
