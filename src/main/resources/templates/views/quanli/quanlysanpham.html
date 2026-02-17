@@ -66,11 +66,11 @@
 	<aside th:replace="~{views/layout/aside :: aside}"></aside>
 	<div class="container mt-5">
 		<h1>
-		<span><b>Quản Lý</b></span> <span class="edit_text-title">Sản Phẩm</span> <a style="color: black" th:href="@{/employee/danhsach/danhsachsanpham}"><i title="Danh sách sản phẩm" class="fa-solid fa-table-list"></i></a> 
+		<span><b>Quản Lý</b></span> <span class="edit_text-title">Sản Phẩm</span> <a style="color: black" th:href="@{/admin/danhsach/danhsachsanpham}"><i title="Danh sách sản phẩm" class="fa-solid fa-table-list"></i></a> 
 		</h1>
 
 		<!-- Form thông tin sản phẩm -->
-		<form th:action="@{/employee/quanlysanpham/luu}" th:object="${sp}"
+		<form th:action="@{/admin/quanlysanpham/luu}" th:object="${sp}"
 			method="post" class="card p-4" enctype="multipart/form-data">
 			<div class="row">
 				<div class="col-md-6">
@@ -192,7 +192,7 @@
 			<div class="d-flex justify-content-end">
     <button type="submit" class="btn btn-danger mt-3"
         th:if="${sp.sanPhamId != null}"
-        th:action="@{/employee/quanlysanpham/capnhat}">Lưu</button>
+        th:action="@{/admin/quanlysanpham/capnhat}">Lưu</button>
     <button type="reset" class="btn btn-success mt-3 ms-3">Làm mới</button>
     
 </div>

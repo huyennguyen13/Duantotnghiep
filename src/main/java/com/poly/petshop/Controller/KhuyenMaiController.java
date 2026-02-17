@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/employee/quanli")
+@RequestMapping("/admin/quanli")
 public class KhuyenMaiController {
 
 	@Autowired
@@ -68,7 +68,7 @@ public class KhuyenMaiController {
 			}
 		}
 
-		return "redirect:/employee/quanli/quanlikhuyenmai";
+		return "redirect:/admin/quanli/quanlikhuyenmai";
 	}
 
 
@@ -81,7 +81,7 @@ public class KhuyenMaiController {
 		} else {
 			model.addAttribute("error", "Không tìm thấy khuyến mãi để xóa.");
 		}
-		return "redirect:/employee/quanli/quanlikhuyenmai";
+		return "redirect:/admin/quanli/quanlikhuyenmai";
 	}
 
 	// Sửa khuyến mãi (hiển thị form)
@@ -126,7 +126,7 @@ public class KhuyenMaiController {
 		}
 
 		// Quay lại trang danh sách
-		return "redirect:/employee/quanli/quanlikhuyenmai";
+		return "redirect:/admin/quanli/quanlikhuyenmai";
 	}
 
 	// Cấu hình định dạng ngày tháng

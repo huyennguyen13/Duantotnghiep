@@ -302,7 +302,7 @@
 		</div>
 		<div class="d-flex justify-content-around" style="padding-left: 100px;">
 			<div class="card col-sm-4 my-4">
-				<form th:action="@{/employee/quanli/quanlikhuyenmai/luu}"
+				<form th:action="@{/admin/quanli/quanlikhuyenmai/luu}"
 					th:object="${km}" method="post" class="p-3">
 					<h3 class="text-center mb-4 mt-2 fw-bold"
 						style="color: var(--portland-orange);">Thông tin</h3>
@@ -346,7 +346,7 @@
 					<button type="submit"
 						class="btn btn-outline-primary mt-3 luunut float-end w-25 button"
 						th:if="${km.khuyenMaiId != null}"
-						th:action="@{/employee/quanli/quanlikhuyenmai/capnhat}">Lưu</button>
+						th:action="@{/admin/quanli/quanlikhuyenmai/capnhat}">Lưu</button>
 
 				</form>
 
@@ -441,9 +441,9 @@
 										<td th:text="${km.ngayKetThuc}" class="hethan-column"></td>
 										<td>
 											<!-- Sửa --> <a
-											th:href="@{/employee/quanli/quanlikhuyenmai/sua/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
+											th:href="@{/admin/quanli/quanlikhuyenmai/sua/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
 											class="btn btn-dark">Sửa</a> <!-- Xóa --> <a
-											th:href="@{/employee/quanli/quanlikhuyenmai/xoa/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
+											th:href="@{/admin/quanli/quanlikhuyenmai/xoa/{khuyenMaiId}(khuyenMaiId=${km.khuyenMaiId})}"
 											class="btn btn-danger"
 											onclick="return confirm('Bạn có chắc muốn xóa không?')">Xóa</a>
 										</td>

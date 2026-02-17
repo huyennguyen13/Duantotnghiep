@@ -21,12 +21,17 @@ public class TranChuController {
     @Autowired
     SanPhamDao sanphamDAO;
 
-    
+
+
 
     @GetMapping("/")
     public String home() {
         return "redirect:/customer/TrangChu";
     }
+        @GetMapping("/admin")
+public String adminPage() {
+    return "admin/index"; // hoặc trang admin của bạn
+}
 
     @GetMapping("/TrangChu")
     public String redirectTrangChu() {
@@ -51,7 +56,7 @@ public class TranChuController {
         return "views/TrangChu";
     }
 
-    @GetMapping("/employee/TrangQuanTri")
+    @GetMapping("/admin/TrangQuanTri")
     public String Trangquantri(@RequestParam(required = false) String error, Model model) {
 
         if (error != null) {

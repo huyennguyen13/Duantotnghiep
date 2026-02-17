@@ -65,14 +65,14 @@ public class DichVuController {
 	        redirectAttributes.addFlashAttribute("message", "Không thể cập nhật. Dịch vụ không tồn tại.");
 	    }
 		redirectAttributes.addFlashAttribute("message", "Đã cập nhật thành công!");
-		return "redirect:/employee/QLDichVu";
+		return "redirect:/admin/QLDichVu";
 	}
 	@GetMapping("/Remove")
 	public String XoaDV(@RequestParam ("id") Integer dichVuId) {
 		if (dichVuId != null) {
 			dichvuDao.deleteById(dichVuId);
 		}
-		return "redirect:/employee/QLDichVu";
+		return "redirect:/admin/QLDichVu";
 	}
 	
 	

@@ -24,14 +24,14 @@ public class DanhSachChoDichVuController {
 	@Autowired
 	private datDichVuDao datDichVuDao;
 
-	@RequestMapping("/employee/DSDVCho")
+	@RequestMapping("/admin/DSDVCho")
 	public String showDanhSachDichVu(Model model) {
 		// Lấy danh sách các dịch vụ từ database (bao gồm thông tin liên quan)
 		List<DatDichVuEntity> listDichVu = datDichVuDao.findAllWithRelations();
 		model.addAttribute("listDichVu", listDichVu); // Thêm danh sách vào model
 		return "views/quanli/danhsachdichvucho"; // Trả về view để hiển thị danh sách
 	}
-	@GetMapping("/employee/DSDVCho/doi/{datDichVuId}")
+	@GetMapping("/admin/DSDVCho/doi/{datDichVuId}")
 	public String doi(@PathVariable("datDichVuId") int datDichVuId, Model model) {
 	    Optional<DatDichVuEntity> hdon = datDichVuDao.findById(datDichVuId);
 	    if (hdon.isPresent()) {
@@ -51,7 +51,7 @@ public class DanhSachChoDichVuController {
 	    }
 
 	    // Trả về lại danh sách dịch vụ sau khi thay đổi
-	    return "redirect:/employee/DSDVCho";
+	    return "redirect:/admin/DSDVCho";
 	}
 
 	

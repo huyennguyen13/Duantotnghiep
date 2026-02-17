@@ -16,7 +16,7 @@ import com.poly.petshop.Entity.SanPhamEntity;
 import jakarta.transaction.Transactional;
 
 @Controller
-@RequestMapping("/employee")
+@RequestMapping("/admin")
 public class QLSanPhamController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class QLSanPhamController {
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("sp", new SanPhamEntity());
 
-        return "views/quanlysanpham";
+        return "views/quanli/QuanLiSanPham";
     }
 
     // ================= THÊM HOẶC CẬP NHẬT =================
@@ -48,7 +48,7 @@ public class QLSanPhamController {
         spDao.save(sp);
         redirectAttributes.addFlashAttribute("message", "Lưu sản phẩm thành công!");
 
-        return "redirect:/employee/quanlysanpham";
+        return "redirect:/quanli/quanlysanpham";
     }
 
     // ================= SỬA =================
@@ -96,6 +96,6 @@ public class QLSanPhamController {
                     "Không thể xóa sản phẩm do ràng buộc dữ liệu.");
         }
 
-        return "redirect:/employee/quanlysanpham";
+        return "redirect:/quanli/quanlysanpham";
     }
 }

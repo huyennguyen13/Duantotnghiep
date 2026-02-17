@@ -1,99 +1,110 @@
 <aside class="sidebar">
-        <div class="sidebar-header">
+    <div class="sidebar-header">
         <a th:href="@{/customer/TrangChu}">
             <img th:src="@{/img/logo_preview_rev_1.png}" alt="Logo" /></a>
-            <div class="row">
-                <h2 class="fw-bold">Huyền cute</h2>
-                <a href="ProfileKH.html" class="span_text--edit"><i class="fa-regular fa-pen-to-square pe-1"></i>Sửa hồ sơ</a>
-            </div>
+        <div class="row">
+            <h2 class="fw-bold">Huyền cute</h2>
+            <a href="ProfileKH.html" class="span_text--edit"><i class="fa-regular fa-pen-to-square pe-1"></i>Sửa hồ
+                sơ</a>
         </div>
-        
-        <ul class="sidebar-links">
-            <div class="aside_bottom">
-                <!-- Tài khoản -->
-                <div class="box-statistical">
-                    <h4>
-                        <span class="span_text-title--edit">TÀI KHOẢN</span>
-                        <div class="menu-separator"></div>
-                    </h4>
-                    <li>
-                        <a th:href="@{/Profile}" onclick="loadPage('Profile/HoSoKH.html')">
-                            <span class="material-symbols-outlined"><i class="fa-regular fa-file-lines"></i></span>
-                            Hồ sơ
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/home/profile/CDThongBao}" onclick="loadPage('Profile/CaiDatThongBao.html')">
-                            <span class="material-symbols-outlined"><i class="fa-regular fa-bell"></i></span>
-                            Cài đặt thông báo
-                        </a>
-                    </li>
-                    <li>
-                        <a th:href="@{/home/profile/XoaTaiKhoan}" onclick="loadPage('Profile/XoaTaiKhoan.html')">
-                            <span class="material-symbols-outlined"><i class="fa-solid fa-user-xmark"></i></span>
-                            Xóa tài khoản
-                        </a>
-                    </li>
-                </div>
-                <!-- Đơn mua -->
-                <div class="box-list">
-                    <h4>
-                        <span class="span_text-title--edit">ĐẶT HÀNG</span>
-                        <div class="menu-separator"></div>
-                    </h4>
-                    <li>
-                        <a th:href="@{/home/profile/DonMua}" onclick="loadPage('Profile/DonMua.html')"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-cart-shopping"></i></span>Đơn
-                            mua</a>
-                    </li>
-                </div>
-                <!-- Thông báo -->
-                <div class="box-list">
-                    <h4>
-                        <span class="span_text-title--edit">THÔNG BÁO</span>
-                        <div class="menu-separator"></div>
-                    </h4>
-                    <li>
-                        <a href="#" onclick="loadPage('Profile/KhuyenMai.html')"><span
-                                class="material-symbols-outlined"><i class="fa-solid fa-tag"></i></span>Khuyến mãi</a>
-                    </li>
-                    <li>
-                        <a th:href="@{/home/profile/SanPhamDaMua}" onclick="loadPage('Profile/DonHang.html')"><span class="material-symbols-outlined"><i
-                                    class="fa-solid fa-mobile-screen-button"></i></span>Đơn hàng</a>
-                    </li>
-                </div>
-                <!-- Kho mã giảm giá -->
-                <div class="box-manage">
-                    <h4>
-                        <span class="span_text-title--edit">KHO</span>
-                        <div class="menu-separator"></div>
-                    </h4>
-                    <li>
-                        <a href="#" onclick="loadPage('Profile/KhoMaGiamGia.html')"><span class="material-symbols-outlined"><i class="fa-solid fa-store"></i></span>Kho mã giảm giá</a>
-                    </li>
-                </div>
-            </div>
-            <!-- Đăng xuất -->
-            <div class="box-logout">
+    </div>
+
+    <ul class="sidebar-links">
+        <div class="aside_bottom">
+            <!-- Tài khoản -->
+            <div class="box-statistical">
                 <h4>
-                    <li>
-                        <a href=""><span class="material-symbols-outlined "><i class="fa-solid fa-rotate"
-                                    onclick="reloadPage()"></i></span>Làm mới</a>
-                    </li>
-                    <li>
-                        <a th:href="@{/home/profile}"><span class="material-symbols-outlined "><i
-                                    class="fa-solid fa-right-from-bracket"></i></span>Đăng xuất</a>
-                    </li>
+                    <span class="span_text-title--edit">TÀI KHOẢN</span>
+                    <div class="menu-separator"></div>
                 </h4>
+                <li>
+                    <a th:href="@{/Profile}" onclick="loadPage('Profile/HoSoKH.html')">
+                        <span class="material-symbols-outlined"><i class="fa-regular fa-file-lines"></i></span>
+                        Hồ sơ
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/home/profile/CDThongBao}" onclick="loadPage('Profile/CaiDatThongBao.html')">
+                        <span class="material-symbols-outlined"><i class="fa-regular fa-bell"></i></span>
+                        Cài đặt thông báo
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/home/profile/XoaTaiKhoan}" onclick="loadPage('Profile/XoaTaiKhoan.html')">
+                        <span class="material-symbols-outlined"><i class="fa-solid fa-user-xmark"></i></span>
+                        Xóa tài khoản
+                    </a>
+                </li>
             </div>
-        </ul>
-        <div class="user-account">
-            <div class="user-profile">
-                <img th:src="@{/img/logo_preview_rev_1.png}" alt="Logo" />
-                <div class="user-detail">
-                    <h3>Fromage Team</h3>
-                    <span>---Phomat---</span>
-                </div>
+            <!-- Đơn mua -->
+            <div class="box-list">
+                <h4>
+                    <span class="span_text-title--edit">ĐẶT HÀNG</span>
+                    <div class="menu-separator"></div>
+                </h4>
+                <li>
+                    <a th:href="@{/home/profile/DonMua}" onclick="loadPage('Profile/DonMua.html')"><span
+                            class="material-symbols-outlined"><i class="fa-solid fa-cart-shopping"></i></span>Đơn
+                        mua</a>
+                </li>
+            </div>
+            <!-- Thông báo -->
+            <div class="box-list">
+                <h4>
+                    <span class="span_text-title--edit">THÔNG BÁO</span>
+                    <div class="menu-separator"></div>
+                </h4>
+                <li>
+                    <a href="#" onclick="loadPage('Profile/KhuyenMai.html')"><span class="material-symbols-outlined"><i
+                                class="fa-solid fa-tag"></i></span>Khuyến mãi</a>
+                </li>
+                <li>
+                    <a th:href="@{/home/profile/SanPhamDaMua}" onclick="loadPage('Profile/DonHang.html')"><span
+                            class="material-symbols-outlined"><i class="fa-solid fa-mobile-screen-button"></i></span>Đơn
+                        hàng</a>
+                </li>
+            </div>
+            <!-- Kho mã giảm giá -->
+            <div class="box-manage">
+                <h4>
+                    <span class="span_text-title--edit">KHO</span>
+                    <div class="menu-separator"></div>
+                </h4>
+                <li>
+                    <a href="#" onclick="loadPage('Profile/KhoMaGiamGia.html')"><span
+                            class="material-symbols-outlined"><i class="fa-solid fa-store"></i></span>Kho mã giảm
+                        giá</a>
+                </li>
             </div>
         </div>
-    </aside>
+        <!-- Đăng xuất -->
+        <div class="box-logout">
+            <h4>
+                <li>
+                    <a href=""><span class="material-symbols-outlined "><i class="fa-solid fa-rotate"
+                                onclick="reloadPage()"></i></span>Làm mới</a>
+                </li>
+                <li>
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;">
+                            <span class="material-symbols-outlined">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </span>
+                            Đăng xuất
+                        </button>
+                    </form>
+                </li>
+
+            </h4>
+        </div>
+    </ul>
+    <div class="user-account">
+        <div class="user-profile">
+            <img th:src="@{/img/logo_preview_rev_1.png}" alt="Logo" />
+            <div class="user-detail">
+                <h3>Fromage Team</h3>
+                <span>---Phomat---</span>
+            </div>
+        </div>
+    </div>
+</aside>

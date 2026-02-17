@@ -117,7 +117,7 @@
 											th:selected="${hd.choXacNhan == entry.key}"></option>
 								</select></td>
 								<td><a style="text-decoration: none;"
-									th:href="@{/employee/quanli/quanlihoadon/xem/{hoaDonId}(hoaDonId=${hd.hoaDonId})}">
+									th:href="@{/admin/quanli/quanlihoadon/xem/{hoaDonId}(hoaDonId=${hd.hoaDonId})}">
 										<button class="btn btn-secondary">In bill</button>
 								</a>
 									<button type="button" class="btn btn-secondary updateBtn"
@@ -214,7 +214,7 @@
 												// Gửi yêu cầu AJAX
 												$
 														.ajax({
-															url : '/employee/quanli/quanlihoadon/capnhat', // Đường dẫn đến controller
+															url : '/admin/quanli/quanlihoadon/capnhat', // Đường dẫn đến controller
 															type : 'POST',
 															data : {
 																hoaDonId : hoaDonId,
